@@ -229,6 +229,52 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
 }
 .sec-h .hint{ font-weight:400; letter-spacing:0; text-transform:none; font-size:12px; color:var(--ink-3); margin-left:auto; }
 
+/* ── 발음 듣기 ── */
+.say{
+  flex:none; position:relative;
+  width:34px; height:34px; border-radius:50%;
+  display:inline-grid; place-items:center;
+  color:var(--pen); background:var(--pen-soft);
+  transition:transform .12s, opacity .18s;
+}
+.say::after{ content:""; position:absolute; inset:-6px; }   /* 터치 영역 44px */
+.say svg{ width:17px; height:17px; }
+.say:active{ transform:scale(.9); }
+.say.speaking{ animation:pulse .9s ease-in-out infinite; }
+@keyframes pulse{ 0%,100%{ opacity:1 } 50%{ opacity:.45 } }
+.say.sm{ width:30px; height:30px; }
+.say.sm::after{ inset:-7px; }
+.say.sm svg{ width:14px; height:14px; }
+
+.tts{
+  border:1px solid var(--rule); border-radius:var(--r);
+  background:var(--card); overflow:hidden;
+}
+.tts-row{
+  display:flex; align-items:center; gap:12px;
+  padding:11px 14px; border-bottom:1px solid var(--rule);
+}
+.tts-row:last-child{ border-bottom:0; }
+.tts-l{ font-size:14px; font-weight:520; flex:none; min-width:62px; }
+.tts-row .seg{ flex:1; margin:0; }
+.tts-row .seg button{ font-size:13.5px; padding:11px 4px; min-height:44px; }
+.tts select{
+  flex:1; min-width:0; text-align:right;
+  background:none; border:0; color:var(--ink-2);
+  font-size:14px; padding:6px 0; min-height:44px;
+  -webkit-appearance:none; appearance:none;
+  text-overflow:ellipsis;
+}
+.tts-test{
+  width:100%; padding:12px; font-size:14.5px; font-weight:550;
+  color:var(--pen); display:flex; align-items:center; justify-content:center; gap:7px;
+}
+.tts-test svg{ width:16px; height:16px; }
+.tts-none{
+  margin:0; padding:13px 14px; font-size:13px; color:var(--ink-3); line-height:1.5;
+  border:1px dashed var(--rule); border-radius:var(--r);
+}
+
 /* ── 저장 불가 안내 ── */
 .store-warn{
   background:var(--no-soft); border:1.5px solid var(--no);
@@ -409,25 +455,39 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
 }
 .tag.lower{ text-transform:none; font-style:italic; letter-spacing:.02em; }
 
-/* ── 시험지(표) 모드 ── */
-.sheet{ padding:6px 0 0; }
+/* ── 시험지(표) 모드 ──
+   한 행에 [번호][단어][입력칸]을 한 줄로 놓아 스크롤 총량을 줄인다.
+   상·하단 바는 본문 위에 겹쳐 두고, 아래로 내릴 때 치워서 화면을 넓게 쓴다. */
+#s-sheet .head{
+  position:sticky; top:0; z-index:30;
+  transition:transform .24s cubic-bezier(.2,.7,.3,1);
+}
+#s-sheet .head .bar{ position:static; }
+#s-sheet .dock{ transition:transform .24s cubic-bezier(.2,.7,.3,1); }
+#s-sheet.lean .head{ transform:translateY(-101%); }
+#s-sheet.lean .dock{ transform:translateY(101%); }
+
+.sheet{ padding:2px 0 0; }
 .row{
-  display:grid; grid-template-columns:30px 1fr; gap:0 10px;
-  padding:13px 16px 12px;
+  display:grid; grid-template-columns:24px minmax(0,1fr) 42%;
+  gap:0 9px; align-items:center;
+  padding:7px 16px;
   border-bottom:1px solid var(--rule);
 }
 .row:first-child{ border-top:1px solid var(--rule); }
 .row .no{
-  font-family:var(--mono); font-size:12.5px; font-weight:550;
+  font-family:var(--mono); font-size:12px; font-weight:550;
   color:var(--ink-3); font-variant-numeric:tabular-nums;
-  padding-top:5px; letter-spacing:-.02em;
+  letter-spacing:-.03em;
 }
-.row .q{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
-.row .qw{ font-size:19px; font-weight:660; letter-spacing:-.022em; }
-.row .qp{ font-size:12.5px; color:var(--ink-3); font-style:italic; }
-.row .qi{ font-size:12.5px; color:var(--ink-3); }
+.row .q{ display:flex; align-items:baseline; gap:6px; flex-wrap:wrap; }
+.tappable{ cursor:pointer; -webkit-tap-highlight-color:transparent; }
+.tappable:active{ opacity:.55; }
+.row .qw{ font-size:17px; font-weight:660; letter-spacing:-.022em; }
+.row .qp{ font-size:11.5px; color:var(--ink-3); font-style:italic; }
+.row .qi{ display:none; }        /* 발음기호는 카드 모드·채점 결과에만 */
 .row input{
-  grid-column:2; width:100%; margin-top:6px;
+  grid-column:3; grid-row:1; width:100%; margin-top:0;
   background:none; border:0; border-bottom:1.5px solid var(--rule);
   border-radius:0; padding:9px 2px 10px;
   font-size:16px; font-weight:500; color:var(--pen);
@@ -448,8 +508,8 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
   text-decoration:line-through; text-decoration-color:var(--no); text-decoration-thickness:1.5px;
 }
 .correction{
-  grid-column:2; display:flex; align-items:flex-start; gap:8px;
-  margin-top:8px; font-size:14.5px; line-height:1.45;
+  grid-column:2 / -1; display:flex; align-items:flex-start; gap:8px;
+  margin-top:7px; font-size:14px; line-height:1.45;
   color:var(--no); font-weight:560; letter-spacing:-.008em;
 }
 .correction .pen-mark{ font-family:var(--mono); font-size:13px; flex:none; opacity:.75; padding-top:1px; }
@@ -710,6 +770,34 @@ window.addEventListener('error', function(ev){
           <button class="cta plain" id="btnHistory">시험 이력</button>
         </div>
 
+        <h3 class="sec-h" id="ttsHead">발음 읽어주기</h3>
+        <div class="tts" id="ttsBox">
+          <div class="tts-row">
+            <span class="tts-l">음성</span>
+            <select id="ttsVoice" aria-label="영어 음성 선택"></select>
+          </div>
+          <div class="tts-row">
+            <span class="tts-l">속도</span>
+            <div class="seg" id="segRate">
+              <button data-rate="0.7">느리게</button>
+              <button data-rate="0.9" aria-pressed="true">보통</button>
+              <button data-rate="1.1">빠르게</button>
+            </div>
+          </div>
+          <div class="tts-row">
+            <span class="tts-l">자동 읽기</span>
+            <div class="seg" id="segAuto">
+              <button data-auto="0" aria-pressed="true">끄기</button>
+              <button data-auto="1">문제마다</button>
+            </div>
+          </div>
+          <button class="tts-test" id="ttsTest">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7"/><path d="M18.5 5.5a9 9 0 010 13"/></svg>
+            미리 듣기
+          </button>
+        </div>
+        <p class="tts-none" id="ttsNone" hidden>이 브라우저는 음성 읽기를 지원하지 않아요. Safari나 Chrome에서 열면 사용할 수 있습니다.</p>
+
         <h3 class="sec-h" id="themeHead">화면</h3>
         <div class="seg" id="segTheme">
           <button data-theme-opt="system">시스템</button>
@@ -734,6 +822,9 @@ window.addEventListener('error', function(ev){
         <div class="word-line">
           <span class="word" id="cardWord">—</span>
           <span class="pos" id="cardPos"></span>
+          <button class="say" id="cardSay" aria-label="발음 듣기">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7"/><path d="M18.5 5.5a9 9 0 010 13"/></svg>
+          </button>
         </div>
         <div class="ipa" id="cardIpa"></div>
       </div>
@@ -755,12 +846,14 @@ window.addEventListener('error', function(ev){
 
   <!-- ══ 시험지 ════════════════════════════════════════ -->
   <section class="screen" id="s-sheet">
-    <div class="bar" id="sheetBar">
-      <button class="back" id="sheetQuit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>중단</button>
-      <div class="spacer"></div>
-      <div class="count" id="sheetCount">작성 <b>0</b> / 100</div>
+    <div class="head" id="sheetHead">
+      <div class="bar" id="sheetBar">
+        <button class="back" id="sheetQuit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>중단</button>
+        <div class="spacer"></div>
+        <div class="count" id="sheetCount">작성 <b>0</b> / 100</div>
+      </div>
+      <div class="prog"><i id="sheetProg" style="width:0"></i></div>
     </div>
-    <div class="prog"><i id="sheetProg" style="width:0"></i></div>
 
     <div class="body" id="sheetBody">
       <div class="sheet" id="sheetRows"></div>
@@ -6587,12 +6680,100 @@ var KEY_DRAFT = 'vq.draft.v1';
 var wrongbook = LS.get(KEY_WRONG, {});       // { word: {miss, mine, lastAt} } — 뜻·예문은 BY_WORD에서 채운다
 var history   = LS.get(KEY_HIST, []);        // 최근 것이 앞
 var prefs     = LS.get(KEY_PREF, {mode:'card', count:100});
+if (prefs.rate  == null) prefs.rate  = 0.9;
+if (prefs.auto  == null) prefs.auto  = 0;
+if (prefs.voice == null) prefs.voice = '';
 var seen      = LS.get(KEY_SEEN, {});        // 한 번이라도 시험에 나온 단어
 
 function saveWrong(){ LS.set(KEY_WRONG, wrongbook); }
 function saveHist(){ LS.set(KEY_HIST, history); }
 function savePrefs(){ LS.set(KEY_PREF, prefs); }
 function saveSeen(){ LS.set(KEY_SEEN, seen); }
+
+/* ═══ 발음 읽어주기 ════════════════════════════════════
+   기기에 내장된 음성합성을 쓴다. 추가로 받는 파일이 없어 용량은 그대로다.
+   음성 목록은 비동기로 채워지므로 voiceschanged 를 기다린다. */
+var TTS = (function(){
+  var ok = typeof window.speechSynthesis !== 'undefined' &&
+           typeof window.SpeechSynthesisUtterance !== 'undefined';
+  var voices = [];
+
+  function load(){
+    if (!ok) return;
+    var all = speechSynthesis.getVoices() || [];
+    voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    if (!voices.length) voices = all.slice();
+  }
+  function pick(){
+    if (!voices.length) return null;
+    var i;
+    for (i = 0; i < voices.length; i++) if (voices[i].voiceURI === prefs.voice) return voices[i];
+    for (i = 0; i < voices.length; i++) if (voices[i].localService && /en[-_]?US/i.test(voices[i].lang)) return voices[i];
+    for (i = 0; i < voices.length; i++) if (voices[i].localService) return voices[i];
+    return voices[0];
+  }
+  if (ok){
+    load();
+    var onVoices = function(){ load(); renderVoiceOptions(); };
+    if (speechSynthesis.addEventListener) speechSynthesis.addEventListener('voiceschanged', onVoices);
+    else speechSynthesis.onvoiceschanged = onVoices;
+  }
+  return {
+    supported: function(){ return ok; },
+    list: function(){ return voices; },
+    speak: function(text, btn){
+      if (!ok || !text) return;
+      try {
+        speechSynthesis.cancel();     // iOS는 겹쳐 호출하면 엔진이 멎는 일이 있다
+        var u = new SpeechSynthesisUtterance(String(text));
+        var v = pick();
+        if (v){ u.voice = v; u.lang = v.lang; } else { u.lang = 'en-US'; }
+        u.rate = parseFloat(prefs.rate) || 0.9;
+        if (btn){
+          btn.classList.add('speaking');
+          var off = function(){ btn.classList.remove('speaking'); };
+          u.onend = off; u.onerror = off;
+          setTimeout(off, 4000);
+        }
+        speechSynthesis.speak(u);
+      } catch(e){}
+    }
+  };
+})();
+
+function renderVoiceOptions(){
+  var sel = $('ttsVoice');
+  if (!sel) return;
+  var list = TTS.list();
+  sel.innerHTML = '';
+  if (!list.length){
+    var o = document.createElement('option');
+    o.textContent = '기기 기본 음성';
+    o.value = '';
+    sel.appendChild(o);
+    return;
+  }
+  list.forEach(function(v){
+    var o = document.createElement('option');
+    o.value = v.voiceURI;
+    o.textContent = v.name + (v.localService ? '' : ' (온라인)');
+    if (v.voiceURI === prefs.voice) o.selected = true;
+    sel.appendChild(o);
+  });
+  if (!prefs.voice) sel.selectedIndex = Math.max(0, list.indexOf((function(){
+    for (var i=0;i<list.length;i++) if (list[i].localService && /en[-_]?US/i.test(list[i].lang)) return list[i];
+    return list[0];
+  })()));
+}
+
+// 단어를 눌러 발음을 듣게 한다 (시험지·오답노트·결과 목록에서 공용)
+function makeSpeakable(el, word){
+  el.classList.add('tappable');
+  el.addEventListener('click', function(e){
+    e.stopPropagation();
+    TTS.speak(word);
+  });
+}
 
 /* ═══ 화면 테마 ════════════════════════════════════════ */
 // CSS가 토큰으로만 색을 쓰므로, 루트에 data-theme 만 걸면 전체가 따라온다.
@@ -6856,6 +7037,10 @@ function refreshHome(){
 
 /* ═══ 세션 ═════════════════════════════════════════════ */
 var S = null;   // {mode, items, answers[], marks[], idx, startedAt, source}
+var sheetScrollMax = 0;                       // 시험지 전체 스크롤 길이 (자동 숨김 판정용)
+function refreshSheetMax(){
+  sheetScrollMax = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+}
 
 // iOS 사파리는 뒤로 밀린 탭을 수시로 버린다. 풀던 시험이 통째로 날아가지 않도록
 // 단어 목록 대신 표제어만 저장해 두고, 다시 열면 그대로 복원한다.
@@ -6959,6 +7144,10 @@ function renderCard(){
   $('cardActions').appendChild(skip);
   $('cardActions').appendChild(chk);
   $('cardStage').scrollTop = 0;
+  $('cardSay').onclick = function(){ TTS.speak(it.w, $('cardSay')); };
+  // '문제마다' 설정이면 새 단어가 뜰 때 바로 읽어준다.
+  // (다음 단어 버튼·엔터 같은 사용자 동작에서 이어지는 호출이라 iOS 제약에 걸리지 않는다)
+  if (prefs.auto == 1) TTS.speak(it.w, $('cardSay'));
   setTimeout(function(){ inp.focus(); }, 30);
 }
 
@@ -7011,6 +7200,12 @@ function buildVerdict(host, it, ok, idx){
     : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>오답';
   head.appendChild(badge);
 
+  var say = el('button', 'say sm');
+  say.setAttribute('aria-label', '발음 듣기');
+  say.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7"/><path d="M18.5 5.5a9 9 0 010 13"/></svg>';
+  say.onclick = function(){ TTS.speak(it.w, say); };
+  if (TTS.supported()) head.appendChild(say);
+
   var mark = el('button', 'mark-btn' + (ok ? ' undo' : ''), ok ? '오답으로 정정' : '정답으로 인정');
   mark.onclick = function(){
     var now = !S.marks[idx];
@@ -7061,6 +7256,7 @@ function renderSheet(){
     q.appendChild(el('span', 'qw', it.w));
     if (it.pos) q.appendChild(el('span', 'qp', it.pos));
     if (it.p) q.appendChild(el('span', 'qi', '[' + it.p + ']'));
+    if (TTS.supported()) makeSpeakable(q, it.w);   // 단어를 누르면 읽어준다
     row.appendChild(q);
 
     var inp = document.createElement('input');
@@ -7094,7 +7290,9 @@ function renderSheet(){
   });
   host.appendChild(frag);
   updateSheetCount();
-  $('sheetBody').scrollTop = 0;
+  $("s-sheet").classList.remove("lean");
+  window.scrollTo(0, 0);
+  refreshSheetMax();
 }
 
 function updateSheetCount(){
@@ -7128,7 +7326,9 @@ function gradeSheet(){
     b1.onclick = finish;
     r.appendChild(b1);
     $('sheetDock').appendChild(r);
-    $('sheetBody').scrollTop = 0;
+    window.scrollTo(0, 0);
+    $("s-sheet").classList.remove("lean");
+    refreshSheetMax();
     updateSheetScoreLabel();
     toast('채점 완료 — 아래에서 정답을 확인하세요');
   };
@@ -7219,7 +7419,9 @@ function fmtDur(ms){
 function wrongItemNode(it, mine, missCount){
   var n = el('div', 'item');
   var top = el('div', 'item-top');
-  top.appendChild(el('span', 'item-w', it.w));
+  var wordEl = el('span', 'item-w', it.w);
+  if (TTS.supported()) makeSpeakable(wordEl, it.w);
+  top.appendChild(wordEl);
   if (it.pos) top.appendChild(el('span', 'item-p', it.pos));
   if (missCount) top.appendChild(el('span', 'item-x', '오답 ' + missCount));
   n.appendChild(top);
@@ -7343,6 +7545,26 @@ $('segCount').querySelectorAll('button').forEach(function(b){
   });
 });
 
+$('ttsVoice').addEventListener('change', function(){
+  prefs.voice = $('ttsVoice').value; savePrefs();
+  TTS.speak('vocabulary');
+});
+$('segRate').querySelectorAll('button').forEach(function(b){
+  b.addEventListener('click', function(){
+    $('segRate').querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+    prefs.rate = parseFloat(b.dataset.rate); savePrefs();
+    TTS.speak('vocabulary');
+  });
+});
+$('segAuto').querySelectorAll('button').forEach(function(b){
+  b.addEventListener('click', function(){
+    $('segAuto').querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+    prefs.auto = parseInt(b.dataset.auto, 10); savePrefs();
+    toast(prefs.auto ? '문제가 뜰 때 자동으로 읽어줍니다' : '자동 읽기를 껐어요');
+  });
+});
+$('ttsTest').addEventListener('click', function(){ TTS.speak('vocabulary', null); });
+
 $('segTheme').querySelectorAll('button').forEach(function(b){
   b.addEventListener('click', function(){
     applyTheme(b.dataset.themeOpt, true);
@@ -7423,13 +7645,36 @@ document.addEventListener('visibilitychange', function(){
   if (document.visibilityState === 'hidden' && S && !S.graded) saveDraft();
 });
 
-// 스크롤 시 상단 바에 구분선
-document.querySelectorAll('.body').forEach(function(b){
-  b.addEventListener('scroll', function(){
-    var bar = b.parentElement.querySelector('.bar');
-    if (bar) bar.classList.toggle('ruled', b.scrollTop > 4);
-  }, {passive:true});
-});
+// 스크롤되는 건 안쪽 영역이 아니라 페이지 자체다.
+// 상단 바 구분선과 시험지 바 자동 숨김을 여기서 함께 처리한다.
+// 레이아웃을 읽는 계산(scrollHeight)은 미리 캐시해 두고, 스크롤 중에는 값 비교만 한다.
+(function(){
+  var lastY = 0;
+  function onScroll(){
+    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+
+    var on = document.querySelector('.screen.on');
+    if (on){
+      var bar = on.querySelector('.bar');
+      if (bar) bar.classList.toggle('ruled', y > 4);
+    }
+
+    // 시험지: 아래로 내리는 동안 바를 치워 화면을 넓게 쓴다
+    var sheet = $('s-sheet');
+    if (sheet.classList.contains('on')){
+      if (!sheetScrollMax) refreshSheetMax();
+      var typing = document.activeElement && document.activeElement.tagName === 'INPUT';
+      if (!typing){
+        if (y < 56 || (sheetScrollMax && y > sheetScrollMax - 56)) sheet.classList.remove('lean');
+        else if (y > lastY + 6) sheet.classList.add('lean');
+        else if (y < lastY - 6) sheet.classList.remove('lean');
+      }
+    }
+    lastY = y;
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', refreshSheetMax, {passive:true});
+})();
 
 
 /* ═══ 초기화 ═══════════════════════════════════════════ */
@@ -7445,6 +7690,21 @@ document.querySelectorAll('.body').forEach(function(b){
   });
   if (!found) $('segCount').querySelector('[data-n="100"]').setAttribute('aria-pressed', 'true');
   applyTheme(theme, false);
+
+  // 발음 설정 초기 반영
+  $('ttsBox').hidden = !TTS.supported();
+  $('ttsHead').hidden = !TTS.supported();
+  $('ttsNone').hidden = TTS.supported();
+  if (TTS.supported()){
+    renderVoiceOptions();
+    $('segRate').querySelectorAll('button').forEach(function(x){
+      x.setAttribute('aria-pressed', String(parseFloat(x.dataset.rate) === parseFloat(prefs.rate)));
+    });
+    $('segAuto').querySelectorAll('button').forEach(function(x){
+      x.setAttribute('aria-pressed', String(parseInt(x.dataset.auto, 10) === parseInt(prefs.auto, 10)));
+    });
+  }
+
   refreshHome();
   document.documentElement.className += ' ready';   // 정상 기동 완료
 })();
