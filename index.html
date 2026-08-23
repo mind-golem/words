@@ -366,8 +366,17 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
 .count{
   font-family:var(--mono); font-size:13px; font-weight:600;
   font-variant-numeric:tabular-nums; color:var(--ink-2); letter-spacing:-.02em;
+  min-width:58px; text-align:center;
 }
 .count b{ color:var(--ink); }
+.navbtn{
+  display:inline-grid; place-items:center;
+  width:36px; min-height:44px; color:var(--pen);
+  transition:opacity .15s;
+}
+.navbtn svg{ width:20px; height:20px; }
+.navbtn:disabled{ opacity:.22; }
+.navbtn:active:not(:disabled){ opacity:.5; }
 
 /* ── 카드 모드 ── */
 .card-stage{
@@ -534,6 +543,56 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
 }
 .dock .cta{ padding:14px; font-size:16.5px; }
 .dock-row{ display:flex; gap:9px; }
+
+/* ── 샤워 모드 ──
+   젖은 손과 먼 거리를 전제로 한다. 글자는 크게, 버튼은 아주 크게. */
+#s-shower{ background:var(--card-2); }
+.sh-bar{
+  display:flex; align-items:center; gap:10px;
+  padding:calc(env(safe-area-inset-top) + 2px) 14px 2px;
+}
+.sh-stage{
+  flex:1; min-height:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:18px;
+  padding:20px 22px; text-align:center; overflow-y:auto;
+}
+.sh-word-line{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; justify-content:center; }
+.sh-word{
+  font-size:44px; font-weight:750; letter-spacing:-.035em; line-height:1.1;
+  word-break:break-word;
+}
+.sh-pos{ font-size:16px; color:var(--ink-3); font-style:italic; }
+.sh-mean{
+  font-size:26px; font-weight:650; letter-spacing:-.02em; line-height:1.4;
+  color:var(--pen); max-width:22ch;
+  animation:meanIn .35s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes meanIn{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
+.sh-ex{ font-size:14.5px; color:var(--ink-2); line-height:1.55; max-width:34ch; }
+.sh-ex em{ font-style:normal; font-weight:680; color:var(--pen); }
+.sh-note{
+  margin:0 16px 10px; padding:11px 13px; font-size:12.5px; line-height:1.5;
+  color:var(--ink-2); background:var(--no-soft); border-radius:12px; text-align:center;
+}
+.sh-controls{
+  display:flex; align-items:stretch; gap:10px;
+  padding:12px 16px calc(max(env(safe-area-inset-bottom), 8px) + 14px);
+}
+.sh-side{
+  flex:0 0 74px; border-radius:16px;
+  background:var(--card); border:1.5px solid var(--rule);
+  color:var(--ink-2); display:grid; place-items:center;
+}
+.sh-side svg{ width:24px; height:24px; }
+.sh-side:active{ background:var(--card-2); }
+.sh-play{
+  flex:1; min-height:74px; border-radius:16px;
+  background:var(--pen); color:#fff;
+  font-size:19px; font-weight:660; letter-spacing:-.015em;
+  box-shadow:0 4px 14px var(--pen-glow);
+}
+.sh-play.paused{ background:var(--card); color:var(--pen); border:1.5px solid var(--pen-line); box-shadow:none; }
+.sh-play:active{ transform:scale(.985); }
 
 /* ── 결과 ── */
 .score-card{
@@ -747,6 +806,13 @@ window.addEventListener('error', function(ev){
               <span class="d">단어 하나를 크게 보고 뜻을 입력합니다. 바로 채점돼요.</span>
             </span>
           </button>
+          <button class="mode" data-mode="shower" aria-pressed="false">
+            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7"/><path d="M18.5 5.5a9 9 0 010 13"/></svg></span>
+            <span>
+              <span class="t">샤워 모드</span>
+              <span class="d">손 안 대고 듣기만 합니다. 단어를 읽어주고 3초 뒤 뜻을 알려줘요.</span>
+            </span>
+          </button>
           <button class="mode" data-mode="sheet" aria-pressed="false">
             <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h6M4 12h6M4 18h6"/><path d="M14 6h6M14 12h6M14 18h6" opacity=".45"/></svg></span>
             <span>
@@ -756,12 +822,44 @@ window.addEventListener('error', function(ev){
           </button>
         </div>
 
-        <h3 class="sec-h">문항 수</h3>
-        <div class="seg" id="segCount">
-          <button data-n="20">20</button>
-          <button data-n="50">50</button>
-          <button data-n="100" aria-pressed="true">100</button>
-          <button data-n="200">200</button>
+        <div id="quizOpts">
+          <h3 class="sec-h">문항 수</h3>
+          <div class="seg" id="segCount">
+            <button data-n="20">20</button>
+            <button data-n="50">50</button>
+            <button data-n="100" aria-pressed="true">100</button>
+            <button data-n="200">200</button>
+          </div>
+        </div>
+
+        <div id="showerOpts" hidden>
+          <h3 class="sec-h">들을 단어</h3>
+          <div class="seg" id="segShSource">
+            <button data-src="wrong">오답노트</button>
+            <button data-src="all" aria-pressed="true">전체 랜덤</button>
+          </div>
+          <h3 class="sec-h">뜻 알려주기</h3>
+          <div class="seg" id="segShGap">
+            <button data-gap="2">2초 뒤</button>
+            <button data-gap="3" aria-pressed="true">3초 뒤</button>
+            <button data-gap="5">5초 뒤</button>
+          </div>
+          <div class="tts" style="margin-bottom:24px">
+            <div class="tts-row">
+              <span class="tts-l">단어 반복</span>
+              <div class="seg" id="segShRepeat">
+                <button data-rep="1">한 번</button>
+                <button data-rep="2" aria-pressed="true">두 번</button>
+              </div>
+            </div>
+            <div class="tts-row">
+              <span class="tts-l">예문</span>
+              <div class="seg" id="segShEx">
+                <button data-ex="0" aria-pressed="true">건너뛰기</button>
+                <button data-ex="1">읽어주기</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <button class="cta" id="btnStart">시험 시작</button>
@@ -775,6 +873,10 @@ window.addEventListener('error', function(ev){
           <div class="tts-row">
             <span class="tts-l">음성</span>
             <select id="ttsVoice" aria-label="영어 음성 선택"></select>
+          </div>
+          <div class="tts-row" id="ttsKoRow">
+            <span class="tts-l">한국어</span>
+            <select id="ttsKoVoice" aria-label="한국어 음성 선택"></select>
           </div>
           <div class="tts-row">
             <span class="tts-l">속도</span>
@@ -813,7 +915,13 @@ window.addEventListener('error', function(ev){
     <div class="bar">
       <button class="back" id="cardQuit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>중단</button>
       <div class="spacer"></div>
+      <button class="navbtn" id="cardPrev" aria-label="이전 문제">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
       <div class="count"><b id="cardIdx">1</b> / <span id="cardTot">100</span></div>
+      <button class="navbtn" id="cardFwd" aria-label="다음 문제">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
     </div>
     <div class="prog"><i id="cardProg" style="width:0"></i></div>
 
@@ -862,6 +970,36 @@ window.addEventListener('error', function(ev){
 
     <div class="dock" id="sheetDock">
       <button class="cta" id="sheetGrade">채점하기</button>
+    </div>
+  </section>
+
+  <!-- ══ 샤워 모드 ═════════════════════════════════════ -->
+  <section class="screen" id="s-shower">
+    <div class="sh-bar">
+      <button class="back" id="shQuit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>끝내기</button>
+      <div class="spacer"></div>
+      <div class="count"><b id="shCount">0</b>개째</div>
+    </div>
+
+    <div class="sh-stage" id="shStage">
+      <div class="sh-word-line">
+        <span class="sh-word" id="shWord">준비 중…</span>
+        <span class="sh-pos" id="shPos"></span>
+      </div>
+      <div class="sh-mean" id="shMean" hidden></div>
+      <div class="sh-ex" id="shEx" hidden></div>
+    </div>
+
+    <p class="sh-note" id="shNote" hidden></p>
+
+    <div class="sh-controls">
+      <button class="sh-side" id="shPrev" aria-label="이전 단어">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <button class="sh-play" id="shToggle">일시정지</button>
+      <button class="sh-side" id="shNext" aria-label="다음 단어">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
     </div>
   </section>
 
@@ -6683,6 +6821,11 @@ var prefs     = LS.get(KEY_PREF, {mode:'card', count:100});
 if (prefs.rate  == null) prefs.rate  = 0.9;
 if (prefs.auto  == null) prefs.auto  = 0;
 if (prefs.voice == null) prefs.voice = '';
+if (prefs.koVoice  == null) prefs.koVoice  = '';
+if (prefs.shSource == null) prefs.shSource = 'all';
+if (prefs.shGap    == null) prefs.shGap    = 3;
+if (prefs.shRepeat == null) prefs.shRepeat = 2;
+if (prefs.shEx     == null) prefs.shEx     = 0;
 var seen      = LS.get(KEY_SEEN, {});        // 한 번이라도 시험에 나온 단어
 
 function saveWrong(){ LS.set(KEY_WRONG, wrongbook); }
@@ -6698,20 +6841,24 @@ var TTS = (function(){
            typeof window.SpeechSynthesisUtterance !== 'undefined';
   var voices = [];
 
+  var koVoices = [], gen = 0;
   function load(){
     if (!ok) return;
     var all = speechSynthesis.getVoices() || [];
     voices = all.filter(function(v){ return /^en/i.test(v.lang); });
+    koVoices = all.filter(function(v){ return /^ko/i.test(v.lang); });
     if (!voices.length) voices = all.slice();
   }
-  function pick(){
-    if (!voices.length) return null;
+  function pickFrom(list, saved, prefer){
+    if (!list.length) return null;
     var i;
-    for (i = 0; i < voices.length; i++) if (voices[i].voiceURI === prefs.voice) return voices[i];
-    for (i = 0; i < voices.length; i++) if (voices[i].localService && /en[-_]?US/i.test(voices[i].lang)) return voices[i];
-    for (i = 0; i < voices.length; i++) if (voices[i].localService) return voices[i];
-    return voices[0];
+    for (i = 0; i < list.length; i++) if (list[i].voiceURI === saved) return list[i];
+    for (i = 0; i < list.length; i++) if (list[i].localService && prefer.test(list[i].lang)) return list[i];
+    for (i = 0; i < list.length; i++) if (list[i].localService) return list[i];
+    return list[0];
   }
+  function pick(){ return pickFrom(voices, prefs.voice, /en[-_]?US/i); }
+  function pickKo(){ return pickFrom(koVoices, prefs.koVoice, /ko[-_]?KR/i); }
   if (ok){
     load();
     var onVoices = function(){ load(); renderVoiceOptions(); };
@@ -6721,9 +6868,46 @@ var TTS = (function(){
   return {
     supported: function(){ return ok; },
     list: function(){ return voices; },
+    koList: function(){ return koVoices; },
+    hasKorean: function(){ return ok && koVoices.length > 0; },
+    stop: function(){
+      gen++;                                   // 진행 중인 speakThen 시퀀스를 무효화한다
+      if (ok) try { speechSynthesis.cancel(); } catch(e){}
+    },
+    // 다 읽고 나면 done() 을 부른다. 음성이 없거나 끝을 알리지 않아도 반드시 한 번은 불린다.
+    // stop() 이 불리면 그 뒤로는 읽지도, done() 을 부르지도 않는다.
+    speakThen: function(text, lang, times, done){
+      var fired = false, mine = ++gen;
+      function alive(){ return mine === gen; }
+      function finish(){ if (!fired && alive()){ fired = true; done(); } }
+      if (!ok || !text){ setTimeout(finish, 250); return finish; }
+      var n = 0;
+      function one(){
+        if (!alive()) return;
+        try {
+          var u = new SpeechSynthesisUtterance(String(text));
+          var v = lang === 'ko' ? pickKo() : pick();
+          if (v){ u.voice = v; u.lang = v.lang; }
+          else { u.lang = lang === 'ko' ? 'ko-KR' : 'en-US'; }
+          u.rate = parseFloat(prefs.rate) || 0.9;
+          u.onend = function(){
+            if (!alive()) return;
+            n++;
+            if (n < times) setTimeout(one, 260); else finish();
+          };
+          u.onerror = finish;
+          speechSynthesis.speak(u);
+        } catch(e){ finish(); }
+      }
+      one();
+      // 안전장치: 일부 기기는 onend 를 주지 않는다
+      setTimeout(finish, 2000 + times * 2200 + String(text).length * 95);
+      return finish;
+    },
     speak: function(text, btn){
       if (!ok || !text) return;
       try {
+        gen++;
         speechSynthesis.cancel();     // iOS는 겹쳐 호출하면 엔진이 멎는 일이 있다
         var u = new SpeechSynthesisUtterance(String(text));
         var v = pick();
@@ -6742,9 +6926,14 @@ var TTS = (function(){
 })();
 
 function renderVoiceOptions(){
-  var sel = $('ttsVoice');
+  fillVoiceSelect($('ttsVoice'), TTS.list(), prefs.voice, /en[-_]?US/i);
+  var koRow = $('ttsKoRow');
+  if (koRow) koRow.hidden = !TTS.hasKorean();
+  if (TTS.hasKorean()) fillVoiceSelect($('ttsKoVoice'), TTS.koList(), prefs.koVoice, /ko[-_]?KR/i);
+}
+
+function fillVoiceSelect(sel, list, saved, prefer){
   if (!sel) return;
-  var list = TTS.list();
   sel.innerHTML = '';
   if (!list.length){
     var o = document.createElement('option');
@@ -6757,11 +6946,11 @@ function renderVoiceOptions(){
     var o = document.createElement('option');
     o.value = v.voiceURI;
     o.textContent = v.name + (v.localService ? '' : ' (온라인)');
-    if (v.voiceURI === prefs.voice) o.selected = true;
+    if (v.voiceURI === saved) o.selected = true;
     sel.appendChild(o);
   });
-  if (!prefs.voice) sel.selectedIndex = Math.max(0, list.indexOf((function(){
-    for (var i=0;i<list.length;i++) if (list[i].localService && /en[-_]?US/i.test(list[i].lang)) return list[i];
+  if (!saved) sel.selectedIndex = Math.max(0, list.indexOf((function(){
+    for (var i = 0; i < list.length; i++) if (list[i].localService && prefer.test(list[i].lang)) return list[i];
     return list[0];
   })()));
 }
@@ -6948,7 +7137,7 @@ function confirmSheet(title, body, yesLabel, onYes){
 }
 
 /* ═══ 화면 전환 ════════════════════════════════════════ */
-var screens = ['home','card','sheet','result','wrong','history'];
+var screens = ['home','card','sheet','shower','result','wrong','history'];
 function go(name){
   for (var i = 0; i < screens.length; i++){
     $('s-' + screens[i]).classList.toggle('on', screens[i] === name);
@@ -6959,9 +7148,13 @@ function go(name){
 }
 
 /* ═══ 오답노트 · 이력 ══════════════════════════════════ */
-function markWrong(item, mine){
+function markWrong(item, mine, countMiss){
+  if (countMiss === undefined) countMiss = true;
   var e = wrongbook[item.w];
-  if (e){ e.miss = (e.miss || 0) + 1; e.mine = mine; e.lastAt = Date.now(); }
+  if (e){
+    if (countMiss) e.miss = (e.miss || 0) + 1;
+    e.mine = mine; e.lastAt = Date.now();
+  }
   else wrongbook[item.w] = { miss:1, mine:mine, lastAt:Date.now() };
 }
 function unmarkWrong(word){ delete wrongbook[word]; }
@@ -7035,6 +7228,137 @@ function refreshHome(){
   showResume();
 }
 
+/* ═══ 샤워 모드 ════════════════════════════════════════
+   손을 못 쓰는 상황이 전제다. 멈출 때까지 단어를 계속 흘려보낸다.
+   화면이 꺼지면 음성도 멈추므로 Wake Lock 으로 붙잡아 둔다. */
+var SH = null;      // {list, i, playing, timer, cancel}
+var wakeLock = null;
+
+function acquireWake(){
+  if (!navigator.wakeLock || !navigator.wakeLock.request) return;
+  try {
+    navigator.wakeLock.request('screen').then(function(l){
+      wakeLock = l;
+      l.addEventListener('release', function(){ wakeLock = null; });
+    })['catch'](function(){});
+  } catch(e){}
+}
+function releaseWake(){
+  if (!wakeLock) return;
+  try { wakeLock.release(); } catch(e){}
+  wakeLock = null;
+}
+
+function shClearTimer(){
+  if (SH && SH.timer){ clearTimeout(SH.timer); SH.timer = null; }
+}
+function shWait(ms, fn){
+  shClearTimer();
+  SH.timer = setTimeout(function(){ SH.timer = null; if (SH && SH.playing) fn(); }, ms);
+}
+
+function startShower(source){
+  var pool = source === 'wrong' ? wrongList() : WORDS;
+  if (!pool.length){ toast('들을 단어가 없어요'); return; }
+  SH = { list: sample(pool, Math.min(pool.length, 500)), i: 0, playing: true, timer: null, seen: 0, source: source };
+  $('shNote').hidden = true;
+  if (!TTS.supported()){
+    $('shNote').hidden = false;
+    $('shNote').textContent = '이 브라우저는 음성 읽기를 지원하지 않아 화면으로만 진행합니다.';
+  } else if (!TTS.hasKorean()){
+    $('shNote').hidden = false;
+    $('shNote').textContent = '기기에 한국어 음성이 없어 뜻은 화면에만 표시됩니다. 영어 발음은 정상으로 들립니다.';
+  }
+  go('shower');
+  acquireWake();
+  shRender();
+  shPlayCurrent();
+}
+
+function shRender(){
+  var it = SH.list[SH.i];
+  $('shCount').textContent = SH.seen;
+  $('shWord').textContent = it.w;
+  $('shPos').textContent = it.pos || '';
+  $('shMean').hidden = true;
+  $('shMean').textContent = it.k;
+  $('shEx').hidden = true;
+  $('shEx').innerHTML = '';
+  if (prefs.shEx == 1 && it.ex){
+    var en = el('div');
+    en.appendChild(highlight(it.ex, it.w));
+    $('shEx').appendChild(en);
+    if (it.tr) $('shEx').appendChild(el('div', null, it.tr));
+  }
+}
+
+// 단어 읽기 → (설정한 초) → 뜻 공개·읽기 → 2초 → 다음 단어
+function shPlayCurrent(){
+  if (!SH || !SH.playing) return;
+  var it = SH.list[SH.i];
+  SH.seen++;
+  $('shCount').textContent = SH.seen;
+  var reps = parseInt(prefs.shRepeat, 10) || 2;
+
+  SH.cancel = TTS.speakThen(it.w, 'en', reps, function(){
+    if (!SH || !SH.playing) return;
+    shWait((parseFloat(prefs.shGap) || 3) * 1000, function(){
+      $('shMean').hidden = false;
+      SH.cancel = TTS.speakThen(it.k, 'ko', 1, function(){
+        if (!SH || !SH.playing) return;
+        if (prefs.shEx == 1 && it.ex){
+          $('shEx').hidden = false;
+          SH.cancel = TTS.speakThen(it.ex, 'en', 1, function(){
+            shWait(1600, shAdvance);
+          });
+        } else {
+          shWait(2000, shAdvance);
+        }
+      });
+    });
+  });
+}
+
+function shAdvance(){
+  if (!SH) return;
+  SH.i++;
+  if (SH.i >= SH.list.length){       // 한 바퀴 돌면 다시 섞어서 이어간다
+    SH.list = sample(SH.list, SH.list.length);
+    SH.i = 0;
+  }
+  shRender();
+  shPlayCurrent();
+}
+
+function shJump(delta){
+  if (!SH) return;
+  TTS.stop(); shClearTimer();
+  SH.i += delta;
+  if (SH.i < 0) SH.i = SH.list.length - 1;
+  if (SH.i >= SH.list.length) SH.i = 0;
+  shRender();
+  if (SH.playing) shPlayCurrent();
+  else { $('shMean').hidden = false; }   // 멈춘 상태에서는 뜻을 바로 보여준다
+}
+
+function shSetPlaying(on){
+  if (!SH) return;
+  SH.playing = on;
+  $('shToggle').textContent = on ? '일시정지' : '이어서 듣기';
+  $('shToggle').classList.toggle('paused', !on);
+  if (on){ acquireWake(); shPlayCurrent(); }
+  else { TTS.stop(); shClearTimer(); releaseWake(); }
+}
+
+function stopShower(){
+  if (SH){ SH.playing = false; shClearTimer(); }
+  TTS.stop();
+  releaseWake();
+  SH = null;
+  refreshHome();
+  go('home');
+}
+
 /* ═══ 세션 ═════════════════════════════════════════════ */
 var S = null;   // {mode, items, answers[], marks[], idx, startedAt, source}
 var sheetScrollMax = 0;                       // 시험지 전체 스크롤 길이 (자동 숨김 판정용)
@@ -7048,7 +7372,7 @@ var draftTimer = null;
 function saveDraft(){
   if (!S) return;
   LS.set(KEY_DRAFT, {
-    mode:S.mode, source:S.source, idx:S.idx, startedAt:S.startedAt, savedAt:Date.now(),
+    mode:S.mode, source:S.source, idx:S.idx, maxIdx:S.maxIdx || 0, startedAt:S.startedAt, savedAt:Date.now(),
     words:S.items.map(function(i){ return i.w; }),
     answers:S.answers, marks:S.marks, graded:!!S.graded
   });
@@ -7075,6 +7399,7 @@ function loadDraft(){
     answers:(d.answers || []).slice(0, items.length),
     marks:(d.marks || []).slice(0, items.length),
     idx:Math.min(d.idx || 0, items.length - 1),
+    maxIdx:Math.min(d.maxIdx || d.idx || 0, items.length - 1),
     startedAt:d.startedAt || Date.now()
   };
 }
@@ -7100,7 +7425,7 @@ function startSession(mode, count, pool, source){
     mode: mode, items: items, source: source || 'all',
     answers: new Array(items.length).fill(''),
     marks:   new Array(items.length).fill(null),   // true/false, 확정 후 세팅
-    idx: 0, startedAt: Date.now()
+    idx: 0, maxIdx: 0, startedAt: Date.now()
   };
   saveDraft();
   if (mode === 'card') renderCard(); else renderSheet();
@@ -7112,7 +7437,7 @@ function resumeSession(){
   if (!d){ toast('이어서 풀 시험이 없어요'); showResume(); return; }
   S = {
     mode:d.mode, items:d.items, source:d.source,
-    answers:d.answers, marks:d.marks, idx:d.idx, startedAt:d.startedAt
+    answers:d.answers, marks:d.marks, idx:d.idx, maxIdx:Math.max(d.maxIdx || 0, d.idx || 0), startedAt:d.startedAt
   };
   while (S.answers.length < S.items.length) S.answers.push('');
   while (S.marks.length < S.items.length) S.marks.push(null);
@@ -7121,34 +7446,76 @@ function resumeSession(){
 }
 
 /* ── 한 단어씩 ── */
+function answeredCount(){
+  var n = 0;
+  for (var i = 0; i < S.marks.length; i++) if (S.marks[i] !== null) n++;
+  return n;
+}
+
 function renderCard(){
   var it = S.items[S.idx];
+  var done = S.marks[S.idx] !== null;      // 이미 채점된 문제로 돌아온 경우
+
   $('cardIdx').textContent = pad2(S.idx + 1);
   $('cardTot').textContent = S.items.length;
-  $('cardProg').style.width = (S.idx / S.items.length * 100) + '%';
+  $('cardProg').style.width = (answeredCount() / S.items.length * 100) + '%';
   $('cardWord').textContent = it.w;
   $('cardPos').textContent = it.pos || '';
   $('cardIpa').textContent = it.p ? '[' + it.p + ']' : '';
+  $('cardPrev').disabled = S.idx === 0;
+  $('cardFwd').disabled = S.idx >= S.maxIdx;
 
   var f = $('cardField'), inp = $('cardInput');
-  f.className = 'answer-field';
-  inp.value = ''; S.locked = false;
-  $('cardVerdict').hidden = true;
-  $('cardVerdict').textContent = '';
-  $('cardActions').innerHTML = '';
-  var skip = el('button', 'cta plain', '모르겠어요');
-  var chk  = el('button', 'cta', '확인');
-  skip.id = 'cardSkip'; chk.id = 'cardCheck';
-  skip.onclick = function(){ submitCard(true); };
-  chk.onclick  = function(){ submitCard(false); };
-  $('cardActions').appendChild(skip);
-  $('cardActions').appendChild(chk);
+  inp.value = done ? (S.answers[S.idx] || '') : '';
+  S.submitted = inp.value;
+  S.locked = done;
+
+  if (done){
+    f.className = 'answer-field done' + (S.marks[S.idx] ? '' : ' miss');
+    buildVerdict($('cardVerdict'), it, S.marks[S.idx], S.idx);
+    $('cardVerdict').hidden = false;
+  } else {
+    f.className = 'answer-field';
+    $('cardVerdict').hidden = true;
+    $('cardVerdict').textContent = '';
+  }
+
+  renderCardActions();
   $('cardStage').scrollTop = 0;
   $('cardSay').onclick = function(){ TTS.speak(it.w, $('cardSay')); };
-  // '문제마다' 설정이면 새 단어가 뜰 때 바로 읽어준다.
-  // (다음 단어 버튼·엔터 같은 사용자 동작에서 이어지는 호출이라 iOS 제약에 걸리지 않는다)
-  if (prefs.auto == 1) TTS.speak(it.w, $('cardSay'));
-  setTimeout(function(){ inp.focus(); }, 30);
+  // '문제마다' 설정이면 새로 만나는 단어일 때만 읽어준다 (되돌아본 문제는 조용히)
+  if (prefs.auto == 1 && !done) TTS.speak(it.w, $('cardSay'));
+  if (!done) setTimeout(function(){ inp.focus(); }, 30);
+}
+
+// 버튼 구성은 상태에 따라 셋 중 하나다.
+//   아직 안 푼 문제      → [모르겠어요] [확인]
+//   채점 끝난 문제       → [다음 단어] (마지막이면 [채점 결과 보기])
+//   채점 후 답을 고치는 중 → [다시 채점]
+function renderCardActions(){
+  var host = $('cardActions');
+  host.innerHTML = '';
+  if (!S.locked && S.marks[S.idx] === null){
+    var skip = el('button', 'cta plain', '모르겠어요');
+    var chk  = el('button', 'cta', '확인');
+    skip.id = 'cardSkip'; chk.id = 'cardCheck';
+    skip.onclick = function(){ submitCard(true); };
+    chk.onclick  = function(){ submitCard(false); };
+    host.appendChild(skip); host.appendChild(chk);
+    return;
+  }
+  if (!S.locked){                                   // 고치는 중
+    var re = el('button', 'cta', '다시 채점');
+    re.id = 'cardCheck';
+    re.onclick = function(){ submitCard(false); };
+    host.appendChild(re);
+    return;
+  }
+  var next = el('button', 'cta',
+    S.idx + 1 < S.items.length ? '다음 단어' : '채점 결과 보기');
+  next.id = 'cardNext';
+  next.onclick = advanceCard;
+  host.appendChild(next);
 }
 
 function submitCard(skipped){
@@ -7157,11 +7524,13 @@ function submitCard(skipped){
   var inp = $('cardInput');
   var mine = skipped ? '' : inp.value.trim();
   var ok = skipped ? false : isCorrect(mine, it);
+  var regrade = S.marks[S.idx] !== null;    // 고쳐서 다시 채점하는 경우
   S.locked = true;
 
   S.answers[S.idx] = mine;
   S.marks[S.idx] = ok;
-  if (ok) unmarkWrong(it.w); else markWrong(it, mine);
+  // 다시 채점일 때는 오답 횟수를 또 올리지 않는다
+  if (ok) unmarkWrong(it.w); else markWrong(it, mine, !regrade);
   saveWrong();
   if (markSeen(it.w)) saveSeen();
   saveDraft();
@@ -7178,17 +7547,28 @@ function submitCard(skipped){
     $('cardVerdict').scrollIntoView({block:'nearest', behavior:'smooth'});
   }, 40);
 
-  $('cardActions').innerHTML = '';
-  var nextBtn = el('button', 'cta', S.idx + 1 < S.items.length ? '다음 단어' : '채점 결과 보기');
-  nextBtn.id = 'cardNext';
-  nextBtn.onclick = advanceCard;
-  $('cardActions').appendChild(nextBtn);
-  $('cardProg').style.width = ((S.idx + 1) / S.items.length * 100) + '%';
+  renderCardActions();
+  $('cardProg').style.width = (answeredCount() / S.items.length * 100) + '%';
+  if (regrade) toast(ok ? '정답으로 바꿨어요' : '오답으로 바꿨어요');
 }
 
 function advanceCard(){
-  if (S.idx + 1 < S.items.length){ S.idx++; saveDraft(); renderCard(); }
+  if (S.idx + 1 < S.items.length){
+    S.idx++;
+    if (S.idx > S.maxIdx) S.maxIdx = S.idx;
+    saveDraft();
+    renderCard();
+  }
   else finish();
+}
+
+// 이미 푼 문제 사이를 오간다. 아직 안 푼 문제로는 건너뛰지 않는다.
+function goCard(delta){
+  var t = S.idx + delta;
+  if (t < 0 || t > S.maxIdx || t >= S.items.length) return;
+  S.idx = t;
+  saveDraft();
+  renderCard();
 }
 
 function buildVerdict(host, it, ok, idx){
@@ -7532,11 +7912,42 @@ function fmtDate(ts){
 }
 
 /* ═══ 이벤트 ═══════════════════════════════════════════ */
+function syncModeOptions(){
+  var shower = prefs.mode === 'shower';
+  $('quizOpts').hidden = shower;
+  $('showerOpts').hidden = !shower;
+  $('btnStart').textContent = shower ? '샤워 모드 시작' : '시험 시작';
+}
 document.querySelectorAll('.mode').forEach(function(b){
   b.addEventListener('click', function(){
     document.querySelectorAll('.mode').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
     prefs.mode = b.dataset.mode; savePrefs();
+    syncModeOptions();
   });
+});
+
+function bindSeg(segId, attr, key, after){
+  $(segId).querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click', function(){
+      $(segId).querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+      prefs[key] = b.dataset[attr]; savePrefs();
+      if (after) after(b);
+    });
+  });
+}
+bindSeg('segShSource', 'src', 'shSource');
+bindSeg('segShGap',    'gap', 'shGap');
+bindSeg('segShRepeat', 'rep', 'shRepeat');
+bindSeg('segShEx',     'ex',  'shEx');
+
+$('shQuit').addEventListener('click', stopShower);
+$('shToggle').addEventListener('click', function(){ shSetPlaying(!SH || !SH.playing); });
+$('shPrev').addEventListener('click', function(){ shJump(-1); });
+$('shNext').addEventListener('click', function(){ shJump(1); });
+
+// 다른 앱에 갔다 돌아오면 화면 잠금 방지를 다시 건다
+document.addEventListener('visibilitychange', function(){
+  if (document.visibilityState === 'visible' && SH && SH.playing) acquireWake();
 });
 $('segCount').querySelectorAll('button').forEach(function(b){
   b.addEventListener('click', function(){
@@ -7548,6 +7959,10 @@ $('segCount').querySelectorAll('button').forEach(function(b){
 $('ttsVoice').addEventListener('change', function(){
   prefs.voice = $('ttsVoice').value; savePrefs();
   TTS.speak('vocabulary');
+});
+$('ttsKoVoice').addEventListener('change', function(){
+  prefs.koVoice = $('ttsKoVoice').value; savePrefs();
+  TTS.speakThen('발음 예시입니다', 'ko', 1, function(){});
 });
 $('segRate').querySelectorAll('button').forEach(function(b){
   b.addEventListener('click', function(){
@@ -7573,6 +7988,7 @@ $('segTheme').querySelectorAll('button').forEach(function(b){
 });
 
 $('btnStart').addEventListener('click', function(){
+  if (prefs.mode === 'shower'){ startShower(prefs.shSource); return; }
   startSession(prefs.mode, prefs.count, WORDS, 'all');
 });
 $('btnResume').addEventListener('click', resumeSession);
@@ -7592,10 +8008,19 @@ $('cardInput').addEventListener('keydown', function(e){
   e.preventDefault();
   if (S && S.locked) advanceCard(); else submitCard(false);
 });
-// 채점이 끝난 뒤에는 답을 고칠 수 없다 (키보드는 계속 떠 있으므로 값만 되돌린다)
+// 채점이 끝난 뒤에도 답을 고칠 수 있다. 고치기 시작하면 채점 결과를 감추고
+// 버튼을 '다시 채점'으로 바꿔, 오타나 놓친 문제를 바로 정정할 수 있게 한다.
 $('cardInput').addEventListener('input', function(){
-  if (S && S.locked) $('cardInput').value = S.submitted;
+  if (!S || !S.locked) return;
+  if ($('cardInput').value === S.submitted) return;
+  S.locked = false;
+  $('cardVerdict').hidden = true;
+  $('cardField').className = 'answer-field';
+  renderCardActions();
 });
+
+$('cardPrev').addEventListener('click', function(){ goCard(-1); });
+$('cardFwd').addEventListener('click', function(){ goCard(1); });
 
 $('cardQuit').addEventListener('click', function(){
   confirmSheet('시험을 중단할까요?', '지금까지 채점한 결과는 오답노트에만 남고, 점수는 기록되지 않아요.', '중단하기', function(){
@@ -7704,6 +8129,13 @@ document.addEventListener('visibilitychange', function(){
       x.setAttribute('aria-pressed', String(parseInt(x.dataset.auto, 10) === parseInt(prefs.auto, 10)));
     });
   }
+  [['segShSource','src','shSource'], ['segShGap','gap','shGap'],
+   ['segShRepeat','rep','shRepeat'], ['segShEx','ex','shEx']].forEach(function(cfg){
+    $(cfg[0]).querySelectorAll('button').forEach(function(x){
+      x.setAttribute('aria-pressed', String(String(x.dataset[cfg[1]]) === String(prefs[cfg[2]])));
+    });
+  });
+  syncModeOptions();
 
   refreshHome();
   document.documentElement.className += ' ready';   // 정상 기동 완료
