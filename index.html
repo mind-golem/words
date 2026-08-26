@@ -83,6 +83,9 @@
 }
 
 *,*::before,*::after{ box-sizing:border-box; }
+/* display 를 지정한 요소에서도 hidden 속성이 반드시 먹도록 한다.
+   (브라우저 기본 [hidden]{display:none} 은 우선순위가 낮아 .memo-pop{display:flex} 같은 규칙에 밀린다) */
+[hidden]{ display:none !important; }
 html{ -webkit-text-size-adjust:100%; }
 body{
   margin:0;
