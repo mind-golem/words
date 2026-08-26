@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>스크롤 진단</title>
+<style>
+  body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",system-ui,sans-serif; }
+  .case{ padding:14px 16px; border-bottom:8px solid #ddd; }
+  h2{ margin:0 0 6px; font-size:16px; }
+  p{ margin:0 0 10px; font-size:13px; color:#555; line-height:1.5; }
+  .filler{ font-size:15px; line-height:2.2; color:#333; }
+  .tag{ display:inline-block; background:#eee; border-radius:6px; padding:2px 7px; font-size:11px; margin-right:5px; }
+  #log{ position:fixed; left:0; right:0; bottom:0; background:#111; color:#0f0;
+        font:11px/1.5 monospace; padding:8px 10px; max-height:34vh; overflow:auto; z-index:99; white-space:pre-wrap; }
+  .ok{ color:#4f8 } .no{ color:#f66 }
+
+  /* A: 평범한 페이지 (대조군) */
+  /* B: body 에 overscroll-behavior-y:none */
+  #B{ overscroll-behavior-y:none; }
+  /* C: 앱 셸 flex + min-height:100dvh */
+  #C .app{ min-height:100dvh; display:flex; flex-direction:column; }
+  #C .screen{ display:flex; flex-direction:column; flex:1; min-height:0; }
+  #C .inner{ flex:1; min-height:0; }
+  /* D: sticky 바 */
+  #D .bar{ position:sticky; top:0; background:#fff; border-bottom:1px solid #ccc; padding:10px; z-index:5; }
+  /* E: 큰 button 요소 위에서 스와이프 */
+  #E button{ display:block; width:100%; text-align:left; padding:22px 14px; margin:0 0 8px;
+             font:inherit; background:#f4f4f8; border:1px solid #ccd; border-radius:12px;
+             touch-action:manipulation; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+  /* F: fixed 플로팅 버튼 존재 */
+  #F .fab{ position:fixed; right:14px; bottom:14px; width:48px; height:48px; border-radius:50%;
+           background:#fff; border:1.5px solid #ccd; z-index:60; }
+
+  /* G: 실제 앱과 똑같은 조합 (모두 한꺼번에) */
+  #G{ overscroll-behavior-y:none; }
+  #G .app{ min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; }
+  #G .screen{ display:flex; flex-direction:column; flex:1; min-height:0; }
+  #G .inner{ flex:1; min-height:0; }
+  #G .bar{ position:sticky; top:0; z-index:30; background:#fff;
+           border-bottom:1px solid #ccc; padding:10px; }
+  #G .dock{ position:sticky; bottom:0; z-index:20; background:#fff;
+            border-top:1px solid #ccc; padding:12px; }
+  #G button{ display:block; width:100%; text-align:left; padding:22px 14px; margin:0 0 8px;
+             font:inherit; background:#f4f4f8; border:1px solid #ccd; border-radius:12px;
+             touch-action:manipulation; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+  #G .fab{ position:fixed; right:14px; bottom:70px; width:48px; height:48px; border-radius:50%;
+           background:#fff; border:1.5px solid #ccd; z-index:60; }
+</style>
+</head>
+<body>
+
+<div class="case" id="A">
+  <h2>A. 평범한 페이지 (대조군)</h2>
+  <p>특별한 CSS 없음. 여기서도 스크롤이 안 되면 앱 코드 문제가 아닙니다.</p>
+  <div class="filler" data-fill></div>
+</div>
+
+<div class="case" id="B">
+  <h2>B. overscroll-behavior-y: none</h2>
+  <p><span class="tag">의심 1</span>당겨서 새로고침 막는 설정.</p>
+  <div class="filler" data-fill></div>
+</div>
+
+<div class="case" id="C">
+  <h2>C. 앱 셸 (flex + 100dvh)</h2>
+  <p><span class="tag">의심 2</span>화면 높이를 채우는 flex 구조.</p>
+  <div class="app"><div class="screen"><div class="inner">
+    <div class="filler" data-fill></div>
+  </div></div></div>
+</div>
+
+<div class="case" id="D">
+  <h2>D. sticky 상단 바</h2>
+  <p><span class="tag">의심 3</span>스크롤해도 붙어 있는 바.</p>
+  <div class="bar">고정 바</div>
+  <div class="filler" data-fill></div>
+</div>
+
+<div class="case" id="E">
+  <h2>E. 큰 버튼 위에서 스와이프</h2>
+  <p><span class="tag">의심 4</span><b>버튼 위에 손가락을 올린 채로</b> 밀어보세요.</p>
+  <button>버튼 1 — 여기서 밀어보세요</button>
+  <button>버튼 2 — 여기서 밀어보세요</button>
+  <button>버튼 3 — 여기서 밀어보세요</button>
+  <div class="filler" data-fill></div>
+</div>
+
+<div class="case" id="F">
+  <h2>F. 떠 있는 버튼이 있는 화면</h2>
+  <p><span class="tag">의심 5</span>우하단 원형 버튼 존재.</p>
+  <div class="fab"></div>
+  <div class="filler" data-fill></div>
+</div>
+
+<div class="case" id="G">
+  <h2>G. 실제 앱과 똑같은 조합 ★</h2>
+  <p><span class="tag">핵심</span>위 요소를 전부 합친 구조입니다.
+  <b>A는 되는데 G가 안 되면</b> 앱 구조가 원인입니다.</p>
+  <div class="app"><div class="screen">
+    <div class="bar">상단 고정 바</div>
+    <div class="inner">
+      <button>버튼 위에서도 밀어보세요</button>
+      <div class="filler" data-fill></div>
+    </div>
+    <div class="dock">하단 고정 바</div>
+  </div></div>
+  <div class="fab"></div>
+</div>
+
+<div id="log">진단 준비 중…</div>
+
+<script>
+(function(){
+  // 각 구간을 충분히 길게 채운다
+  var lines = [];
+  for (var i = 1; i <= 14; i++) lines.push(i + ' ─────────── 여기를 손가락으로 밀어보세요');
+  document.querySelectorAll('[data-fill]').forEach(function(e){ e.textContent = lines.join('\n'); e.style.whiteSpace='pre'; });
+
+  var log = document.getElementById('log');
+  var startY = 0, moved = 0, touched = false, sawMove = false, scrolledDuring = false;
+  var y0 = 0;
+
+  function report(){
+    var doc = document.documentElement;
+    var canScroll = doc.scrollHeight > innerHeight + 2;
+    log.innerHTML =
+      '문서 ' + doc.scrollHeight + 'px / 화면 ' + innerHeight + 'px  ' +
+      (canScroll ? '<span class="ok">스크롤 가능</span>' : '<span class="no">스크롤 불가</span>') + '\n' +
+      '현재 위치 ' + Math.round(window.pageYOffset) + 'px\n' +
+      'touchstart ' + (touched ? '<span class="ok">받음</span>' : '<span class="no">없음</span>') +
+      ' / touchmove ' + (sawMove ? '<span class="ok">받음</span>' : '<span class="no">없음</span>') +
+      ' / 손가락 이동 ' + Math.round(moved) + 'px\n' +
+      '스와이프 중 실제 스크롤: ' + (scrolledDuring ? '<span class="ok">됨</span>' : '<span class="no">안 됨</span>') + '\n' +
+      'UA: ' + navigator.userAgent.slice(0, 70);
+  }
+
+  document.addEventListener('touchstart', function(e){
+    touched = true; sawMove = false; moved = 0; scrolledDuring = false;
+    startY = e.touches[0].clientY;
+    y0 = window.pageYOffset;
+    report();
+  }, {passive:true});
+
+  document.addEventListener('touchmove', function(e){
+    sawMove = true;
+    moved = Math.abs(e.touches[0].clientY - startY);
+    if (Math.abs(window.pageYOffset - y0) > 2) scrolledDuring = true;
+    report();
+  }, {passive:true});
+
+  document.addEventListener('touchend', function(){
+    if (Math.abs(window.pageYOffset - y0) > 2) scrolledDuring = true;
+    report();
+  }, {passive:true});
+
+  window.addEventListener('scroll', function(){
+    if (touched && Math.abs(window.pageYOffset - y0) > 2) scrolledDuring = true;
+    report();
+  }, {passive:true});
+
+  report();
+})();
+</script>
+</body>
+</html>
