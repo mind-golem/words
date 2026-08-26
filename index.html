@@ -354,8 +354,8 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
   background:var(--card); color:var(--ink);
   border:1.5px solid var(--rule); box-shadow:none;
 }
-.links{ display:flex; gap:10px; margin-top:12px; }
-.links .cta{ font-size:15px; padding:13px 8px; }
+.links{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; }
+.links .cta{ font-size:14px; padding:13px 4px; }
 
 /* ── 진행 바 ── */
 .prog{ height:3px; background:var(--rule); position:relative; overflow:hidden; }
@@ -671,6 +671,75 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
 .empty .e-ico{ font-size:30px; opacity:.35; margin-bottom:10px; }
 .empty p{ margin:0; font-size:14.5px; line-height:1.6; }
 
+/* ── 꾹 눌러 메모 ── */
+.lp{
+  -webkit-touch-callout:none;                 /* iOS 돋보기·복사 메뉴 차단 */
+  -webkit-user-select:none; user-select:none;
+  touch-action:manipulation;
+}
+.lp-hit{ animation:lpPop .24s cubic-bezier(.3,1.4,.5,1); }
+@keyframes lpPop{ 50%{ transform:scale(1.09); } }
+
+/* ── 떠 있는 메모 버튼 ── */
+.fab{
+  position:fixed; right:14px; z-index:60;
+  bottom:calc(max(env(safe-area-inset-bottom), 8px) + 14px + var(--fab-lift, 0px));
+  width:48px; height:48px; border-radius:50%;
+  display:grid; place-items:center;
+  background:var(--card); color:var(--ink-3);
+  border:1.5px solid var(--rule); box-shadow:var(--shadow);
+  opacity:.6;
+  transition:opacity .2s, transform .12s, color .2s, border-color .2s;
+}
+.fab svg{ width:21px; height:21px; }
+.fab:active{ transform:scale(.9); opacity:1; }
+.fab.has{ opacity:1; color:var(--pen); border-color:var(--pen-line); }
+.fab-badge{
+  position:absolute; top:-4px; right:-4px; min-width:19px; height:19px;
+  padding:0 5px; border-radius:99px; background:var(--pen); color:#fff;
+  font-family:var(--mono); font-size:10.5px; font-weight:700; line-height:19px;
+  text-align:center; font-variant-numeric:tabular-nums;
+}
+.memo-pop{
+  position:fixed; right:14px; z-index:61;
+  bottom:calc(max(env(safe-area-inset-bottom), 8px) + 70px + var(--fab-lift, 0px));
+  width:min(340px, calc(100vw - 28px));
+  max-height:min(58vh, 440px);
+  display:flex; flex-direction:column;
+  background:var(--card); border:1px solid var(--rule);
+  border-radius:16px; box-shadow:var(--shadow); overflow:hidden;
+  animation:popIn .2s cubic-bezier(.2,.9,.3,1);
+}
+@keyframes popIn{ from{ opacity:0; transform:translateY(10px) scale(.97); } to{ opacity:1; transform:none; } }
+.memo-head{
+  display:flex; align-items:center; gap:10px;
+  padding:11px 8px 11px 14px; border-bottom:1px solid var(--rule);
+}
+.memo-head b{ font-size:14.5px; font-weight:640; }
+.memo-x{ position:relative; margin-left:auto; width:34px; height:34px; display:grid; place-items:center; color:var(--ink-3); }
+.memo-x::after{ content:""; position:absolute; inset:-5px; }
+.memo-x svg{ width:16px; height:16px; }
+.memo-list{ flex:1; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.memo-item{
+  display:flex; align-items:flex-start; gap:10px;
+  padding:10px 8px 10px 14px; border-bottom:1px solid var(--rule);
+}
+.memo-item:last-child{ border-bottom:0; }
+.memo-item .mw{ font-size:15px; font-weight:640; letter-spacing:-.015em; }
+.memo-item .mk{ font-size:12.5px; color:var(--ink-2); margin-top:2px; line-height:1.45; }
+.memo-item .mx{
+  position:relative; margin-left:auto; flex:none;
+  width:30px; height:30px; display:grid; place-items:center; color:var(--ink-3);
+}
+.memo-item .mx::after{ content:""; position:absolute; inset:-7px; }
+.memo-item .mx svg{ width:14px; height:14px; }
+.memo-foot{ display:flex; border-top:1px solid var(--rule); }
+.memo-foot button{
+  flex:1; padding:12px 6px; font-size:14px; font-weight:560; color:var(--pen); min-height:44px;
+}
+.memo-foot button.quiet{ color:var(--ink-3); border-left:1px solid var(--rule); }
+.memo-empty{ padding:30px 18px; text-align:center; color:var(--ink-3); font-size:13.5px; line-height:1.6; }
+
 /* ── 토스트 ── */
 .toast{
   position:fixed; left:50%; bottom:calc(env(safe-area-inset-bottom) + 84px);
@@ -838,6 +907,12 @@ window.addEventListener('error', function(ev){
             <button data-src="wrong">오답노트</button>
             <button data-src="all" aria-pressed="true">전체 랜덤</button>
           </div>
+          <h3 class="sec-h">음성</h3>
+          <div class="seg" id="segShSound">
+            <button data-snd="0" aria-pressed="true">소리 없이</button>
+            <button data-snd="1">읽어주기</button>
+          </div>
+
           <h3 class="sec-h">뜻 알려주기</h3>
           <div class="seg" id="segShGap">
             <button data-gap="2">2초 뒤</button>
@@ -845,7 +920,7 @@ window.addEventListener('error', function(ev){
             <button data-gap="5">5초 뒤</button>
           </div>
           <div class="tts" style="margin-bottom:24px">
-            <div class="tts-row">
+            <div class="tts-row" id="rowShRepeat">
               <span class="tts-l">단어 반복</span>
               <div class="seg" id="segShRepeat">
                 <button data-rep="1">한 번</button>
@@ -865,6 +940,7 @@ window.addEventListener('error', function(ev){
         <button class="cta" id="btnStart">시험 시작</button>
         <div class="links">
           <button class="cta plain" id="btnWrongbook">오답노트</button>
+          <button class="cta plain" id="btnMemo">메모</button>
           <button class="cta plain" id="btnHistory">시험 이력</button>
         </div>
 
@@ -1070,6 +1146,33 @@ window.addEventListener('error', function(ev){
     </div>
   </section>
 
+</div>
+
+<button class="fab" id="memoFab" aria-label="메모 열기">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M15 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+  <span class="fab-badge" id="memoCount" hidden>0</span>
+</button>
+
+<div class="memo-pop" id="memoPop" hidden>
+  <div class="memo-head">
+    <b>메모 <span id="memoPopCount">0</span>개</b>
+    <button class="memo-x" id="memoClose" aria-label="닫기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="memo-list" id="memoList"></div>
+  <div class="memo-foot">
+    <button id="memoCopy">복사</button>
+    <button id="memoClear" class="quiet">전체 비우기</button>
+  </div>
+</div>
+
+<div class="sheet-modal" id="memoAsk">
+  <div class="panel" role="dialog" aria-modal="true">
+    <h3 id="memoAskWord">단어</h3>
+    <p id="memoAskBody">메모에 어떻게 담을까요?</p>
+    <div class="btns" id="memoAskBtns"></div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -6814,6 +6917,7 @@ var KEY_PREF  = 'vq.prefs.v1';
 var KEY_SEEN  = 'vq.seen.v1';
 var KEY_THEME = 'vq.theme.v1';
 var KEY_DRAFT = 'vq.draft.v1';
+var KEY_MEMO  = 'vq.memo.v1';
 
 var wrongbook = LS.get(KEY_WRONG, {});       // { word: {miss, mine, lastAt} } — 뜻·예문은 BY_WORD에서 채운다
 var history   = LS.get(KEY_HIST, []);        // 최근 것이 앞
@@ -6826,6 +6930,7 @@ if (prefs.shSource == null) prefs.shSource = 'all';
 if (prefs.shGap    == null) prefs.shGap    = 3;
 if (prefs.shRepeat == null) prefs.shRepeat = 2;
 if (prefs.shEx     == null) prefs.shEx     = 0;
+if (prefs.shSound  == null) prefs.shSound  = 0;
 var seen      = LS.get(KEY_SEEN, {});        // 한 번이라도 시험에 나온 단어
 
 function saveWrong(){ LS.set(KEY_WRONG, wrongbook); }
@@ -6955,12 +7060,65 @@ function fillVoiceSelect(sel, list, saved, prefer){
   })()));
 }
 
-// 단어를 눌러 발음을 듣게 한다 (시험지·오답노트·결과 목록에서 공용)
-function makeSpeakable(el, word){
-  el.classList.add('tappable');
+/* ═══ 메모 ═════════════════════════════════════════════
+   단어를 꾹 누르면 담아 두는 손수 만든 목록. 오답노트(자동)와는 별개다. */
+var memo = LS.get(KEY_MEMO, []);
+function saveMemo(){ LS.set(KEY_MEMO, memo); }
+function memoIndex(w){
+  for (var i = 0; i < memo.length; i++) if (memo[i].w === w) return i;
+  return -1;
+}
+function memoAdd(it, withMean){
+  var rec = { w:it.w, k: withMean ? it.k : '', at: Date.now() };
+  var i = memoIndex(it.w);
+  if (i >= 0) memo[i] = rec; else memo.unshift(rec);
+  saveMemo(); renderMemo();
+}
+function memoRemove(w){
+  var i = memoIndex(w);
+  if (i < 0) return;
+  memo.splice(i, 1);
+  saveMemo(); renderMemo();
+}
+
+// 단어 하나에 '탭 = 발음', '꾹 누르기 = 메모'를 함께 건다.
+// getItem 은 항상 지금 화면의 단어를 돌려줘야 한다 (카드·샤워처럼 요소를 재활용하는 화면 때문).
+var lpSuppressUntil = 0;
+function bindWord(el, getItem){
+  var get = typeof getItem === 'function' ? getItem : function(){ return getItem; };
+  el.classList.add('tappable', 'lp');
+
+  var timer = null, sx = 0, sy = 0, moved = false;
+
   el.addEventListener('click', function(e){
+    if (Date.now() < lpSuppressUntil) return;    // 방금 꾹 누른 직후의 클릭은 무시
+    if (moved){ moved = false; return; }         // 스크롤하려던 손짓이면 발음도 울리지 않는다
     e.stopPropagation();
-    TTS.speak(word);
+    var it = get();
+    if (it && TTS.supported()) TTS.speak(it.w);
+  });
+
+  function cancel(){ if (timer){ clearTimeout(timer); timer = null; } }
+  el.addEventListener('pointerdown', function(e){
+    if (e.button && e.button !== 0) return;
+    sx = e.clientX; sy = e.clientY; moved = false;
+    cancel();
+    timer = setTimeout(function(){
+      timer = null;
+      var it = get();
+      if (!it) return;
+      lpSuppressUntil = Date.now() + 700;
+      el.classList.add('lp-hit');
+      setTimeout(function(){ el.classList.remove('lp-hit'); }, 240);
+      openMemoAsk(it);
+    }, 480);
+  });
+  // 스크롤하려고 움직인 것이라면 발동시키지 않는다
+  el.addEventListener('pointermove', function(e){
+    if (Math.abs(e.clientX - sx) > 10 || Math.abs(e.clientY - sy) > 10){ moved = true; cancel(); }
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+    el.addEventListener(ev, cancel);
   });
 }
 
@@ -7136,6 +7294,73 @@ function confirmSheet(title, body, yesLabel, onYes){
   m.onclick = function(e){ if (e.target === m) close(); };
 }
 
+function renderMemo(){
+  var n = memo.length;
+  $('memoCount').textContent = n;
+  $('memoCount').hidden = n === 0;
+  $('memoFab').classList.toggle('has', n > 0);
+  $('memoPopCount').textContent = n;
+  $('btnMemo').textContent = n ? '메모 ' + n : '메모';
+
+  var host = $('memoList');
+  host.innerHTML = '';
+  if (!n){
+    host.appendChild(emptyBox('', '아직 담은 단어가 없어요.\n단어를 꾹 누르면 여기에 담깁니다.'));
+    host.firstChild.className = 'memo-empty';
+    return;
+  }
+  memo.forEach(function(m){
+    var row = el('div', 'memo-item');
+    var body = el('div');
+    var w = el('div', 'mw', m.w);
+    bindWord(w, BY_WORD[m.w] || {w:m.w, k:m.k});
+    body.appendChild(w);
+    if (m.k) body.appendChild(el('div', 'mk', m.k));
+    row.appendChild(body);
+    var x = el('button', 'mx');
+    x.setAttribute('aria-label', m.w + ' 빼기');
+    x.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+    x.onclick = function(){ memoRemove(m.w); };
+    row.appendChild(x);
+    host.appendChild(row);
+  });
+}
+
+function openMemoAsk(it){
+  var m = $('memoAsk'), btns = $('memoAskBtns'), already = memoIndex(it.w) >= 0;
+  // 샤워 모드는 계속 넘어가므로, 고르는 동안 단어가 바뀌지 않게 잠시 멈춘다
+  var wasPlaying = !!(SH && SH.playing);
+  if (wasPlaying) shSetPlaying(false);
+
+  $('memoAskWord').textContent = it.w;
+  $('memoAskBody').textContent = already
+    ? '이미 메모에 담겨 있어요.'
+    : (it.k ? it.k : '메모에 어떻게 담을까요?');
+  btns.innerHTML = '';
+  function close(){
+    m.classList.remove('on'); m.onclick = null;
+    if (wasPlaying) shSetPlaying(true);
+  }
+  function mk(cls, label, fn){
+    var b = el('button', 'cta ' + cls, label);
+    b.onclick = function(){ close(); fn(); };
+    btns.appendChild(b);
+  }
+  if (already){
+    mk('plain', '그대로 두기', function(){});
+    mk('danger', '메모에서 빼기', function(){ memoRemove(it.w); toast('메모에서 뺐어요'); });
+  } else {
+    mk('plain', '단어만', function(){ memoAdd(it, false); toast('메모에 담았어요'); });
+    mk('', '단어 + 뜻', function(){ memoAdd(it, true); toast('뜻까지 담았어요'); });
+  }
+  m.classList.add('on');
+  m.onclick = function(e){ if (e.target === m) close(); };
+}
+
+function memoText(){
+  return memo.map(function(m){ return m.k ? m.w + ' — ' + m.k : m.w; }).join('\n');
+}
+
 /* ═══ 화면 전환 ════════════════════════════════════════ */
 var screens = ['home','card','sheet','shower','result','wrong','history'];
 function go(name){
@@ -7145,6 +7370,10 @@ function go(name){
   var b = document.querySelector('#s-' + name + ' .body');
   if (b) b.scrollTop = 0;
   window.scrollTo(0, 0);
+  // 하단 조작 영역이 있는 화면에서는 떠 있는 메모 버튼을 그만큼 위로 올린다
+  var lift = name === 'sheet' ? 88 : (name === 'shower' ? 112 : 0);
+  document.documentElement.style.setProperty('--fab-lift', lift + 'px');
+  toggleMemoPop(false);
 }
 
 /* ═══ 오답노트 · 이력 ══════════════════════════════════ */
@@ -7262,12 +7491,14 @@ function startShower(source){
   if (!pool.length){ toast('들을 단어가 없어요'); return; }
   SH = { list: sample(pool, Math.min(pool.length, 500)), i: 0, playing: true, timer: null, seen: 0, source: source };
   $('shNote').hidden = true;
-  if (!TTS.supported()){
-    $('shNote').hidden = false;
-    $('shNote').textContent = '이 브라우저는 음성 읽기를 지원하지 않아 화면으로만 진행합니다.';
-  } else if (!TTS.hasKorean()){
-    $('shNote').hidden = false;
-    $('shNote').textContent = '기기에 한국어 음성이 없어 뜻은 화면에만 표시됩니다. 영어 발음은 정상으로 들립니다.';
+  if (prefs.shSound == 1){                       // 소리 없이 볼 때는 음성 안내가 필요 없다
+    if (!TTS.supported()){
+      $('shNote').hidden = false;
+      $('shNote').textContent = '이 브라우저는 음성 읽기를 지원하지 않아 화면으로만 진행합니다.';
+    } else if (!TTS.hasKorean()){
+      $('shNote').hidden = false;
+      $('shNote').textContent = '기기에 한국어 음성이 없어 뜻은 화면에만 표시됩니다. 영어 발음은 정상으로 들립니다.';
+    }
   }
   go('shower');
   acquireWake();
@@ -7292,31 +7523,40 @@ function shRender(){
   }
 }
 
-// 단어 읽기 → (설정한 초) → 뜻 공개·읽기 → 2초 → 다음 단어
+// 단어 → (설정한 초) → 뜻 공개 → 잠깐 → 다음 단어.
+// '읽어주기'가 켜져 있으면 각 단계에서 음성이 끝날 때까지 기다리고,
+// 꺼져 있으면 정해진 시간만 세고 넘어간다.
 function shPlayCurrent(){
   if (!SH || !SH.playing) return;
   var it = SH.list[SH.i];
   SH.seen++;
   $('shCount').textContent = SH.seen;
-  var reps = parseInt(prefs.shRepeat, 10) || 2;
 
-  SH.cancel = TTS.speakThen(it.w, 'en', reps, function(){
+  var sound = prefs.shSound == 1 && TTS.supported();
+  var gap = (parseFloat(prefs.shGap) || 3) * 1000;
+
+  function afterMean(){
     if (!SH || !SH.playing) return;
-    shWait((parseFloat(prefs.shGap) || 3) * 1000, function(){
-      $('shMean').hidden = false;
-      SH.cancel = TTS.speakThen(it.k, 'ko', 1, function(){
-        if (!SH || !SH.playing) return;
-        if (prefs.shEx == 1 && it.ex){
-          $('shEx').hidden = false;
-          SH.cancel = TTS.speakThen(it.ex, 'en', 1, function(){
-            shWait(1600, shAdvance);
-          });
-        } else {
-          shWait(2000, shAdvance);
-        }
-      });
-    });
-  });
+    if (prefs.shEx == 1 && it.ex){
+      $('shEx').hidden = false;
+      if (sound) SH.cancel = TTS.speakThen(it.ex, 'en', 1, function(){ shWait(1600, shAdvance); });
+      else shWait(3200, shAdvance);
+    } else {
+      shWait(2000, shAdvance);
+    }
+  }
+  function revealMean(){
+    $('shMean').hidden = false;
+    if (sound) SH.cancel = TTS.speakThen(it.k, 'ko', 1, afterMean);
+    else shWait(2200, afterMean);
+  }
+  function afterWord(){
+    if (!SH || !SH.playing) return;
+    shWait(gap, revealMean);
+  }
+
+  if (sound) SH.cancel = TTS.speakThen(it.w, 'en', parseInt(prefs.shRepeat, 10) || 2, afterWord);
+  else afterWord();
 }
 
 function shAdvance(){
@@ -7636,7 +7876,7 @@ function renderSheet(){
     q.appendChild(el('span', 'qw', it.w));
     if (it.pos) q.appendChild(el('span', 'qp', it.pos));
     if (it.p) q.appendChild(el('span', 'qi', '[' + it.p + ']'));
-    if (TTS.supported()) makeSpeakable(q, it.w);   // 단어를 누르면 읽어준다
+    bindWord(q, it);            // 탭 = 발음, 꾹 누르기 = 메모
     row.appendChild(q);
 
     var inp = document.createElement('input');
@@ -7800,7 +8040,7 @@ function wrongItemNode(it, mine, missCount){
   var n = el('div', 'item');
   var top = el('div', 'item-top');
   var wordEl = el('span', 'item-w', it.w);
-  if (TTS.supported()) makeSpeakable(wordEl, it.w);
+  bindWord(wordEl, it);
   top.appendChild(wordEl);
   if (it.pos) top.appendChild(el('span', 'item-p', it.pos));
   if (missCount) top.appendChild(el('span', 'item-x', '오답 ' + missCount));
@@ -7935,10 +8175,48 @@ function bindSeg(segId, attr, key, after){
     });
   });
 }
+bindSeg('segShSound', 'snd', 'shSound', function(){
+  $('rowShRepeat').hidden = prefs.shSound != 1;
+});
 bindSeg('segShSource', 'src', 'shSource');
 bindSeg('segShGap',    'gap', 'shGap');
 bindSeg('segShRepeat', 'rep', 'shRepeat');
 bindSeg('segShEx',     'ex',  'shEx');
+
+function toggleMemoPop(open){
+  var p = $('memoPop');
+  if (open === undefined) open = p.hidden;
+  if (open){ renderMemo(); p.hidden = false; }
+  else p.hidden = true;
+}
+$('memoFab').addEventListener('click', function(e){ e.stopPropagation(); toggleMemoPop(); });
+$('memoClose').addEventListener('click', function(){ toggleMemoPop(false); });
+$('btnMemo').addEventListener('click', function(e){ e.stopPropagation(); toggleMemoPop(true); });
+$('memoCopy').addEventListener('click', function(){
+  if (!memo.length){ toast('담은 단어가 없어요'); return; }
+  var text = memoText();
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text)
+      .then(function(){ toast('메모 ' + memo.length + '개를 복사했어요'); })
+      ['catch'](function(){ toast('복사에 실패했어요'); });
+  } else {
+    toast('이 브라우저에서는 복사를 지원하지 않아요');
+  }
+});
+$('memoClear').addEventListener('click', function(){
+  if (!memo.length){ toast('이미 비어 있어요'); return; }
+  confirmSheet('메모를 비울까요?', '담아둔 단어가 모두 지워집니다. 되돌릴 수 없어요.', '비우기', function(){
+    memo = []; saveMemo(); renderMemo();
+    toast('메모를 비웠어요');
+  });
+});
+// 바깥을 누르면 닫힌다
+document.addEventListener('click', function(e){
+  var p = $('memoPop');
+  if (p.hidden) return;
+  if (p.contains(e.target) || $('memoFab').contains(e.target)) return;
+  toggleMemoPop(false);
+});
 
 $('shQuit').addEventListener('click', stopShower);
 $('shToggle').addEventListener('click', function(){ shSetPlaying(!SH || !SH.playing); });
@@ -8115,6 +8393,10 @@ document.addEventListener('visibilitychange', function(){
   });
   if (!found) $('segCount').querySelector('[data-n="100"]').setAttribute('aria-pressed', 'true');
   applyTheme(theme, false);
+  bindWord($('cardWord'), function(){ return S ? S.items[S.idx] : null; });
+  bindWord($('shWord'),   function(){ return SH ? SH.list[SH.i] : null; });
+  $('rowShRepeat').hidden = prefs.shSound != 1;
+  renderMemo();
 
   // 발음 설정 초기 반영
   $('ttsBox').hidden = !TTS.supported();
@@ -8130,7 +8412,8 @@ document.addEventListener('visibilitychange', function(){
     });
   }
   [['segShSource','src','shSource'], ['segShGap','gap','shGap'],
-   ['segShRepeat','rep','shRepeat'], ['segShEx','ex','shEx']].forEach(function(cfg){
+   ['segShRepeat','rep','shRepeat'], ['segShEx','ex','shEx'],
+   ['segShSound','snd','shSound']].forEach(function(cfg){
     $(cfg[0]).querySelectorAll('button').forEach(function(x){
       x.setAttribute('aria-pressed', String(String(x.dataset[cfg[1]]) === String(prefs[cfg[2]])));
     });
