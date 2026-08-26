@@ -7101,13 +7101,32 @@ function bindWord(el, getItem){
     if (it && TTS.supported()) TTS.speak(it.w);
   });
 
-  function cancel(){ if (timer){ clearTimeout(timer); timer = null; } }
+  // 스크롤이 시작되면 무조건 취소한다. 안드로이드 크롬은 스크롤 제스처를 가져가는 순간
+  // pointermove 대신 pointercancel 을 보내므로, touchmove 와 scroll 도 함께 지켜봐야
+  // '천천히 밀어 스크롤' 이 꾹 누르기로 오인되지 않는다.
+  var sScroll = 0;
+  // 화면이 실제로 밀렸을 때만 취소한다. (관성 스크롤이 잦아들며 나는 이벤트로
+  //  멀쩡한 꾹 누르기가 취소되지 않도록 이동량을 확인한다)
+  function onScrollCancel(){
+    if (Math.abs((window.pageYOffset || 0) - sScroll) > 4){ moved = true; cancel(); }
+  }
+  function onTouchMove(){ moved = true; cancel(); }
+  function cancel(){
+    if (!timer) return;
+    clearTimeout(timer); timer = null;
+    window.removeEventListener('scroll', onScrollCancel, true);
+  }
+  el.addEventListener('touchmove', onTouchMove, {passive:true});
   el.addEventListener('pointerdown', function(e){
     if (e.button && e.button !== 0) return;
     sx = e.clientX; sy = e.clientY; moved = false;
+    sScroll = window.pageYOffset || 0;
     cancel();
+    window.addEventListener('scroll', onScrollCancel, true);
     timer = setTimeout(function(){
       timer = null;
+      window.removeEventListener("scroll", onScrollCancel, true);
+      if (moved) return;                       // 그 사이 스크롤이 시작됐으면 발동하지 않는다
       var it = get();
       if (!it) return;
       lpSuppressUntil = Date.now() + 700;
