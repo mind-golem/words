@@ -168,11 +168,10 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
 }
 .barbtn.quiet{ color:var(--ink-3); font-weight:450; }
 
-.body{
-  flex:1; min-height:0; overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  overscroll-behavior:contain;
-}
+/* 스크롤은 페이지(문서) 자체가 담당한다.
+   여기에 overflow 를 주면 '스크롤할 것도 없으면서 상위로 넘기지도 않는' 컨테이너가 되어
+   모바일에서 스와이프가 통째로 먹힌다. 높이만 채우고 넘침 처리는 하지 않는다. */
+.body{ flex:1; min-height:0; }
 .wrap{ padding:0 16px 16px; }
 .wrap.pad-b{ padding-bottom:calc(env(safe-area-inset-bottom) + 28px); }
 
@@ -385,7 +384,6 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
 .card-stage{
   flex:1; min-height:0; display:flex; flex-direction:column;
   padding:0 18px calc(env(safe-area-inset-bottom) + 14px);
-  overflow-y:auto; -webkit-overflow-scrolling:touch;
 }
 .word-block{ padding:34px 0 20px; }
 .word-line{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
