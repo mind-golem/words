@@ -336,6 +336,13 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
   box-shadow:var(--shadow-sm);
 }
 #themeHead{ margin-top:26px; }
+/* 어떤 버전을 보고 있는지 한눈에 확인하기 위한 표시.
+   브라우저가 옛 파일을 캐시해 붙들고 있는지 구분할 수 있다. */
+.build{
+  margin:22px 0 0; text-align:center;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.04em;
+  color:var(--ink-3); opacity:.75;
+}
 #segTheme{ margin-bottom:0; }
 #segTheme button{ font-size:14px; }
 
@@ -446,6 +453,23 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
   background:var(--card); border:1px solid var(--rule);
   border-radius:var(--r); padding:15px 16px; box-shadow:var(--shadow-sm);
 }
+/* ── 답 공개 덩어리 (뜻 + 품사 + 동의어) ── */
+.mean-top{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+.mean-k{ font-size:19px; font-weight:640; letter-spacing:-.015em; line-height:1.4; }
+.mean-pos{
+  font-size:12.5px; font-style:italic; color:var(--ink-3);
+  background:var(--card-2); padding:2px 7px; border-radius:5px; flex:none;
+}
+.mean-syn{
+  display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
+  margin-top:8px; padding-top:8px; border-top:1px dashed var(--rule);
+}
+.syn-label{
+  font-size:10.5px; font-weight:600; letter-spacing:.06em;
+  color:var(--ink-3); flex:none;
+}
+.syn-list{ font-size:14px; color:var(--pen); font-weight:550; letter-spacing:-.005em; }
+
 .ans-k{ font-size:19px; font-weight:640; letter-spacing:-.015em; line-height:1.4; }
 .ans-def{
   font-size:14px; color:var(--ink-2); margin-top:8px; line-height:1.55;
@@ -523,7 +547,15 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
   color:var(--no); font-weight:560; letter-spacing:-.008em;
 }
 .correction .pen-mark{ font-family:var(--mono); font-size:13px; flex:none; opacity:.75; padding-top:1px; }
-.correction .fix{ flex:1; }
+.correction .fix{ flex:1; min-width:0; }
+.fix-pos{
+  font-style:italic; font-weight:500; font-size:12px;
+  color:var(--ink-3); margin-left:6px;
+}
+.fix-syn{
+  display:block; margin-top:3px; font-size:12.5px; font-weight:500;
+  color:var(--ink-3); letter-spacing:-.005em;
+}
 .correction button{
   position:relative; flex:none; font-size:12.5px; font-weight:560; color:var(--pen);
   border:1.5px solid var(--pen-line); border-radius:999px; padding:4px 10px;
@@ -562,12 +594,18 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
   font-size:44px; font-weight:750; letter-spacing:-.035em; line-height:1.1;
   word-break:break-word;
 }
-.sh-pos{ font-size:16px; color:var(--ink-3); font-style:italic; }
 .sh-mean{
-  font-size:26px; font-weight:650; letter-spacing:-.02em; line-height:1.4;
-  color:var(--pen); max-width:22ch;
   animation:meanIn .35s cubic-bezier(.2,.8,.3,1);
+  max-width:24ch;
 }
+.sh-mean .mean-top{ justify-content:center; }
+.sh-mean .mean-k{
+  font-size:26px; font-weight:650; letter-spacing:-.02em; line-height:1.4;
+  color:var(--pen);
+}
+.sh-mean .mean-pos{ font-size:13px; }
+.sh-mean .mean-syn{ justify-content:center; border-top-color:var(--rule-2); }
+.sh-mean .syn-list{ font-size:15px; color:var(--ink-2); }
 @keyframes meanIn{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
 .sh-ex{ font-size:14.5px; color:var(--ink-2); line-height:1.55; max-width:34ch; }
 .sh-ex em{ font-style:normal; font-weight:680; color:var(--pen); }
@@ -829,13 +867,13 @@ window.addEventListener('error', function(ev){
   <section class="screen on" id="s-home">
     <div class="body">
       <header class="hero">
-        <div class="kicker">한권끝 1·2권 · DAY 01–44</div>
+        <div class="kicker" id="kicker">한권끝 1·2권 · DAY 01–44</div>
         <h1>우댕이의 단어시험</h1>
-        <p class="sub"><b id="totalWords">0</b>개 단어에서 무작위 출제 · 중복 없음</p>
+        <p class="sub"><b id="totalWords">0</b>개 <span id="unitWord">단어</span>에서 무작위 출제 · 중복 없음</p>
 
         <div class="cover">
           <div class="cover-top">
-            <span class="cover-l">시험 본 단어</span>
+            <span class="cover-l" id="unitCover">시험 본 단어</span>
             <span class="cover-n"><b id="coverSeen">0</b> / <span id="coverTot">0</span><i id="coverPct">0%</i></span>
           </div>
           <div class="cover-bar">
@@ -864,6 +902,14 @@ window.addEventListener('error', function(ev){
           <div class="resume-b">
             <button class="cta" id="btnResume">이어서 풀기</button>
             <button class="cta plain" id="btnDropDraft">버리기</button>
+          </div>
+        </div>
+
+        <div id="deckBox" hidden>
+          <h3 class="sec-h">시험 범위</h3>
+          <div class="seg" id="segDeck">
+            <button data-deck="word" aria-pressed="true">단어</button>
+            <button data-deck="slang">속어</button>
           </div>
         </div>
 
@@ -983,6 +1029,8 @@ window.addEventListener('error', function(ev){
           <button data-theme-opt="light">밝게</button>
           <button data-theme-opt="dark">어둡게</button>
         </div>
+
+        <p class="build" id="buildStamp">build 2026-09-03 09:31</p>
       </div>
     </div>
   </section>
@@ -1006,7 +1054,6 @@ window.addEventListener('error', function(ev){
       <div class="word-block">
         <div class="word-line">
           <span class="word" id="cardWord">—</span>
-          <span class="pos" id="cardPos"></span>
           <button class="say" id="cardSay" aria-label="발음 듣기">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 010 7"/><path d="M18.5 5.5a9 9 0 010 13"/></svg>
           </button>
@@ -1061,7 +1108,6 @@ window.addEventListener('error', function(ev){
     <div class="sh-stage" id="shStage">
       <div class="sh-word-line">
         <span class="sh-word" id="shWord">준비 중…</span>
-        <span class="sh-pos" id="shPos"></span>
       </div>
       <div class="sh-mean" id="shMean" hidden></div>
       <div class="sh-ex" id="shEx" hidden></div>
@@ -6856,6 +6902,227 @@ window.addEventListener('error', function(ev){
 {"w":"meditation","p":"mèdətéiʃən","pos":"n.","k":"명상, 묵상, 심사숙고","def":"명상, 묵상, 심사숙고 reflection, thought cf. meditate vi. 명상하다","ex":"She reached her decision only after much meditation.","tr":"그녀는 상당한 심사숙고 끝에 결정을 내렸다.","day":44,"book":2}
 ]
 </script>
+<script type="application/json" id="slangData">
+[
+  { "w": "under the weather", "k": "몸이 안 좋다, 컨디션이 별로다", "def": "Feeling slightly ill or not in good health.", "syn": [ "out of sorts", "run-down", "feel off" ], "ex": "I'm feeling a bit under the weather, so I'll skip the gym tonight.", "tr": "몸이 좀 안 좋아서 오늘 밤 헬스장은 건너뛸게.", "cat": "idiom", "lv": 1 },
+  { "w": "on cloud nine", "k": "뛸 듯이 기쁘다, 날아갈 듯 행복하다", "def": "Extremely happy about something good that has happened.", "syn": [ "over the moon", "walking on air", "on top of the world" ], "ex": "She's been on cloud nine ever since she got the job offer.", "tr": "걔는 취업 제의를 받은 뒤로 계속 붕 떠 있어.", "cat": "idiom", "lv": 1 },
+  { "w": "over the moon", "k": "매우 기뻐하다, 신이 나다", "def": "Delighted and thrilled, usually about good news.", "syn": [ "on cloud nine", "thrilled to bits", "on top of the world" ], "ex": "My parents were over the moon when I told them about the baby.", "tr": "아이 소식을 전하니까 부모님이 정말 기뻐하셨어.", "cat": "idiom", "lv": 1 },
+  { "w": "take it out on someone", "k": "화풀이하다, 애먼 사람에게 분풀이하다", "def": "To treat someone badly because you are angry about something else.", "syn": [ "lash out at someone", "vent one's anger on someone", "snap at someone" ], "ex": "Don't take it out on me — I'm not the one who cancelled the meeting.", "tr": "나한테 화풀이하지 마. 회의 취소한 사람은 내가 아니잖아.", "cat": "idiom", "lv": 2 },
+  { "w": "be fed up with something", "k": "지긋지긋하다, 진저리가 나다", "def": "Annoyed and tired of something you can't stand anymore.", "syn": [ "be sick of something", "have had enough of something", "be sick and tired of something" ], "ex": "I'm fed up with his excuses — he's late every single day.", "tr": "그 사람 변명에 이제 진저리가 나. 매일같이 지각이잖아.", "cat": "idiom", "lv": 1 },
+  { "w": "get on someone's nerves", "k": "신경을 건드리다, 짜증나게 하다", "def": "To annoy or irritate someone again and again.", "syn": [ "drive someone crazy", "bug someone", "rub someone the wrong way" ], "ex": "That chewing noise is really getting on my nerves.", "tr": "그 쩝쩝거리는 소리 진짜 거슬려.", "cat": "idiom", "lv": 1 },
+  { "w": "lose one's temper", "k": "화를 내다, 성질을 부리다", "def": "To suddenly become very angry and lose control.", "syn": [ "blow up", "lose one's cool", "hit the roof" ], "ex": "Sorry I lost my temper earlier — I shouldn't have yelled at you.", "tr": "아까 화내서 미안해. 너한테 소리치면 안 됐는데.", "cat": "idiom", "lv": 1 },
+  { "w": "have butterflies in one's stomach", "k": "긴장되다, 속이 울렁거릴 만큼 떨리다", "def": "To feel nervous excitement before something important.", "syn": [ "have the jitters", "be a bundle of nerves", "be on edge" ], "ex": "I had butterflies in my stomach right before walking on stage.", "tr": "무대에 올라가기 직전에 속이 울렁거릴 만큼 떨렸어.", "cat": "idiom", "lv": 1 },
+  { "w": "be on edge", "k": "초조하다, 신경이 곤두서다", "def": "Feeling tense, nervous and easily upset.", "syn": [ "be jumpy", "be uptight", "be stressed out" ], "ex": "Everyone's been on edge since the layoff rumors started.", "tr": "정리해고 소문이 돌기 시작한 뒤로 다들 신경이 곤두서 있어.", "cat": "idiom", "lv": 1 },
+  { "w": "green with envy", "k": "몹시 부러워하다, 배가 아프다", "def": "Very jealous of what someone else has.", "syn": [ "be jealous", "be envious" ], "ex": "When she showed me her new apartment, I was green with envy.", "tr": "걔가 새 아파트를 보여주는데 배가 아플 정도로 부러웠어.", "cat": "idiom", "lv": 1 },
+  { "w": "get cold feet", "k": "겁이 나서 망설이다, 막판에 발을 빼다", "def": "To suddenly lose your nerve about a planned decision.", "syn": [ "chicken out", "have second thoughts", "back out" ], "ex": "He got cold feet two weeks before the wedding.", "tr": "그는 결혼식 2주 전에 갑자기 겁을 먹고 마음이 흔들렸어.", "cat": "idiom", "lv": 2 },
+  { "w": "blow off steam", "k": "스트레스를 풀다, 울분을 풀다", "def": "To release anger or stress through some activity.", "syn": [ "let off steam", "unwind", "vent" ], "ex": "I go for a run after work just to blow off steam.", "tr": "나는 퇴근하고 스트레스 좀 풀려고 달리기를 해.", "cat": "idiom", "lv": 2 },
+  { "w": "bite someone's head off", "k": "버럭 화내다, 쏘아붙이다", "def": "To answer someone angrily for no good reason.", "syn": [ "snap at someone", "jump down someone's throat", "lash out at someone" ], "ex": "I only asked a simple question and she bit my head off.", "tr": "그냥 간단한 거 하나 물어봤는데 나한테 버럭 쏘아붙이더라.", "cat": "idiom", "lv": 2 },
+  { "w": "down in the dumps", "k": "우울하다, 의기소침하다", "def": "Feeling sad and low on energy for a while.", "syn": [ "feel down", "in low spirits", "feel blue" ], "ex": "He's been down in the dumps since the breakup.", "tr": "걔는 헤어진 뒤로 계속 축 처져 있어.", "cat": "idiom", "lv": 2 },
+  { "w": "hit the roof", "k": "노발대발하다, 길길이 뛰다", "def": "To become extremely angry all of a sudden.", "syn": [ "hit the ceiling", "blow one's top", "go ballistic" ], "ex": "My dad hit the roof when he saw the damage to the car.", "tr": "아빠는 차가 망가진 걸 보고 노발대발하셨어.", "cat": "idiom", "lv": 2 },
+  { "w": "keep one's chin up", "k": "기운 내다, 낙담하지 않다", "def": "To stay cheerful and brave in a hard situation.", "syn": [ "hang in there", "stay positive", "keep one's spirits up" ], "ex": "I know it's tough right now, but keep your chin up.", "tr": "지금 힘든 거 알지만 그래도 기운 내.", "cat": "idiom", "lv": 2 },
+  { "w": "drive someone up the wall", "k": "미치게 하다, 돌아버리게 만들다", "def": "To annoy someone so much they feel crazy.", "syn": [ "drive someone crazy", "drive someone nuts", "get on someone's nerves" ], "ex": "The neighbor's dog barks all night and it's driving me up the wall.", "tr": "옆집 개가 밤새 짖어대서 미쳐버릴 것 같아.", "cat": "idiom", "lv": 2 },
+  { "w": "get something off one's chest", "k": "속마음을 털어놓다, 응어리를 풀다", "def": "To finally say what has been worrying you.", "syn": [ "open up", "vent", "unburden oneself" ], "ex": "I need to get something off my chest — I've been upset since last week.", "tr": "속에 담아둔 얘기 좀 해야겠어. 지난주부터 계속 마음이 안 좋았거든.", "cat": "idiom", "lv": 2 },
+  { "w": "be head over heels for someone", "k": "홀딱 반하다, 푹 빠지다", "def": "To be completely and helplessly in love with someone.", "syn": [ "fall for someone", "be crazy about someone", "be smitten with someone" ], "ex": "He's been head over heels for her since their first date.", "tr": "걔는 첫 데이트 때부터 그 여자한테 홀딱 반해 있어.", "cat": "idiom", "lv": 2 },
+  { "w": "as cool as a cucumber", "k": "아주 침착하다, 태연하다", "def": "Very calm and relaxed in a stressful moment.", "syn": [ "calm and collected", "keep one's cool", "unfazed" ], "ex": "Everyone else was panicking, but she was as cool as a cucumber.", "tr": "다들 허둥대는데 걔만 아주 침착했어.", "cat": "idiom", "lv": 2 },
+  { "w": "take something to heart", "k": "마음에 담아두다, 진지하게 받아들이다", "def": "To be deeply affected by criticism or advice.", "syn": [ "take it personally", "let something get to you", "dwell on something" ], "ex": "Don't take his comments to heart — he criticizes everyone.", "tr": "걔 말 너무 마음에 담아두지 마. 원래 누구한테나 그렇게 말해.", "cat": "idiom", "lv": 2 },
+  { "w": "give someone the cold shoulder", "k": "쌀쌀맞게 대하다, 냉대하다", "def": "To deliberately ignore someone or act unfriendly toward them.", "syn": [ "give someone the silent treatment", "freeze someone out", "snub someone" ], "ex": "Ever since the argument, she's been giving me the cold shoulder.", "tr": "그 일로 다툰 뒤로 걔가 나를 계속 쌀쌀맞게 대해.", "cat": "idiom", "lv": 2 },
+  { "w": "feel like a million dollars", "k": "기분이 아주 좋다, 컨디션이 최고다", "def": "To feel wonderful, healthy and full of confidence.", "syn": [ "feel like a new person", "on top of the world", "never felt better" ], "ex": "After a good night's sleep, I feel like a million dollars.", "tr": "푹 자고 났더니 기분이 날아갈 것 같아.", "cat": "idiom", "lv": 2 },
+  { "w": "rub someone the wrong way", "k": "괜히 거슬리다, 비위를 거스르다", "def": "To irritate someone without really meaning to.", "syn": [ "get on someone's nerves", "grate on someone", "put someone off" ], "ex": "I can't explain it, but something about him rubs me the wrong way.", "tr": "딱히 설명은 못 하겠는데 그 사람은 어딘가 좀 거슬려.", "cat": "idiom", "lv": 3 },
+  { "w": "have a chip on one's shoulder", "k": "피해의식이 있다, 늘 시비조다", "def": "To feel resentful and easily offended about a past wrong.", "syn": [ "hold a grudge", "be touchy", "be bitter about something" ], "ex": "He's had a chip on his shoulder ever since he was passed over for promotion.", "tr": "걔는 승진에서 밀린 뒤로 늘 피해의식에 사로잡혀 있어.", "cat": "idiom", "lv": 3 },
+  { "w": "be at the end of one's rope", "k": "인내심이 한계에 다다르다, 더는 못 견디다", "def": "To have no patience or strength left at all.", "syn": [ "at one's wit's end", "at breaking point", "have had enough" ], "ex": "With three kids at home and no help, I'm at the end of my rope.", "tr": "집에 애가 셋인데 도와주는 사람도 없어서 이제 정말 한계야.", "cat": "idiom", "lv": 3 },
+  { "w": "wear one's heart on one's sleeve", "k": "감정을 숨기지 못하다, 속을 다 드러내다", "def": "To show your feelings openly instead of hiding them.", "syn": [ "be an open book", "not hide one's feelings", "be transparent" ], "ex": "She wears her heart on her sleeve, so you always know how she feels.", "tr": "걔는 감정을 다 드러내는 편이라 기분이 어떤지 늘 티가 나.", "cat": "idiom", "lv": 3 },
+  { "w": "on pins and needles", "k": "조마조마하다, 안절부절못하다", "def": "Very anxious while waiting for something to be decided.", "syn": [ "on tenterhooks", "on edge", "biting one's nails" ], "ex": "We were on pins and needles waiting for the test results.", "tr": "우리는 검사 결과를 기다리면서 마음을 졸였어.", "cat": "idiom", "lv": 3 },
+  { "w": "cost an arm and a leg", "k": "엄청나게 비싸다, 큰돈이 들다", "def": "To be extremely expensive.", "syn": [ "cost a fortune", "break the bank", "cost a pretty penny" ], "ex": "We looked at flying business class, but it would cost an arm and a leg.", "tr": "비즈니스석을 알아봤는데 돈이 어마어마하게 들더라고요.", "cat": "idiom", "lv": 1 },
+  { "w": "once in a blue moon", "k": "아주 가끔, 어쩌다 한 번", "def": "Very rarely; almost never.", "syn": [ "hardly ever", "next to never", "few and far between" ], "ex": "My brother lives in Chile, so we only see him once in a blue moon.", "tr": "동생이 칠레에 살아서 우리는 어쩌다 한 번씩만 봐요.", "cat": "idiom", "lv": 1 },
+  { "w": "around the clock", "k": "24시간 내내, 밤낮없이", "def": "Continuously, all day and all night.", "syn": [ "24/7", "day and night", "nonstop" ], "ex": "The team worked around the clock to get the site back up.", "tr": "팀은 사이트를 복구하려고 밤낮없이 일했어요.", "cat": "idiom", "lv": 1 },
+  { "w": "call it a day", "k": "오늘은 그만하다, 일을 마무리하다", "def": "To stop working for the day.", "syn": [ "wrap up", "knock off", "call it quits" ], "ex": "It's almost eight, so let's call it a day and finish this tomorrow.", "tr": "거의 8시네요. 오늘은 여기까지 하고 내일 마저 하죠.", "cat": "idiom", "lv": 1 },
+  { "w": "in the long run", "k": "장기적으로 보면, 결국에는", "def": "Over a long period of time; eventually.", "syn": [ "in the end", "over time", "down the road" ], "ex": "Decent boots cost more now, but they're cheaper in the long run.", "tr": "괜찮은 부츠는 당장은 비싸도 길게 보면 더 싸요.", "cat": "idiom", "lv": 1 },
+  { "w": "save something for a rainy day", "k": "만일에 대비해 저축해 두다", "def": "To keep money aside for a future time of need.", "syn": [ "put money aside", "squirrel money away", "build a nest egg" ], "ex": "I'd rather save part of my bonus for a rainy day than blow it on a trip.", "tr": "보너스를 여행에 다 써 버리느니 일부는 만일에 대비해 모아 두고 싶어요.", "cat": "idiom", "lv": 1 },
+  { "w": "worth every penny", "k": "돈이 아깝지 않다, 값어치를 하다", "def": "Good enough to justify what it cost.", "syn": [ "worth it", "money well spent", "good value" ], "ex": "The tickets weren't cheap, but that concert was worth every penny.", "tr": "표가 싸진 않았지만 그 공연은 돈이 하나도 안 아까웠어요.", "cat": "idiom", "lv": 1 },
+  { "w": "in the same boat", "k": "같은 처지다, 사정이 똑같다", "def": "In the same difficult situation as someone else.", "syn": [ "in the same position", "in it together", "in the same predicament" ], "ex": "Don't stress about the rent, we're all in the same boat this month.", "tr": "월세 걱정하지 마. 이번 달은 우리 다 같은 처지니까.", "cat": "idiom", "lv": 1 },
+  { "w": "up in the air", "k": "미정이다, 불확실하다", "def": "Still undecided or uncertain.", "syn": [ "undecided", "unsettled", "not set in stone" ], "ex": "Our summer plans are still up in the air until she hears back about the job.", "tr": "그 사람 취업 소식이 올 때까지 여름 계획은 아직 미정이에요.", "cat": "idiom", "lv": 1 },
+  { "w": "a close call", "k": "아슬아슬한 상황, 큰일 날 뻔한 일", "def": "A narrow escape from danger or trouble.", "syn": [ "a close shave", "a near miss", "too close for comfort" ], "ex": "A car ran the light right in front of me, that was a close call.", "tr": "차 한 대가 바로 앞에서 신호를 무시하고 지나갔어요. 정말 큰일 날 뻔했죠.", "cat": "idiom", "lv": 1 },
+  { "w": "in the nick of time", "k": "아슬아슬하게 제때, 가까스로 늦지 않게", "def": "At the last possible moment, just before it is too late.", "syn": [ "just in time", "with seconds to spare", "at the last minute" ], "ex": "The ambulance got there in the nick of time.", "tr": "구급차가 아슬아슬하게 제때 도착했어요.", "cat": "idiom", "lv": 2 },
+  { "w": "play it by ear", "k": "상황 봐서 정하다, 즉흥적으로 하다", "def": "To decide as you go instead of planning ahead.", "syn": [ "wing it", "improvise", "see how it goes" ], "ex": "I have no idea how long the meeting will run, so let's play it by ear.", "tr": "회의가 얼마나 길어질지 몰라서 상황 봐서 정하죠.", "cat": "idiom", "lv": 2 },
+  { "w": "make ends meet", "k": "근근이 먹고살다, 겨우 생활비를 대다", "def": "To earn just enough money to cover your expenses.", "syn": [ "get by", "scrape by", "stay afloat" ], "ex": "With the rent going up again, they're struggling to make ends meet.", "tr": "월세가 또 올라서 그 집은 생활비 대기도 빠듯해요.", "cat": "idiom", "lv": 2 },
+  { "w": "tighten one's belt", "k": "허리띠를 졸라매다, 씀씀이를 줄이다", "def": "To spend less money because you have less.", "syn": [ "cut back", "cut costs", "live on less" ], "ex": "We'll have to tighten our belts until the next paycheck comes in.", "tr": "다음 월급 들어올 때까지는 허리띠를 졸라매야 해요.", "cat": "idiom", "lv": 2 },
+  { "w": "foot the bill", "k": "비용을 부담하다, 돈을 대다", "def": "To pay for something, often on behalf of others.", "syn": [ "pick up the tab", "cover the cost", "pay for it all" ], "ex": "In the end my dad had to foot the bill for the whole trip.", "tr": "결국 여행 경비 전부를 아빠가 부담하셨어요.", "cat": "idiom", "lv": 2 },
+  { "w": "jump the gun", "k": "성급하게 굴다, 섣불리 앞서 나가다", "def": "To act too soon, before the right moment.", "syn": [ "get ahead of oneself", "act too soon", "be premature" ], "ex": "Let's not jump the gun, nothing has been signed yet.", "tr": "성급하게 굴지 맙시다. 아직 계약된 건 아무것도 없어요.", "cat": "idiom", "lv": 2 },
+  { "w": "the ball is in someone's court", "k": "이제 ~가 결정할 차례다, 공이 ~에게 넘어가다", "def": "It is now the other person's turn to act.", "syn": [ "it's your call", "it's up to you", "your move" ], "ex": "I sent them our final offer, so the ball is in their court now.", "tr": "최종 제안을 보냈으니 이제 공은 그쪽으로 넘어갔어요.", "cat": "idiom", "lv": 2 },
+  { "w": "a blessing in disguise", "k": "전화위복, 오히려 잘된 일", "def": "Something bad that turns out to be good later.", "syn": [ "a silver lining", "for the best", "turn out to be a good thing" ], "ex": "Getting laid off felt awful, but it was a blessing in disguise.", "tr": "해고당했을 땐 끔찍했지만 결과적으로는 오히려 잘된 일이었어요.", "cat": "idiom", "lv": 2 },
+  { "w": "cut corners", "k": "대충 하다, 절차를 생략하다", "def": "To skip proper steps to save time or money.", "syn": [ "take shortcuts", "skimp on", "do a sloppy job" ], "ex": "The ceiling leaks because the builder cut corners on materials.", "tr": "업자가 자재를 아끼려고 대충 시공해서 천장이 새요.", "cat": "idiom", "lv": 2 },
+  { "w": "on the fence", "k": "결정을 못 내리다, 망설이다", "def": "Undecided between two options.", "syn": [ "torn", "in two minds", "undecided" ], "ex": "I'm still on the fence about moving to Busan.", "tr": "부산으로 이사할지 아직 마음을 못 정했어요.", "cat": "idiom", "lv": 2 },
+  { "w": "bite the bullet", "k": "이를 악물고 해내다, 마음먹고 해치우다", "def": "To force yourself to do something unpleasant.", "syn": [ "grit one's teeth", "suck it up", "just get it over with" ], "ex": "At some point you just have to bite the bullet and tell her the truth.", "tr": "언젠가는 이를 악물고 그녀에게 사실대로 말해야죠.", "cat": "idiom", "lv": 2 },
+  { "w": "take something with a grain of salt", "k": "걸러 듣다, 곧이곧대로 믿지 않다", "def": "To not fully believe something; treat it skeptically.", "syn": [ "be skeptical about", "not take at face value", "take with a pinch of salt" ], "ex": "He always exaggerates, so take his story with a grain of salt.", "tr": "그 사람은 늘 과장하니까 그 얘기는 걸러 들어요.", "cat": "idiom", "lv": 2 },
+  { "w": "at the eleventh hour", "k": "막판에, 아주 늦게서야", "def": "At the very last moment before a deadline.", "syn": [ "at the last minute", "down to the wire", "just under the wire" ], "ex": "The deal was rescued at the eleventh hour by a call from the CEO.", "tr": "그 계약은 대표의 전화 한 통으로 막판에 겨우 살아났어요.", "cat": "idiom", "lv": 3 },
+  { "w": "on a shoestring budget", "k": "쥐꼬리만 한 예산으로, 아주 적은 돈으로", "def": "With very little money available to spend.", "syn": [ "on a tight budget", "on the cheap", "with next to nothing" ], "ex": "They shot the entire documentary on a shoestring budget.", "tr": "그들은 쥐꼬리만 한 예산으로 다큐멘터리 전편을 찍었어요.", "cat": "idiom", "lv": 3 },
+  { "w": "between a rock and a hard place", "k": "진퇴양난이다, 이러지도 저러지도 못하다", "def": "Stuck choosing between two equally bad options.", "syn": [ "in a bind", "in a catch-22", "damned either way" ], "ex": "Quitting costs me my visa, but staying is wrecking my health, so I'm between a rock and a hard place.", "tr": "그만두면 비자를 잃고 계속 다니면 건강이 망가져서 완전 진퇴양난이에요.", "cat": "idiom", "lv": 3 },
+  { "w": "touch and go", "k": "위태위태하다, 결과를 장담할 수 없다", "def": "Risky and uncertain; the outcome could go either way.", "syn": [ "dicey", "hanging in the balance", "iffy" ], "ex": "It was touch and go for a few days, but she pulled through.", "tr": "며칠 동안은 위태위태했지만 그녀는 결국 회복했어요.", "cat": "idiom", "lv": 3 },
+  { "w": "a ballpark figure", "k": "대략적인 수치, 어림잡은 액수", "def": "A rough estimate rather than an exact number.", "syn": [ "a rough estimate", "a guesstimate", "an approximation" ], "ex": "I can't quote you exactly today, but a ballpark figure would be around ten thousand dollars.", "tr": "오늘 정확한 견적은 못 드리지만 대략 1만 달러 정도로 보시면 돼요.", "cat": "idiom", "lv": 3 },
+  { "w": "in the red", "k": "적자다, 빚을 지고 있다", "def": "Losing money; spending more than you take in.", "syn": [ "in debt", "operating at a loss", "in the hole" ], "ex": "The café has been in the red for three quarters straight.", "tr": "그 카페는 세 분기 연속으로 적자예요.", "cat": "idiom", "lv": 3 },
+  { "w": "break the ice", "k": "어색한 분위기를 깨다, 서먹함을 풀다", "def": "Say or do something to ease initial social tension.", "syn": [ "break the tension", "loosen things up", "get people talking" ], "ex": "I told a terrible joke just to break the ice at the meeting.", "tr": "회의 분위기 좀 풀어보려고 썰렁한 농담을 했어.", "cat": "idiom", "lv": 1 },
+  { "w": "see eye to eye", "k": "의견이 일치하다, 뜻이 맞다", "def": "Agree completely with someone about something.", "syn": [ "be on the same page", "see things the same way", "be in agreement" ], "ex": "My dad and I don't see eye to eye on politics, so we just avoid it.", "tr": "아빠랑 나는 정치 얘기에선 의견이 안 맞아서 그냥 그 얘긴 안 해.", "cat": "idiom", "lv": 1 },
+  { "w": "hit it off", "k": "금세 친해지다, 처음부터 잘 통하다", "def": "Like each other immediately after first meeting.", "syn": [ "click with someone", "get along right away", "take a liking to each other" ], "ex": "We hit it off the moment we started talking about music.", "tr": "우리는 음악 얘기를 시작하자마자 바로 통했어.", "cat": "idiom", "lv": 1 },
+  { "w": "be on the same page", "k": "같은 생각이다, 의견이 일치하다", "def": "Understand and agree about what is going on.", "syn": [ "see eye to eye", "be in sync", "be of one mind" ], "ex": "Before we email the client, let's make sure we're on the same page.", "tr": "고객한테 메일 보내기 전에 우리 생각이 같은지 확인하자.", "cat": "idiom", "lv": 1 },
+  { "w": "beat around the bush", "k": "빙빙 돌려 말하다, 요점을 피하다", "def": "Avoid saying directly what you really mean.", "syn": [ "talk in circles", "dance around the issue", "skirt the issue" ], "ex": "Stop beating around the bush and just tell me what you want.", "tr": "빙빙 돌리지 말고 원하는 게 뭔지 그냥 말해.", "cat": "idiom", "lv": 1 },
+  { "w": "keep in touch", "k": "연락하고 지내다", "def": "Stay in regular contact with someone over time.", "syn": [ "stay in touch", "stay in contact", "check in now and then" ], "ex": "We've kept in touch ever since we worked together in Busan.", "tr": "부산에서 같이 일한 뒤로 우리는 계속 연락하고 지내.", "cat": "idiom", "lv": 1 },
+  { "w": "talk behind someone's back", "k": "뒤에서 험담하다, 뒷담화하다", "def": "Say unkind things about someone who isn't there.", "syn": [ "badmouth someone", "gossip about someone", "run someone down" ], "ex": "If you have a problem with me, say it to my face instead of talking behind my back.", "tr": "나한테 불만 있으면 뒤에서 험담하지 말고 면전에 대고 말해.", "cat": "idiom", "lv": 1 },
+  { "w": "make small talk", "k": "가벼운 잡담을 나누다", "def": "Chat politely about unimportant everyday topics.", "syn": [ "chitchat", "shoot the breeze", "make conversation" ], "ex": "I'm terrible at making small talk with strangers at parties.", "tr": "나는 파티에서 처음 보는 사람이랑 가벼운 잡담 하는 걸 정말 못해.", "cat": "idiom", "lv": 1 },
+  { "w": "spill the beans", "k": "비밀을 털어놓다, 다 말해버리다", "def": "Reveal a secret, often without meaning to.", "syn": [ "let the cat out of the bag", "give it away", "blab" ], "ex": "Don't tell Mina about the party — she'll spill the beans.", "tr": "미나한테 파티 얘기하지 마. 걔는 다 말해버릴걸.", "cat": "idiom", "lv": 1 },
+  { "w": "clear the air", "k": "오해를 풀다, 앙금을 없애다", "def": "Remove tension by talking about a problem openly.", "syn": [ "talk things out", "hash things out", "settle a misunderstanding" ], "ex": "We finally sat down and cleared the air about what happened last month.", "tr": "우리는 결국 마주 앉아서 지난달 일에 대한 오해를 풀었어.", "cat": "idiom", "lv": 2 },
+  { "w": "bury the hatchet", "k": "화해하다, 싸움을 끝내다", "def": "Stop fighting and make peace with someone.", "syn": [ "make peace", "call a truce", "let bygones be bygones" ], "ex": "The two brothers finally buried the hatchet after almost ten years.", "tr": "그 두 형제는 거의 10년 만에 드디어 화해했어.", "cat": "idiom", "lv": 2 },
+  { "w": "put oneself in someone's shoes", "k": "상대 입장에서 생각하다, 역지사지하다", "def": "Imagine how another person feels in their situation.", "syn": [ "see it from someone's perspective", "walk in someone's shoes", "empathize with someone" ], "ex": "Put yourself in her shoes — she just lost her job last week.", "tr": "그 사람 입장에서 좀 생각해 봐. 지난주에 막 직장을 잃었잖아.", "cat": "idiom", "lv": 2 },
+  { "w": "speak one's mind", "k": "솔직하게 할 말을 다 하다", "def": "Say honestly and openly what you really think.", "syn": [ "be blunt", "tell it like it is", "say it straight" ], "ex": "She's never afraid to speak her mind in meetings.", "tr": "그 사람은 회의에서 할 말은 거침없이 하는 편이야.", "cat": "idiom", "lv": 2 },
+  { "w": "agree to disagree", "k": "서로 생각이 다름을 인정하다", "def": "Accept a difference of opinion and stop arguing.", "syn": [ "agree to differ", "leave it at that", "drop the argument" ], "ex": "We're never going to settle this, so let's just agree to disagree.", "tr": "이건 결론이 안 날 테니 그냥 서로 생각이 다르다고 인정하자.", "cat": "idiom", "lv": 2 },
+  { "w": "read between the lines", "k": "숨은 뜻을 파악하다, 행간을 읽다", "def": "Understand a meaning that is implied, not stated.", "syn": [ "pick up on the subtext", "catch the implied meaning", "sense what's unsaid" ], "ex": "Read between the lines — she wasn't asking, she was complaining.", "tr": "행간을 좀 읽어 봐. 물어본 게 아니라 불평한 거야.", "cat": "idiom", "lv": 2 },
+  { "w": "cut to the chase", "k": "본론으로 바로 들어가다", "def": "Get to the important point without wasting time.", "syn": [ "get to the point", "get down to business", "skip the preamble" ], "ex": "Let me cut to the chase: we can't afford to hire anyone right now.", "tr": "바로 본론만 말할게. 지금은 사람을 뽑을 여력이 없어.", "cat": "idiom", "lv": 2 },
+  { "w": "two peas in a pod", "k": "쏙 빼닮은 사이, 늘 붙어 다니는 둘", "def": "Two people who are very similar and inseparable.", "syn": [ "cut from the same cloth", "joined at the hip", "birds of a feather" ], "ex": "Those two are like two peas in a pod — same jokes, same taste, everything.", "tr": "쟤네 둘은 붕어빵이야. 농담도 취향도 다 똑같아.", "cat": "idiom", "lv": 2 },
+  { "w": "go back a long way", "k": "오래 알고 지낸 사이다", "def": "Have known each other for many years.", "syn": [ "be old friends", "know someone for ages", "have a long history together" ], "ex": "Trust me, Jinsu and I go back a long way.", "tr": "믿어도 돼. 진수랑 나는 알고 지낸 지 아주 오래됐어.", "cat": "idiom", "lv": 2 },
+  { "w": "mend fences", "k": "틀어진 관계를 회복하다", "def": "Repair a relationship damaged by a past conflict.", "syn": [ "patch things up", "bury the hatchet", "make amends" ], "ex": "He flew home over the holidays to mend fences with his sister.", "tr": "그는 누나와 관계를 회복하려고 연휴에 고향으로 갔어.", "cat": "idiom", "lv": 3 },
+  { "w": "bad blood", "k": "(오래 쌓인) 앙금, 악감정", "def": "Long-standing anger or hostility between people.", "syn": [ "a grudge", "ill will", "hard feelings" ], "ex": "There's still bad blood between the two teams after last season.", "tr": "지난 시즌 이후로 두 팀 사이엔 아직도 앙금이 남아 있어.", "cat": "idiom", "lv": 3 },
+  { "w": "keep someone at arm's length", "k": "거리를 두다, 가까이하지 않다", "def": "Avoid becoming too close or friendly with someone.", "syn": [ "keep someone at a distance", "hold someone off", "not let someone get close" ], "ex": "After she was betrayed once, she kept everyone at arm's length.", "tr": "한 번 배신당한 뒤로 그 사람은 누구와도 거리를 뒀어.", "cat": "idiom", "lv": 3 },
+  { "w": "thick as thieves", "k": "아주 친하다, 죽이 잘 맞다", "def": "Extremely close friends who share everything.", "syn": [ "joined at the hip", "inseparable", "best buddies" ], "ex": "Those two have been thick as thieves since middle school.", "tr": "쟤네 둘은 중학교 때부터 붙어 다니는 절친이야.", "cat": "idiom", "lv": 3 },
+  { "w": "touch a nerve", "k": "아픈 데를 건드리다, 민감한 부분을 찌르다", "def": "Mention something that upsets or offends someone.", "syn": [ "strike a nerve", "hit a raw nerve", "hit a sore spot" ], "ex": "I must have touched a nerve, because she went completely quiet.", "tr": "내가 아픈 데를 건드렸나 봐. 갑자기 아무 말도 안 하더라.", "cat": "idiom", "lv": 3 },
+  { "w": "get the ball rolling", "k": "일을 시작하다, 착수하다", "def": "To start something or make a process begin.", "syn": [ "kick things off", "get started", "set things in motion" ], "ex": "Let's get the ball rolling — who wants to take the first slide?", "tr": "자, 시작합시다. 첫 번째 슬라이드는 누가 맡을래요?", "cat": "idiom", "lv": 1 },
+  { "w": "drop the ball", "k": "실수하다, 일을 그르치다", "def": "To make a mistake or fail to handle a responsibility.", "syn": [ "mess up", "slip up", "let someone down" ], "ex": "I totally dropped the ball on the client email — it's still sitting in my drafts.", "tr": "고객사 메일은 내가 완전히 놓쳤어. 아직 임시보관함에 있어.", "cat": "idiom", "lv": 1 },
+  { "w": "go the extra mile", "k": "한층 더 노력하다, 수고를 아끼지 않다", "def": "To do more than what is required or expected.", "syn": [ "go above and beyond", "put in extra effort", "go out of one's way" ], "ex": "She always goes the extra mile for her students, even on weekends.", "tr": "그 선생님은 주말에도 학생들을 위해 늘 한 발 더 애쓰신다.", "cat": "idiom", "lv": 1 },
+  { "w": "nail it", "k": "완벽하게 해내다, 딱 맞히다", "def": "To do something perfectly or exactly right.", "syn": [ "ace it", "crush it", "get it exactly right" ], "ex": "You totally nailed it in there — the client didn't ask a single question.", "tr": "너 아까 완전 잘했어. 고객이 질문 하나도 안 하더라.", "cat": "idiom", "lv": 1 },
+  { "w": "pull an all-nighter", "k": "밤을 새우다, 철야하다", "def": "To stay up all night working or studying.", "syn": [ "stay up all night", "work through the night" ], "ex": "I pulled an all-nighter to finish the deck and I regret everything.", "tr": "발표 자료 끝내려고 밤을 꼬박 새웠는데, 정말 후회된다.", "cat": "idiom", "lv": 1 },
+  { "w": "give it one's best shot", "k": "최선을 다해 보다", "def": "To try as hard as you can, even if unsure.", "syn": [ "do one's best", "give it a go", "give it everything" ], "ex": "I don't know if I'll get the job, but I gave it my best shot.", "tr": "합격할지는 모르겠지만 나는 최선을 다했어.", "cat": "idiom", "lv": 1 },
+  { "w": "from scratch", "k": "맨 처음부터, 아무것도 없는 상태에서", "def": "From the very beginning, using nothing already prepared.", "syn": [ "from the ground up", "from square one", "starting completely over" ], "ex": "The file got corrupted, so I had to rebuild the whole report from scratch.", "tr": "파일이 손상되는 바람에 보고서를 처음부터 다시 만들어야 했다.", "cat": "idiom", "lv": 1 },
+  { "w": "a piece of cake", "k": "아주 쉬운 일, 식은 죽 먹기", "def": "Something very easy to do.", "syn": [ "a walk in the park", "child's play", "easy as pie" ], "ex": "After last year's project, this one is a piece of cake.", "tr": "작년 프로젝트에 비하면 이건 식은 죽 먹기야.", "cat": "idiom", "lv": 1 },
+  { "w": "have one's hands full", "k": "몹시 바쁘다, 눈코 뜰 새 없다", "def": "To be very busy with as much as you can handle.", "syn": [ "be swamped", "be tied up", "be up to one's ears" ], "ex": "Don't ask Mia for help right now — she has her hands full with the audit.", "tr": "지금 미아한테 도와달라고 하지 마. 감사 준비로 정신없이 바빠.", "cat": "idiom", "lv": 1 },
+  { "w": "on the right track", "k": "제대로 하고 있는, 방향을 잘 잡은", "def": "Doing something in a way that will likely succeed.", "syn": [ "on the right path", "headed in the right direction", "on course" ], "ex": "The numbers aren't perfect yet, but we're on the right track.", "tr": "수치가 아직 완벽하진 않지만 방향은 제대로 잡았어.", "cat": "idiom", "lv": 1 },
+  { "w": "burn the midnight oil", "k": "밤늦게까지 일하다, 야근하다", "def": "To work or study late into the night.", "syn": [ "work late into the night", "put in late hours", "stay up working" ], "ex": "He's been burning the midnight oil all week to hit the deadline.", "tr": "그는 마감을 맞추려고 일주일 내내 밤늦게까지 일하고 있다.", "cat": "idiom", "lv": 2 },
+  { "w": "pull one's weight", "k": "제 몫을 하다, 자기 일을 다하다", "def": "To do your fair share of the work.", "syn": [ "do one's part", "do one's fair share", "carry one's own load" ], "ex": "The project would be fine if everyone pulled their weight.", "tr": "다들 자기 몫만 제대로 했어도 이 프로젝트는 문제없었을 거야.", "cat": "idiom", "lv": 2 },
+  { "w": "bite off more than one can chew", "k": "감당 못 할 일을 벌이다, 무리하다", "def": "To take on more work than you can actually handle.", "syn": [ "take on too much", "overcommit", "spread oneself too thin" ], "ex": "I bit off more than I could chew when I agreed to run two teams.", "tr": "두 팀을 맡겠다고 한 건 내가 감당 못 할 일을 벌인 거였다.", "cat": "idiom", "lv": 2 },
+  { "w": "back to the drawing board", "k": "원점으로 돌아가다, 처음부터 다시 하다", "def": "Starting over again after a plan has failed.", "syn": [ "back to square one", "start over", "rethink from the start" ], "ex": "The client hated all three designs, so it's back to the drawing board.", "tr": "고객이 시안 세 개를 다 마음에 안 들어 해서 처음부터 다시 해야 한다.", "cat": "idiom", "lv": 2 },
+  { "w": "hit the ground running", "k": "시작부터 전력으로 해내다, 처음부터 잘 나가다", "def": "To start something quickly and energetically from day one.", "syn": [ "start strong", "get going immediately", "come out of the gate fast" ], "ex": "She hit the ground running and closed two deals in her first week.", "tr": "그녀는 시작부터 전력을 다해 첫 주에만 계약 두 건을 따냈다.", "cat": "idiom", "lv": 2 },
+  { "w": "throw in the towel", "k": "포기하다, 손을 들다", "def": "To give up or admit defeat.", "syn": [ "give up", "call it quits", "admit defeat" ], "ex": "After the fifth rejection, he almost threw in the towel.", "tr": "다섯 번째 거절을 당하고 그는 거의 포기할 뻔했다.", "cat": "idiom", "lv": 2 },
+  { "w": "learn the ropes", "k": "일을 배우다, 요령을 익히다", "def": "To learn how a job or system actually works.", "syn": [ "get the hang of it", "learn the basics", "find one's feet" ], "ex": "Give him a month to learn the ropes before you judge his work.", "tr": "그의 성과를 평가하기 전에 일을 익힐 한 달은 줘.", "cat": "idiom", "lv": 2 },
+  { "w": "get one's foot in the door", "k": "발을 들여놓다, 첫발을 내딛다", "def": "To get a first small chance to enter a field.", "syn": [ "break into", "get a start", "get an opening" ], "ex": "The internship pays almost nothing, but it gets my foot in the door.", "tr": "그 인턴십은 보수가 거의 없지만 업계에 발을 들여놓을 기회는 된다.", "cat": "idiom", "lv": 2 },
+  { "w": "put something on the back burner", "k": "뒷전으로 미루다, 보류하다", "def": "To delay something and deal with it later.", "syn": [ "put off", "set aside", "shelve" ], "ex": "We put the rebranding on the back burner until after the launch.", "tr": "리브랜딩은 출시가 끝날 때까지 잠시 미뤄 두기로 했다.", "cat": "idiom", "lv": 2 },
+  { "w": "raise the bar", "k": "기준을 높이다, 수준을 끌어올리다", "def": "To set a higher standard for quality or performance.", "syn": [ "set a higher standard", "up the ante", "raise expectations" ], "ex": "Their last album really raised the bar for everyone else.", "tr": "그들의 지난 앨범은 다른 팀들의 기준을 확 끌어올렸다.", "cat": "idiom", "lv": 2 },
+  { "w": "bend over backwards", "k": "온갖 애를 쓰다, 최선을 다해 맞춰 주다", "def": "To try extremely hard to help or please someone.", "syn": [ "go out of one's way", "go all out", "do everything possible" ], "ex": "We bent over backwards to keep that account, and they left anyway.", "tr": "그 거래처를 잡으려고 온갖 애를 다 썼는데도 결국 떠나 버렸다.", "cat": "idiom", "lv": 3 },
+  { "w": "move the needle", "k": "실질적인 변화를 만들다, 성과를 내다", "def": "To make a noticeable difference in the results.", "syn": [ "make a real difference", "have a real impact", "shift the numbers" ], "ex": "Another logo tweak isn't going to move the needle on sales.", "tr": "로고를 또 손본다고 매출이 실제로 달라지진 않는다.", "cat": "idiom", "lv": 3 },
+  { "w": "fall through the cracks", "k": "누락되다, 간과되다", "def": "To be forgotten or missed by a system.", "syn": [ "get overlooked", "slip through the net", "go unnoticed" ], "ex": "Two orders fell through the cracks while the manager was out.", "tr": "매니저가 자리를 비운 사이 주문 두 건이 누락됐다.", "cat": "idiom", "lv": 3 },
+  { "w": "jump through hoops", "k": "온갖 까다로운 절차를 거치다, 갖은 고생을 하다", "def": "To do many difficult things just to get approval.", "syn": [ "go through red tape", "clear endless hurdles", "deal with endless paperwork" ], "ex": "I had to jump through hoops just to get the software approved.", "tr": "그 소프트웨어 승인을 받으려고 온갖 절차를 다 거쳐야 했다.", "cat": "idiom", "lv": 3 },
+  { "w": "rise to the occasion", "k": "위기에 잘 대처하다, 기대에 부응하다", "def": "To perform well when a difficult situation demands it.", "syn": [ "step up", "come through", "deliver under pressure" ], "ex": "Our junior designer really rose to the occasion when the lead quit.", "tr": "팀장이 그만뒀을 때 신입 디자이너가 정말 훌륭하게 해냈다.", "cat": "idiom", "lv": 3 },
+  { "w": "hit it out of the park", "k": "대성공을 거두다, 아주 훌륭하게 해내다", "def": "To do something extremely well; achieve a big success.", "syn": [ "knock it out of the park", "smash it", "do brilliantly" ], "ex": "That keynote was incredible — you hit it out of the park.", "tr": "그 기조연설 정말 대단했어. 완전히 성공적이었어.", "cat": "idiom", "lv": 3 },
+  { "w": "give in", "k": "굴복하다, 마지못해 받아들이다", "def": "To stop resisting and accept what someone wants.", "syn": [ "cave in", "back down", "give way" ], "ex": "I kept saying no, but he begged so much that I finally gave in.", "tr": "계속 안 된다고 했는데, 하도 졸라대서 결국 굴복했어.", "cat": "phrasal", "lv": 1 },
+  { "w": "count on someone", "k": "믿다, 의지하다", "def": "To trust someone to do what you need.", "syn": [ "rely on", "depend on", "bank on" ], "ex": "You can count on me to keep this between us.", "tr": "이건 우리끼리만 아는 걸로 할 테니까 나만 믿어.", "cat": "phrasal", "lv": 1 },
+  { "w": "hold on", "k": "잠깐 기다리다, 버티다", "def": "To wait for a moment, or keep going through difficulty.", "syn": [ "hang on", "hold up", "hang in there" ], "ex": "Hold on a second, I think I left my phone in the car.", "tr": "잠깐만, 나 휴대폰 차에 두고 온 것 같아.", "cat": "phrasal", "lv": 1 },
+  { "w": "carry on", "k": "계속하다, 이어가다", "def": "To continue doing something without stopping.", "syn": [ "keep on", "press on", "go on" ], "ex": "Sorry to interrupt — please carry on.", "tr": "끊어서 미안해. 하던 얘기 계속해.", "cat": "phrasal", "lv": 1 },
+  { "w": "hand in", "k": "제출하다, 내다", "def": "To give finished work to the person in charge.", "syn": [ "turn in", "submit", "send in" ], "ex": "You have to hand in the assignment by Friday midnight.", "tr": "과제는 금요일 자정까지 제출해야 해.", "cat": "phrasal", "lv": 1 },
+  { "w": "put on", "k": "입다, 착용하다", "def": "To dress yourself in clothing or accessories.", "syn": [ "throw on", "slip into", "pull on" ], "ex": "Put on a jacket — it's freezing out there.", "tr": "밖에 엄청 추우니까 재킷 하나 걸쳐.", "cat": "phrasal", "lv": 1 },
+  { "w": "check in", "k": "체크인하다, 연락해 확인하다", "def": "To register somewhere, or briefly contact someone.", "syn": [ "sign in", "touch base", "reach out" ], "ex": "I just wanted to check in and see how you're holding up.", "tr": "그냥 잘 지내나 싶어서 연락해 봤어.", "cat": "phrasal", "lv": 1 },
+  { "w": "work on something", "k": "공들이다, 손보다", "def": "To spend effort improving or repairing something.", "syn": [ "tinker with", "fine-tune", "put effort into" ], "ex": "She's still working on her speech for tomorrow.", "tr": "걔는 내일 할 연설을 아직 다듬고 있어.", "cat": "phrasal", "lv": 1 },
+  { "w": "move on", "k": "잊고 나아가다, 넘어가다", "def": "To leave something behind and go forward.", "syn": [ "get over it", "put it behind you", "let it go" ], "ex": "It's been two years — you really need to move on.", "tr": "벌써 2년이나 지났잖아. 이제 그만 잊고 앞으로 나아가야지.", "cat": "phrasal", "lv": 1 },
+  { "w": "go on", "k": "계속되다, 일어나다", "def": "To continue happening, or to take place.", "syn": [ "carry on", "take place", "keep going" ], "ex": "What on earth is going on in here?", "tr": "도대체 여기서 무슨 일이 벌어지고 있는 거야?", "cat": "phrasal", "lv": 1 },
+  { "w": "fill in", "k": "작성하다, 기입하다", "def": "To write the required information in a form.", "syn": [ "fill out", "write in", "complete" ], "ex": "Just fill in your name and email at the top.", "tr": "맨 위에 이름이랑 이메일만 적어 주세요.", "cat": "phrasal", "lv": 1 },
+  { "w": "take on", "k": "떠맡다, 고용하다", "def": "To accept new work, or to hire someone.", "syn": [ "undertake", "shoulder", "bring on" ], "ex": "Don't take on more work than you can handle.", "tr": "감당할 수 있는 것보다 더 많은 일을 떠맡지 마.", "cat": "phrasal", "lv": 2 },
+  { "w": "get on with someone", "k": "잘 지내다, 사이가 좋다", "def": "To have a friendly relationship with someone.", "syn": [ "get along with", "hit it off", "click with" ], "ex": "I get on with my roommate better than I expected.", "tr": "룸메이트랑 생각보다 훨씬 잘 지내고 있어.", "cat": "phrasal", "lv": 2 },
+  { "w": "drop in", "k": "불쑥 들르다, 잠깐 방문하다", "def": "To visit someone briefly without arranging it first.", "syn": [ "stop by", "pop in", "swing by" ], "ex": "Feel free to drop in if you're ever in the neighborhood.", "tr": "이 근처 올 일 있으면 언제든 편하게 들러.", "cat": "phrasal", "lv": 2 },
+  { "w": "chip in", "k": "돈을 보태다, 거들다", "def": "To contribute money or help together with others.", "syn": [ "pitch in", "kick in", "contribute" ], "ex": "We all chipped in twenty bucks for her birthday gift.", "tr": "우리 다 같이 20달러씩 보태서 걔 생일 선물 샀어.", "cat": "phrasal", "lv": 2 },
+  { "w": "settle in", "k": "적응하다, 자리를 잡다", "def": "To become comfortable in a new place or job.", "syn": [ "get settled", "adjust", "find your feet" ], "ex": "It took me a few months to settle in at the new office.", "tr": "새 사무실에 적응하는 데 몇 달 걸렸어.", "cat": "phrasal", "lv": 2 },
+  { "w": "insist on something", "k": "고집하다, 굳이 하겠다고 하다", "def": "To firmly demand something and refuse to back down.", "syn": [ "push for", "hold out for", "demand" ], "ex": "He insisted on paying for dinner even though I offered.", "tr": "내가 낸다고 했는데도 굳이 저녁값을 자기가 내겠다고 우기더라.", "cat": "phrasal", "lv": 2 },
+  { "w": "bring in", "k": "벌어들이다, 도입하다", "def": "To earn money, or to introduce something new.", "syn": [ "rake in", "roll out", "introduce" ], "ex": "The side job brings in about a thousand dollars a month.", "tr": "그 부업으로 한 달에 천 달러 정도 벌어.", "cat": "phrasal", "lv": 2 },
+  { "w": "break in", "k": "침입하다, 무단으로 들어가다", "def": "To enter a building illegally, usually to steal.", "syn": [ "break into", "bust in", "force your way in" ], "ex": "Someone broke in through the back window last night.", "tr": "어젯밤에 누가 뒤쪽 창문으로 침입했어.", "cat": "phrasal", "lv": 2 },
+  { "w": "jump in", "k": "끼어들다, 불쑥 참여하다", "def": "To join a conversation or activity suddenly.", "syn": [ "cut in", "chime in", "butt in" ], "ex": "Sorry to jump in, but I think there's been a misunderstanding.", "tr": "끼어들어서 죄송한데, 뭔가 오해가 있는 것 같아요.", "cat": "phrasal", "lv": 2 },
+  { "w": "tune in", "k": "채널을 맞춰 보다, 시청하다", "def": "To watch or listen to a particular broadcast.", "syn": [ "listen in", "catch", "watch" ], "ex": "Tune in next week to find out who wins.", "tr": "누가 이기는지는 다음 주 방송에서 확인하세요.", "cat": "phrasal", "lv": 2 },
+  { "w": "look into something", "k": "조사하다, 알아보다", "def": "To examine something to find out the facts.", "syn": [ "dig into", "check out", "investigate" ], "ex": "I'll look into it and get back to you tomorrow.", "tr": "제가 좀 알아보고 내일 다시 연락드릴게요.", "cat": "phrasal", "lv": 2 },
+  { "w": "cash in on something", "k": "편승해 이득을 보다, 이용해 돈을 벌다", "def": "To make money from a situation, often unfairly.", "syn": [ "capitalize on", "profit from", "milk" ], "ex": "Every brand is trying to cash in on the nostalgia trend.", "tr": "브랜드마다 복고 열풍에 편승해서 돈을 벌려고 난리야.", "cat": "phrasal", "lv": 3 },
+  { "w": "catch on", "k": "유행하다, 인기를 얻다", "def": "To become popular with a lot of people.", "syn": [ "take off", "gain traction", "blow up" ], "ex": "Nobody liked the app at first, but it caught on fast.", "tr": "처음엔 아무도 그 앱을 안 좋아했는데 금세 인기를 끌었어.", "cat": "phrasal", "lv": 3 },
+  { "w": "dwell on something", "k": "곱씹다, 연연하다", "def": "To keep thinking or talking about something unpleasant.", "syn": [ "fixate on", "brood over", "harp on" ], "ex": "There's no point dwelling on mistakes you can't undo.", "tr": "되돌릴 수도 없는 실수를 계속 곱씹어 봐야 소용없어.", "cat": "phrasal", "lv": 3 },
+  { "w": "touch on something", "k": "간단히 언급하다, 짚고 넘어가다", "def": "To mention a topic briefly without going deep.", "syn": [ "allude to", "mention in passing", "gloss over" ], "ex": "She touched on the budget issue but didn't go into detail.", "tr": "그 사람이 예산 문제를 잠깐 언급하긴 했는데 자세히는 안 다뤘어.", "cat": "phrasal", "lv": 3 },
+  { "w": "sit in on something", "k": "참관하다, 청강하다", "def": "To attend a meeting or class as an observer.", "syn": [ "audit", "observe", "listen in on" ], "ex": "Do you mind if I sit in on the interview?", "tr": "제가 그 면접에 참관해도 괜찮을까요?", "cat": "phrasal", "lv": 3 },
+  { "w": "pick up on something", "k": "알아채다, 눈치채다", "def": "To notice something subtle that others miss.", "syn": [ "catch", "sense", "notice" ], "ex": "I picked up on the tension between them right away.", "tr": "나는 둘 사이의 냉랭한 기류를 바로 눈치챘어.", "cat": "phrasal", "lv": 3 },
+  { "w": "take over", "k": "인수하다, 넘겨받다", "def": "To take control of a company, job, or situation.", "syn": [ "take charge of", "assume control of", "take the reins" ], "ex": "When the manager quit, Dana took over the whole project.", "tr": "매니저가 그만두자 데이나가 프로젝트 전체를 넘겨받았다.", "cat": "phrasal", "lv": 2 },
+  { "w": "get over something", "k": "극복하다, 이겨내다", "def": "To recover from an illness, shock, or bad experience.", "syn": [ "recover from", "move on from", "come to terms with" ], "ex": "It took her months to get over the breakup.", "tr": "그녀는 그 이별을 극복하는 데 몇 달이 걸렸다.", "cat": "phrasal", "lv": 1 },
+  { "w": "hand something over", "k": "넘겨주다, 인계하다", "def": "To give something to someone else, often unwillingly.", "syn": [ "turn over", "surrender", "relinquish" ], "ex": "The officer told him to hand over his keys.", "tr": "경찰관이 그에게 열쇠를 넘기라고 했다.", "cat": "phrasal", "lv": 1 },
+  { "w": "pull over", "k": "차를 길가에 세우다", "def": "To move a vehicle to the side of the road and stop.", "syn": [ "pull off the road", "pull up", "pull to the curb" ], "ex": "A cop flashed his lights behind me, so I pulled over.", "tr": "뒤에서 경찰이 경광등을 번쩍여서 차를 갓길에 세웠다.", "cat": "phrasal", "lv": 2 },
+  { "w": "win someone over", "k": "마음을 얻다, 설득해 내 편으로 만들다", "def": "To persuade someone to like or support you.", "syn": [ "bring someone around", "get someone on board", "talk someone into it" ], "ex": "He was skeptical at first, but her pitch won him over.", "tr": "그는 처음엔 미심쩍어했지만, 그녀의 설명을 듣고 마음이 돌아섰다.", "cat": "phrasal", "lv": 2 },
+  { "w": "start over", "k": "처음부터 다시 시작하다", "def": "To begin something again from the very beginning.", "syn": [ "start from scratch", "begin again", "start fresh" ], "ex": "I messed up the first draft, so I just started over.", "tr": "초안을 망쳐서 그냥 처음부터 다시 썼다.", "cat": "phrasal", "lv": 1 },
+  { "w": "get through something", "k": "견뎌내다, 버텨내다", "def": "To survive or endure a difficult period or task.", "syn": [ "make it through", "pull through", "ride out" ], "ex": "I don't know how I got through that first year without you.", "tr": "네가 없었으면 그 첫해를 어떻게 버텼을지 모르겠어.", "cat": "phrasal", "lv": 2 },
+  { "w": "go through something", "k": "겪다, 경험하다", "def": "To experience something difficult or unpleasant.", "syn": [ "live through", "undergo", "deal with" ], "ex": "Be nice to him — he's going through a lot right now.", "tr": "그에게 좀 잘해줘. 지금 힘든 일을 많이 겪고 있어.", "cat": "phrasal", "lv": 1 },
+  { "w": "fall through", "k": "무산되다, 성사되지 못하다", "def": "To fail to happen after being planned or arranged.", "syn": [ "fall apart", "collapse", "not pan out" ], "ex": "We were supposed to buy the place, but the deal fell through.", "tr": "그 집을 사기로 했는데 거래가 엎어졌다.", "cat": "phrasal", "lv": 2 },
+  { "w": "see through someone", "k": "속셈을 꿰뚫어 보다, 수를 간파하다", "def": "To realize someone is lying or hiding their real intentions.", "syn": [ "read someone like a book", "catch on to someone", "be onto someone" ], "ex": "Don't bother lying — she sees through you every time.", "tr": "거짓말해 봐야 소용없어. 걔는 매번 네 속을 다 꿰뚫어 봐.", "cat": "phrasal", "lv": 3 },
+  { "w": "sleep through something", "k": "자느라 못 듣다, 자다가 놓치다", "def": "To stay asleep while something loud or important happens.", "syn": [ "stay asleep through", "not wake up for" ], "ex": "I slept through my alarm and missed the interview.", "tr": "알람 소리를 못 듣고 자는 바람에 면접을 놓쳤다.", "cat": "phrasal", "lv": 2 },
+  { "w": "get away with something", "k": "처벌을 면하다, 들키지 않고 넘어가다", "def": "To avoid punishment or criticism for doing something wrong.", "syn": [ "escape punishment for", "not get caught", "go unpunished" ], "ex": "He cheated on the test and somehow got away with it.", "tr": "그는 시험에서 부정행위를 했는데 어떻게든 안 걸리고 넘어갔다.", "cat": "phrasal", "lv": 2 },
+  { "w": "give something away", "k": "무심코 드러내다, 발설하다", "def": "To reveal a secret, often without meaning to.", "syn": [ "let slip", "spill", "let the cat out of the bag" ], "ex": "Don't tell Amy about the party — she'll give it away.", "tr": "에이미한테 파티 얘기하지 마. 걔가 다 말해 버릴 거야.", "cat": "phrasal", "lv": 2 },
+  { "w": "throw something away", "k": "버리다, 날려버리다", "def": "To discard something, or to waste a good opportunity.", "syn": [ "toss out", "get rid of", "squander" ], "ex": "You're throwing away a great job over one argument.", "tr": "너 말다툼 한 번 때문에 좋은 직장을 날려버리는 거야.", "cat": "phrasal", "lv": 1 },
+  { "w": "put something away", "k": "제자리에 치우다, 정리하다", "def": "To put something back where it belongs.", "syn": [ "tidy up", "clear away", "stow" ], "ex": "Put your laundry away before your friends get here.", "tr": "친구들 오기 전에 빨래 좀 치워 놔.", "cat": "phrasal", "lv": 1 },
+  { "w": "pass away", "k": "돌아가시다, 세상을 떠나다", "def": "To die, said in a gentle or polite way.", "syn": [ "pass on", "die", "be no longer with us" ], "ex": "Her grandfather passed away last spring.", "tr": "그녀의 할아버지는 지난봄에 돌아가셨다.", "cat": "phrasal", "lv": 2 },
+  { "w": "blow someone away", "k": "깜짝 놀라게 하다, 감동시키다", "def": "To impress or amaze someone completely.", "syn": [ "knock someone's socks off", "floor someone", "wow someone" ], "ex": "That final scene absolutely blew me away.", "tr": "그 마지막 장면에 완전히 압도당했다.", "cat": "phrasal", "lv": 2 },
+  { "w": "back down", "k": "물러서다, 뜻을 굽히다", "def": "To stop arguing or demanding something after facing opposition.", "syn": [ "give in", "yield", "climb down" ], "ex": "She knew she was right, and she wasn't about to back down.", "tr": "그녀는 자기가 옳다는 걸 알았고 물러설 생각이 전혀 없었다.", "cat": "phrasal", "lv": 2 },
+  { "w": "pay someone back", "k": "갚다, 되갚아주다", "def": "To return money you owe, or to take revenge.", "syn": [ "repay", "settle up with", "get even with" ], "ex": "I'll pay you back as soon as I get paid.", "tr": "월급 받는 대로 바로 갚을게.", "cat": "phrasal", "lv": 1 },
+  { "w": "hold back", "k": "참다, 억누르다", "def": "To stop yourself from showing emotion or saying something.", "syn": [ "restrain yourself", "keep it in", "bite your tongue" ], "ex": "He could barely hold back his tears during the speech.", "tr": "그는 연설 내내 눈물을 겨우 참았다.", "cat": "phrasal", "lv": 2 },
+  { "w": "cut back on something", "k": "줄이다, 절감하다", "def": "To reduce the amount of something you use or do.", "syn": [ "cut down on", "scale back", "ease up on" ], "ex": "I'm trying to cut back on coffee, but it's not going well.", "tr": "커피를 줄이려고 하는데 잘 안 되네.", "cat": "phrasal", "lv": 2 },
+  { "w": "bounce back", "k": "회복하다, 다시 일어서다", "def": "To recover quickly after a setback or illness.", "syn": [ "recover", "rebound", "get back on your feet" ], "ex": "The team lost badly on Friday but bounced back on Sunday.", "tr": "그 팀은 금요일에 크게 졌지만 일요일에 다시 살아났다.", "cat": "phrasal", "lv": 2 },
+  { "w": "look back on something", "k": "되돌아보다, 회상하다", "def": "To think about something that happened in the past.", "syn": [ "reflect on", "think back on", "reminisce about" ], "ex": "You'll look back on this someday and laugh.", "tr": "언젠가 이때를 돌아보면 웃게 될 거야.", "cat": "phrasal", "lv": 1 },
+  { "w": "come around", "k": "마음을 바꾸다, 결국 수긍하다", "def": "To finally change your mind and agree with someone.", "syn": [ "change your mind", "see it your way", "warm up to the idea" ], "ex": "Give him time — he'll come around eventually.", "tr": "시간을 좀 줘. 결국엔 마음을 돌릴 거야.", "cat": "phrasal", "lv": 2 },
+  { "w": "turn something around", "k": "상황을 반전시키다, 호전시키다", "def": "To change a failing situation into a successful one.", "syn": [ "get back on track", "turn the tide", "reverse" ], "ex": "The new coach turned the whole season around.", "tr": "새 감독이 시즌 분위기를 완전히 바꿔 놓았다.", "cat": "phrasal", "lv": 2 },
+  { "w": "hang around", "k": "어울려 다니다, 서성거리다", "def": "To spend time somewhere doing nothing in particular.", "syn": [ "hang out", "stick around", "kill time" ], "ex": "We just hung around the mall until it got dark.", "tr": "우리는 어두워질 때까지 그냥 쇼핑몰에서 시간을 보냈다.", "cat": "phrasal", "lv": 1 },
+  { "w": "show someone around", "k": "구경시켜 주다, 안내하다", "def": "To guide someone through a place that is new to them.", "syn": [ "give someone a tour", "take someone around" ], "ex": "I'll show you around the office on your first day.", "tr": "첫 출근날에 내가 사무실을 구경시켜 줄게.", "cat": "phrasal", "lv": 1 },
+  { "w": "boss someone around", "k": "이래라저래라 하다, 부려먹다", "def": "To keep telling someone what to do in a bossy way.", "syn": [ "order someone about", "push someone around", "tell someone what to do" ], "ex": "Stop bossing me around — you're not my manager.", "tr": "나한테 이래라저래라 하지 마. 네가 내 상사도 아니잖아.", "cat": "phrasal", "lv": 2 },
+  { "w": "figure something out", "k": "알아내다, 이해하다", "def": "to understand or solve something after thinking about it", "syn": [ "work out", "make sense of", "get to the bottom of" ], "ex": "It took me all morning to figure out why the printer wasn't working.", "tr": "프린터가 왜 안 되는지 알아내는 데 오전 내내 걸렸어.", "cat": "phrasal", "lv": 1 },
+  { "w": "put something off", "k": "미루다, 연기하다", "def": "to delay something until a later time", "syn": [ "postpone", "push back", "hold off on" ], "ex": "You can't keep putting off that dentist appointment.", "tr": "그 치과 예약 계속 미룰 수는 없어.", "cat": "phrasal", "lv": 1 },
+  { "w": "call something off", "k": "취소하다, 중단하다", "def": "to cancel an event or stop an activity", "syn": [ "cancel", "scrap", "abort" ], "ex": "They called off the game because of the storm.", "tr": "폭풍 때문에 경기가 취소됐어.", "cat": "phrasal", "lv": 1 },
+  { "w": "run out of something", "k": "다 떨어지다, 바닥나다", "def": "to use up all of a supply and have none left", "syn": [ "use up", "be out of", "exhaust" ], "ex": "We ran out of coffee halfway through the meeting.", "tr": "회의 중간에 커피가 다 떨어졌어.", "cat": "phrasal", "lv": 1 },
+  { "w": "drop someone off", "k": "(차로) 내려주다, 데려다주다", "def": "to take someone somewhere by car and leave them there", "syn": [ "give someone a ride", "give someone a lift" ], "ex": "Can you drop me off at the station on your way to work?", "tr": "출근길에 나 역에 좀 내려줄 수 있어?", "cat": "phrasal", "lv": 1 },
+  { "w": "take off", "k": "이륙하다, 갑자기 인기를 얻다", "def": "to leave the ground, or to suddenly become popular", "syn": [ "lift off", "blow up", "skyrocket" ], "ex": "Our flight finally took off after a two-hour delay.", "tr": "두 시간이나 지연된 끝에 우리 비행기가 드디어 이륙했어.", "cat": "phrasal", "lv": 1 },
+  { "w": "work out", "k": "운동하다, 잘 풀리다", "def": "to exercise, or for a situation to end well", "syn": [ "exercise", "hit the gym", "turn out fine" ], "ex": "I try to work out three times a week, but it never happens.", "tr": "일주일에 세 번은 운동하려고 하는데 잘 안 돼.", "cat": "phrasal", "lv": 1 },
+  { "w": "show off", "k": "자랑하다, 뽐내다", "def": "to display your abilities or possessions to impress others", "syn": [ "brag", "flaunt", "boast" ], "ex": "He only bought that watch to show off at work.", "tr": "그 사람 회사에서 자랑하려고 그 시계 산 거야.", "cat": "phrasal", "lv": 1 },
+  { "w": "fill something out", "k": "(서류를) 작성하다, 기입하다", "def": "to write the required information on a form", "syn": [ "fill in", "complete" ], "ex": "You'll need to fill out this form before the doctor sees you.", "tr": "진료 받기 전에 이 서류를 작성하셔야 해요.", "cat": "phrasal", "lv": 1 },
+  { "w": "hang out", "k": "어울려 놀다, 시간을 보내다", "def": "to spend time relaxing with people you like", "syn": [ "chill", "spend time together", "kick it" ], "ex": "We used to hang out at that café every weekend.", "tr": "우리 주말마다 저 카페에서 놀곤 했어.", "cat": "phrasal", "lv": 1 },
+  { "w": "get off", "k": "(차에서) 내리다, 퇴근하다", "def": "to leave a bus or train, or finish work", "syn": [ "step off", "clock out" ], "ex": "Get off at the next stop and walk two blocks north.", "tr": "다음 정거장에서 내려서 북쪽으로 두 블록만 걸어가.", "cat": "phrasal", "lv": 1 },
+  { "w": "pull something off", "k": "해내다, 성공시키다", "def": "to succeed at something difficult or unlikely", "syn": [ "manage", "nail it", "carry off" ], "ex": "I don't know how you pulled it off, but the party was perfect.", "tr": "어떻게 해낸 건지 모르겠지만 파티 진짜 완벽했어.", "cat": "phrasal", "lv": 2 },
+  { "w": "turn out", "k": "~로 밝혀지다, 결국 ~이 되다", "def": "to happen to be the case in the end", "syn": [ "end up", "prove to be" ], "ex": "It turned out that he'd known about the surprise all along.", "tr": "알고 보니 그는 처음부터 그 서프라이즈를 알고 있었어.", "cat": "phrasal", "lv": 2 },
+  { "w": "point something out", "k": "지적하다, 짚어 주다", "def": "to draw attention to a fact or a mistake", "syn": [ "note", "flag", "bring up" ], "ex": "She politely pointed out that my slides had the wrong numbers.", "tr": "그녀가 내 슬라이드 숫자가 틀렸다고 정중하게 짚어 줬어.", "cat": "phrasal", "lv": 2 },
+  { "w": "rip someone off", "k": "바가지를 씌우다, 등쳐먹다", "def": "to charge someone far too much or cheat them", "syn": [ "overcharge", "fleece", "con" ], "ex": "Forty bucks for a ten-minute cab ride — they totally ripped you off.", "tr": "10분 타는 택시비가 40달러라니, 완전 바가지 씌운 거네.", "cat": "phrasal", "lv": 2 },
+  { "w": "pay off", "k": "결실을 맺다, 성과를 내다", "def": "for effort or risk to finally produce good results", "syn": [ "bear fruit", "be worth it", "pay dividends" ], "ex": "All those late nights finally paid off when she got the job.", "tr": "그 숱한 밤샘이 드디어 결실을 맺어서 그녀가 그 자리에 붙었어.", "cat": "phrasal", "lv": 2 },
+  { "w": "lay someone off", "k": "해고하다, 정리해고하다", "def": "to dismiss workers because the company needs fewer people", "syn": [ "let someone go", "make someone redundant", "downsize" ], "ex": "The company laid off about two hundred people last quarter.", "tr": "그 회사는 지난 분기에 200명 정도를 정리해고했어.", "cat": "phrasal", "lv": 2 },
+  { "w": "back off", "k": "물러서다, 참견을 그만두다", "def": "to stop pressuring someone or retreat from a confrontation", "syn": [ "ease up", "lay off", "give someone space" ], "ex": "Just back off and let him make his own decision.", "tr": "그만 좀 참견하고 걔가 알아서 결정하게 둬.", "cat": "phrasal", "lv": 2 },
+  { "w": "set off", "k": "출발하다, 유발하다", "def": "to start a journey, or to trigger a reaction", "syn": [ "head out", "trigger", "spark" ], "ex": "We set off before sunrise to beat the traffic.", "tr": "차 막히는 걸 피하려고 해 뜨기 전에 출발했어.", "cat": "phrasal", "lv": 2 },
+  { "w": "doze off", "k": "깜빡 졸다, 스르르 잠들다", "def": "to fall asleep briefly without meaning to", "syn": [ "nod off", "drift off", "fall asleep" ], "ex": "I dozed off during the second half of the movie.", "tr": "영화 후반부에 깜빡 졸았어.", "cat": "phrasal", "lv": 2 },
+  { "w": "burn out", "k": "탈진하다, 번아웃되다", "def": "to become exhausted from working too hard for too long", "syn": [ "wear oneself out", "run oneself ragged" ], "ex": "He burned out after three years of eighty-hour weeks.", "tr": "주 80시간씩 3년을 일하더니 그는 완전히 지쳐 나가떨어졌어.", "cat": "phrasal", "lv": 2 },
+  { "w": "chicken out", "k": "겁먹고 그만두다, 꽁무니를 빼다", "def": "to decide not to do something because you're scared", "syn": [ "back out", "get cold feet", "bail" ], "ex": "I was going to ask for a raise, but I chickened out.", "tr": "연봉 올려달라고 하려다가 겁나서 결국 말 못 했어.", "cat": "phrasal", "lv": 2 },
+  { "w": "iron something out", "k": "(문제를) 해결하다, 조율하다", "def": "to settle small problems or differences in a plan", "syn": [ "work out", "smooth over", "resolve" ], "ex": "We still have a few details to iron out before we sign.", "tr": "서명하기 전에 아직 조율할 세부 사항이 몇 가지 남았어.", "cat": "phrasal", "lv": 3 },
+  { "w": "pan out", "k": "잘 풀리다, 성사되다", "def": "to develop successfully or as someone hoped", "syn": [ "work out", "come together", "materialize" ], "ex": "The job in Berlin didn't pan out, so he moved back home.", "tr": "베를린 일자리가 잘 안 풀려서 그는 고향으로 돌아왔어.", "cat": "phrasal", "lv": 3 },
+  { "w": "shrug something off", "k": "대수롭지 않게 넘기다, 털어버리다", "def": "to treat criticism or a problem as unimportant", "syn": [ "brush off", "laugh off", "dismiss" ], "ex": "She just shrugged off the criticism and kept playing.", "tr": "그녀는 비판을 대수롭지 않게 넘기고 경기를 계속했어.", "cat": "phrasal", "lv": 3 },
+  { "w": "write someone off", "k": "가망 없다고 단정하다, 포기해 버리다", "def": "to decide someone or something is hopeless or worthless", "syn": [ "give up on", "count someone out", "dismiss" ], "ex": "Everyone wrote him off after the injury, but he came back stronger.", "tr": "부상 후에 다들 그는 끝났다고 봤지만, 그는 더 강해져서 돌아왔어.", "cat": "phrasal", "lv": 3 },
+  { "w": "weed something out", "k": "걸러내다, 솎아내다", "def": "to remove the weakest or unwanted members of a group", "syn": [ "filter out", "screen out", "sift out" ], "ex": "The first interview is really just there to weed out unqualified applicants.", "tr": "1차 면접은 사실상 자격 미달인 지원자를 걸러내려고 있는 거야.", "cat": "phrasal", "lv": 3 },
+  { "w": "fizzle out", "k": "흐지부지되다, 사그라들다", "def": "to gradually lose energy and end without success", "syn": [ "peter out", "die down", "come to nothing" ], "ex": "The whole campaign fizzled out after a couple of weeks.", "tr": "그 캠페인은 몇 주 만에 흐지부지 끝나 버렸어.", "cat": "phrasal", "lv": 3 },
+  { "w": "bring something up", "k": "(화제를) 꺼내다, 언급하다", "def": "To mention a topic in a conversation.", "syn": ["mention", "raise", "broach"], "ex": "Please don't bring up my ex at dinner tonight.", "tr": "오늘 저녁 자리에서 내 전 애인 얘기는 꺼내지 마.", "cat": "phrasal", "lv": 1 },
+  { "w": "turn something down", "k": "거절하다, (소리·온도를) 낮추다", "def": "To reject an offer, or lower volume or heat.", "syn": ["reject", "decline", "say no to"], "ex": "She decided to turn down the job offer because the pay was too low.", "tr": "그녀는 급여가 너무 적어서 그 일자리 제안을 거절하기로 했다.", "cat": "phrasal", "lv": 1 },
+  { "w": "give up", "k": "포기하다, 그만두다", "def": "To stop trying because something is too difficult.", "syn": ["quit", "throw in the towel", "call it quits"], "ex": "Don't give up now, you're almost there.", "tr": "지금 포기하지 마, 거의 다 왔어.", "cat": "phrasal", "lv": 1 },
+  { "w": "look something up", "k": "찾아보다, 검색하다", "def": "To search for information in a book or online.", "syn": ["search for", "check", "google"], "ex": "I had to look up the address before heading out.", "tr": "나가기 전에 주소를 찾아봐야 했다.", "cat": "phrasal", "lv": 1 },
+  { "w": "calm down", "k": "진정하다, 진정시키다", "def": "To become or make someone less angry or upset.", "syn": ["relax", "chill out", "cool off"], "ex": "Just calm down and tell me what actually happened.", "tr": "일단 진정하고 무슨 일이 있었는지 말해 봐.", "cat": "phrasal", "lv": 1 },
+  { "w": "show up", "k": "나타나다, 모습을 보이다", "def": "To arrive or appear, especially at an event.", "syn": ["turn up", "appear", "make an appearance"], "ex": "He didn't even show up to his own birthday party.", "tr": "걔는 자기 생일 파티에 나타나지도 않았어.", "cat": "phrasal", "lv": 1 },
+  { "w": "pick someone up", "k": "차로 데리러 가다, 태우러 가다", "def": "To collect someone in a car.", "syn": ["give someone a ride", "collect", "come get someone"], "ex": "Can you pick up the kids from school today?", "tr": "오늘 학교에서 애들 좀 데려와 줄 수 있어?", "cat": "phrasal", "lv": 1 },
+  { "w": "break down", "k": "고장 나다, (감정이) 무너지다", "def": "To stop working, or to lose emotional control.", "syn": ["conk out", "give out", "fall apart"], "ex": "My car broke down on the highway again this morning.", "tr": "오늘 아침에 고속도로에서 또 차가 고장 났어.", "cat": "phrasal", "lv": 1 },
+  { "w": "slow down", "k": "속도를 줄이다, 천천히 하다", "def": "To move, speak, or happen more slowly.", "syn": ["ease up", "take it easy", "decelerate"], "ex": "Slow down, I can't understand a word you're saying.", "tr": "천천히 말해, 무슨 말인지 하나도 못 알아듣겠어.", "cat": "phrasal", "lv": 1 },
+  { "w": "write something down", "k": "적어 두다, 받아 적다", "def": "To record something on paper so you remember it.", "syn": ["note down", "jot down", "take note of"], "ex": "Write down your number before I forget it.", "tr": "잊어버리기 전에 네 번호 좀 적어 줘.", "cat": "phrasal", "lv": 1 },
+  { "w": "clean up", "k": "치우다, 정리하다", "def": "To make a messy place tidy again.", "syn": ["tidy up", "straighten up", "clear away"], "ex": "Whoever made this mess needs to clean up after themselves.", "tr": "이 난장판 만든 사람이 알아서 치워야지.", "cat": "phrasal", "lv": 1 },
+  { "w": "put up with someone/something", "k": "참다, 견디다", "def": "To tolerate something annoying without complaining.", "syn": ["tolerate", "live with", "stand"], "ex": "I don't know how you put up with that noise every night.", "tr": "매일 밤 저 소음을 어떻게 참고 사는지 모르겠다.", "cat": "phrasal", "lv": 2 },
+  { "w": "come up with something", "k": "생각해 내다, 떠올리다", "def": "To think of an idea, plan, or excuse.", "syn": ["think of", "devise", "dream up"], "ex": "We need to come up with a better excuse than that.", "tr": "그것보다는 그럴듯한 핑계를 생각해 내야겠는데.", "cat": "phrasal", "lv": 2 },
+  { "w": "back someone up", "k": "지지하다, 편들다, 뒷받침하다", "def": "To support someone or confirm what they say.", "syn": ["support", "stand by", "vouch for"], "ex": "Don't worry, I'll back you up if he starts complaining.", "tr": "걱정 마, 걔가 불평하기 시작하면 내가 네 편 들어 줄게.", "cat": "phrasal", "lv": 2 },
+  { "w": "let someone down", "k": "실망시키다, 기대를 저버리다", "def": "To disappoint someone who was relying on you.", "syn": ["disappoint", "fail someone", "leave someone hanging"], "ex": "I promise I won't let you down this time.", "tr": "이번엔 절대 널 실망시키지 않을게.", "cat": "phrasal", "lv": 2 },
+  { "w": "cheer someone up", "k": "기운 나게 하다, 기분을 풀어 주다", "def": "To make someone feel happier than before.", "syn": ["lift someone's spirits", "perk someone up", "brighten someone's day"], "ex": "I brought ice cream to cheer you up.", "tr": "네 기분 좀 풀어 주려고 아이스크림 사 왔어.", "cat": "phrasal", "lv": 2 },
+  { "w": "cut down on something", "k": "줄이다, 절제하다", "def": "To use or consume less of something.", "syn": ["cut back on", "reduce", "ease off"], "ex": "I'm trying to cut down on coffee, but it's not going well.", "tr": "커피를 줄여 보려는데 잘 안 되네.", "cat": "phrasal", "lv": 2 },
+  { "w": "settle down", "k": "정착하다, 자리를 잡다", "def": "To start a stable life in one place.", "syn": ["put down roots", "start a family"], "ex": "They're not ready to settle down and buy a house yet.", "tr": "걔네는 아직 정착해서 집 살 준비는 안 됐어.", "cat": "phrasal", "lv": 2 },
+  { "w": "narrow something down", "k": "(범위를) 좁히다, 추리다", "def": "To reduce many options to a few choices.", "syn": ["shortlist", "whittle down", "zero in on"], "ex": "Let's narrow down the list before the meeting.", "tr": "회의 전에 목록을 좀 추려 보자.", "cat": "phrasal", "lv": 2 },
+  { "w": "speak up", "k": "큰 소리로 말하다, 목소리를 내다", "def": "To talk louder, or to state your opinion openly.", "syn": ["talk louder", "speak your mind", "voice your opinion"], "ex": "If something's bothering you, speak up instead of sulking.", "tr": "뭔가 불만이 있으면 삐지지 말고 말을 해.", "cat": "phrasal", "lv": 2 },
+  { "w": "make up for something", "k": "만회하다, 보상하다", "def": "To compensate for a mistake, loss, or absence.", "syn": ["compensate for", "atone for", "make it right"], "ex": "Let me buy you dinner to make up for missing your birthday.", "tr": "네 생일 못 챙긴 거 만회하게 저녁은 내가 살게.", "cat": "phrasal", "lv": 2 },
+  { "w": "keep up with someone/something", "k": "따라가다, 뒤처지지 않다", "def": "To move or progress at the same pace as others.", "syn": ["keep pace with", "stay on top of", "not fall behind"], "ex": "I can barely keep up with all the emails these days.", "tr": "요즘은 이메일 처리도 겨우겨우 따라가는 정도야.", "cat": "phrasal", "lv": 2 },
+  { "w": "crack down on someone/something", "k": "단속하다, 엄하게 다스리다", "def": "To take strict action against bad or illegal behavior.", "syn": ["clamp down on", "get tough on", "take a hard line on"], "ex": "The city has promised to crack down on illegal parking downtown.", "tr": "시는 도심 불법 주차를 강력히 단속하겠다고 했다.", "cat": "phrasal", "lv": 3 },
+  { "w": "play something down", "k": "축소하다, 대수롭지 않게 말하다", "def": "To make something seem less important than it really is.", "syn": ["downplay", "minimize", "make light of"], "ex": "The company tried to play down the security breach.", "tr": "회사는 그 보안 사고를 대수롭지 않은 일로 넘기려 했다.", "cat": "phrasal", "lv": 3 },
+  { "w": "water something down", "k": "약화시키다, 희석하다", "def": "To make something weaker or less effective.", "syn": ["dilute", "tone down", "weaken"], "ex": "They watered down the bill until it meant almost nothing.", "tr": "그들은 그 법안을 거의 아무 의미도 없을 만큼 약화시켰다.", "cat": "phrasal", "lv": 3 },
+  { "w": "own up to something", "k": "(잘못을) 인정하다, 시인하다", "def": "To admit that you did something wrong.", "syn": ["admit", "come clean", "fess up"], "ex": "Nobody wanted to own up to breaking the window.", "tr": "아무도 창문 깬 게 자기라고 인정하려 하지 않았다.", "cat": "phrasal", "lv": 3 },
+  { "w": "double down on something", "k": "더 밀어붙이다, 고집을 꺾지 않다", "def": "To commit even harder to a risky position.", "syn": ["go all in on", "stick to your guns", "dig in"], "ex": "Instead of apologizing, he doubled down on his comments.", "tr": "그는 사과하기는커녕 자기 발언을 더 밀어붙였다.", "cat": "phrasal", "lv": 3 },
+  { "w": "wind down", "k": "긴장을 풀다, 서서히 마무리되다", "def": "To relax gradually, or slowly come to an end.", "syn": ["unwind", "decompress", "taper off"], "ex": "I usually wind down with a book before bed.", "tr": "나는 보통 자기 전에 책을 읽으며 긴장을 푼다.", "cat": "phrasal", "lv": 3 }
+]
+</script>
 <script>
 (function(){
 'use strict';
@@ -6881,11 +7148,45 @@ var WORDS = (function(){
   return out;
 })();
 
-var BY_WORD = (function(){
-  var m = Object.create(null);
-  for (var i = 0; i < WORDS.length; i++) m[WORDS[i].w] = WORDS[i];
-  return m;
+// 속어(관용구·구동사)는 별도 묶음이다. 데이터가 없으면 이 시험은 아예 안 보인다.
+var SLANG = (function(){
+  var el = document.getElementById('slangData');
+  var arr = [];
+  try { arr = JSON.parse((el && el.textContent) || '[]') || []; } catch(e){ arr = []; }
+  var map = Object.create(null), out = [];
+  arr.forEach(function(it){
+    if (!it || !it.w || !it.k) return;
+    var key = String(it.w).toLowerCase();
+    if (map[key]) return;
+    var copy = {
+      w:it.w, p:'', pos:'', k:it.k, def:it.def || '',
+      ex:it.ex || '', tr:it.tr || '',
+      syn:Array.isArray(it.syn) ? it.syn : [],
+      cat:it.cat || 'idiom', lv:it.lv || 2
+    };
+    map[key] = copy; out.push(copy);
+  });
+  return out;
 })();
+
+function indexOfList(list){
+  var m = Object.create(null);
+  for (var i = 0; i < list.length; i++) m[list[i].w] = list[i];
+  return m;
+}
+
+var DECKS = {
+  word:  { key:'word',  label:'단어', items:WORDS, index:indexOfList(WORDS)  },
+  slang: { key:'slang', label:'속어', items:SLANG, index:indexOfList(SLANG) }
+};
+var deck = 'word';                       // 지금 고른 시험 묶음
+function D(){ return DECKS[deck]; }
+function deckOf(word){                   // 메모처럼 두 묶음을 함께 보는 곳에서 쓴다
+  return DECKS.word.index[word] ? DECKS.word : (DECKS.slang.index[word] ? DECKS.slang : null);
+}
+function lookup(word){
+  return DECKS.word.index[word] || DECKS.slang.index[word] || null;
+}
 
 /* ═══ 저장소 ═══════════════════════════════════════════ */
 var LS = (function(){
@@ -6920,9 +7221,13 @@ var KEY_THEME = 'vq.theme.v1';
 var KEY_DRAFT = 'vq.draft.v1';
 var KEY_MEMO  = 'vq.memo.v1';
 
-var wrongbook = LS.get(KEY_WRONG, {});       // { word: {miss, mine, lastAt} } — 뜻·예문은 BY_WORD에서 채운다
-var history   = LS.get(KEY_HIST, []);        // 최근 것이 앞
+// 오답노트와 진도는 묶음(단어/속어)마다 따로 쌓는다. 기존 사용자의 단어 기록은 그대로 이어진다.
+function deckKey(base, d){ return d === 'word' ? base : base.replace(/\.v1$/, '.' + d + '.v1'); }
+
+var wrongbook = LS.get(KEY_WRONG, {});       // { 표현: {miss, mine, lastAt} } — 뜻·예문은 묶음 색인에서 채운다
+var history   = LS.get(KEY_HIST, []);        // 최근 것이 앞 (묶음 구분은 각 항목의 deck 필드)
 var prefs     = LS.get(KEY_PREF, {mode:'card', count:100});
+if (prefs.deck  == null) prefs.deck  = 'word';
 if (prefs.rate  == null) prefs.rate  = 0.9;
 if (prefs.auto  == null) prefs.auto  = 0;
 if (prefs.voice == null) prefs.voice = '';
@@ -6934,10 +7239,19 @@ if (prefs.shEx     == null) prefs.shEx     = 0;
 if (prefs.shSound  == null) prefs.shSound  = 0;
 var seen      = LS.get(KEY_SEEN, {});        // 한 번이라도 시험에 나온 단어
 
-function saveWrong(){ LS.set(KEY_WRONG, wrongbook); }
+function saveWrong(){ LS.set(deckKey(KEY_WRONG, deck), wrongbook); }
 function saveHist(){ LS.set(KEY_HIST, history); }
 function savePrefs(){ LS.set(KEY_PREF, prefs); }
-function saveSeen(){ LS.set(KEY_SEEN, seen); }
+function saveSeen(){ LS.set(deckKey(KEY_SEEN, deck), seen); }
+
+// 묶음을 바꾸면 그 묶음의 오답노트·진도를 불러온다
+function setDeck(d){
+  if (!DECKS[d] || !DECKS[d].items.length) d = 'word';
+  deck = d;
+  prefs.deck = d; savePrefs();
+  wrongbook = LS.get(deckKey(KEY_WRONG, d), {});
+  seen      = LS.get(deckKey(KEY_SEEN, d), {});
+}
 
 /* ═══ 발음 읽어주기 ════════════════════════════════════
    기기에 내장된 음성합성을 쓴다. 추가로 받는 파일이 없어 용량은 그대로다.
@@ -7059,6 +7373,71 @@ function fillVoiceSelect(sel, list, saved, prefer){
     for (var i = 0; i < list.length; i++) if (list[i].localService && prefer.test(list[i].lang)) return list[i];
     return list[0];
   })()));
+}
+
+/* ═══ 동의어 뽑기 ══════════════════════════════════════
+   뜻풀이(def)에는 한국어 뜻과 영어 동의어가 섞여 있다.
+   한글이 없는 연속 구간만 골라내 2~3개를 답 공개 때 함께 보여준다. */
+var POS_ONLY = /^(n|v|vt|vi|a|ad|adv|adj|p|prep|conj|int|pron)$/i;
+// 출처 꼬리표. 단어는 몇 권 며칠치인지, 속어는 갈래와 난이도를 보여준다.
+function sourceTag(it){
+  if (it.cat) return (it.cat === 'phrasal' ? '구동사' : '관용구') + ' · 난이도 ' + (it.lv || 2);
+  return it.book + '권 · DAY ' + pad2(it.day);
+}
+
+// 뜻 + 품사 + 동의어를 한 덩어리로 만든다. 답을 공개하는 자리마다 이걸 쓴다.
+function meaningBlock(it, variant){
+  var box = el('div', 'mean-block' + (variant ? ' mean-' + variant : ''));
+  var top = el('div', 'mean-top');
+  top.appendChild(el('span', 'mean-k', it.k));
+  if (it.pos) top.appendChild(el('span', 'mean-pos', it.pos));
+  box.appendChild(top);
+  var syn = synonymsOf(it);
+  if (syn.length){
+    var row = el('div', 'mean-syn');
+    row.appendChild(el('span', 'syn-label', '비슷한 말'));
+    row.appendChild(el('span', 'syn-list', syn.join(' · ')));
+    box.appendChild(row);
+  }
+  return box;
+}
+
+function synonymsOf(it){
+  if (it.syn && it.syn.length) return it.syn;    // 속어 데이터는 동의어를 직접 갖고 있다
+  if (it.__syn) return it.__syn;                 // 한 번 뽑으면 재사용
+  var d = String(it.def || '');
+  d = d.replace(/[ \t]*cf\..*$/, '');            // 참고 설명은 제외
+  d = d.replace(/\([^)]*\)/g, ' ');              // 괄호 보충 설명 제외
+  d = d.replace(/\d+\.\s*/g, ' § ');        // 뜻 번호는 구간 경계로
+
+  var runs = [], cur = [];
+  d.split(/\s+/).forEach(function(t){
+    if (!t || t === '§' || HANGUL.test(t)){
+      if (cur.length){ runs.push(cur.join(' ')); cur = []; }
+      return;
+    }
+    cur.push(t);
+  });
+  if (cur.length) runs.push(cur.join(' '));
+
+  var out = [], seen = {};
+  runs.forEach(function(r){
+    r.split(/[,;/]/).forEach(function(s){
+      s = s.replace(/^[\s.§]+|[\s.§]+$/g, '');
+      s = s.replace(/^(n|v|vt|vi|a|ad|adv|adj|p|prep)\.\s*/i, '');
+      if (!/^[A-Za-z]/.test(s)) return;
+      if (POS_ONLY.test(s)) return;                    // 품사 약어 조각
+      if (s.split(/\s+/).length > 3) return;           // 예문·영영풀이 조각
+      if (s.length < 2 || s.length > 24) return;
+      if (/[.!?"'’”]$/.test(s)) return;
+      if (/^(the|a|an|to|of|in|on|for|with|by|as|or|and|is|are|was|were|it|he|she|they)$/i.test(s)) return;
+      var key = s.toLowerCase();
+      if (seen[key]) return;
+      seen[key] = 1; out.push(s);
+    });
+  });
+  it.__syn = out.slice(0, 3);
+  return it.__syn;
 }
 
 /* ═══ 메모 ═════════════════════════════════════════════
@@ -7333,7 +7712,7 @@ function renderMemo(){
     var row = el('div', 'memo-item');
     var body = el('div');
     var w = el('div', 'mw', m.w);
-    bindWord(w, BY_WORD[m.w] || {w:m.w, k:m.k});
+    bindWord(w, lookup(m.w) || {w:m.w, k:m.k});
     body.appendChild(w);
     if (m.k) body.appendChild(el('div', 'mk', m.k));
     row.appendChild(body);
@@ -7409,16 +7788,17 @@ function markWrong(item, mine, countMiss){
 function unmarkWrong(word){ delete wrongbook[word]; }
 // 저장된 오답은 뜻·예문 없이 최소한만 들고 있으므로 단어장에서 되살린다.
 function hydrate(word, rec){
-  var base = BY_WORD[word] || {w:word, k:'', def:'', ex:'', tr:'', pos:'', p:'', day:0, book:0};
+  var base = D().index[word] || {w:word, k:'', def:'', ex:'', tr:'', pos:'', p:'', day:0, book:0};
   return {
     w:base.w, p:base.p, pos:base.pos, k:base.k, def:base.def,
     ex:base.ex, tr:base.tr, day:base.day, book:base.book,
+    syn:base.syn, cat:base.cat, lv:base.lv,
     miss:(rec && rec.miss) || 1, mine:(rec && rec.mine) || '', lastAt:(rec && rec.lastAt) || 0
   };
 }
 function wrongList(){
   var out = [];
-  for (var k in wrongbook) if (BY_WORD[k]) out.push(hydrate(k, wrongbook[k]));
+  for (var k in wrongbook) if (D().index[k]) out.push(hydrate(k, wrongbook[k]));
   out.sort(function(a, b){ return (b.miss - a.miss) || (b.lastAt - a.lastAt); });
   return out;
 }
@@ -7429,19 +7809,27 @@ function markSeen(word){
 }
 function seenCount(){
   var n = 0;
-  for (var k in seen) if (BY_WORD[k]) n++;
+  for (var k in seen) if (D().index[k]) n++;
   return n;
 }
 
 function refreshHome(){
-  var total = WORDS.length;
+  var total = D().items.length;
+  var unit = deck === 'slang' ? '표현' : '단어';
   $('totalWords').textContent = total.toLocaleString('ko-KR');
-  $('stTests').querySelector('.n').textContent = history.length;
+  $('unitWord').textContent = unit;
+  $('unitCover').textContent = '시험 본 ' + unit;
+  $('kicker').textContent = deck === 'slang'
+    ? '관용구 · 구동사'
+    : '한권끝 1·2권 · DAY 01–44';
+
+  var mine = history.filter(function(h){ return (h.deck || 'word') === deck; });
+  $('stTests').querySelector('.n').textContent = mine.length;
   var avg = '–';
-  if (history.length){
+  if (mine.length){
     var s = 0;
-    for (var i = 0; i < history.length; i++) s += history[i].score;
-    avg = Math.round(s / history.length);
+    for (var i = 0; i < mine.length; i++) s += mine[i].score;
+    avg = Math.round(s / mine.length);
   }
   $('stAvg').querySelector('.n').textContent = avg;
   var wc = wrongList().length;
@@ -7451,7 +7839,7 @@ function refreshHome(){
   // 진도: 시험에 한 번이라도 나온 단어 / 전체. 그중 아직 오답으로 남은 몫을 따로 칠한다.
   var sc = seenCount();
   var pending = 0;
-  for (var w in wrongbook) if (BY_WORD[w] && seen[w]) pending++;
+  for (var w in wrongbook) if (D().index[w] && seen[w]) pending++;
   var got = Math.max(0, sc - pending);
   var pct = total ? sc / total * 100 : 0;
   // 초반 진도가 0%로만 보이지 않도록 한 자리까지 보여준다.
@@ -7466,11 +7854,11 @@ function refreshHome(){
   $('coverMissed').style.width = seg(pending);
 
   var note;
-  if (sc === 0) note = '아직 한 문제도 풀지 않았어요.';
-  else if (sc >= total) note = '전체 단어를 한 번씩 다 봤어요.';
+  if (sc === 0) note = "아직 한 문제도 풀지 않았어요.";
+  else if (sc >= total) note = "전체 " + unit + "를 한 번씩 다 봤어요.";
   else {
-    note = '아직 안 나온 단어 ' + (total - sc).toLocaleString('ko-KR') + '개';
-    if (pending) note += ' · 오답으로 남은 단어 ' + pending.toLocaleString('ko-KR') + '개';
+    note = "아직 안 나온 " + unit + " " + (total - sc).toLocaleString("ko-KR") + "개";
+    if (pending) note += " · 오답으로 남은 " + unit + " " + pending.toLocaleString("ko-KR") + "개";
   }
   $('coverNote').textContent = note;
   $('storeWarn').hidden = LS.available();
@@ -7507,7 +7895,7 @@ function shWait(ms, fn){
 }
 
 function startShower(source){
-  var pool = source === 'wrong' ? wrongList() : WORDS;
+  var pool = source === "wrong" ? wrongList() : D().items;
   if (!pool.length){ toast('들을 단어가 없어요'); return; }
   SH = { list: sample(pool, Math.min(pool.length, 500)), i: 0, playing: true, timer: null, seen: 0, source: source };
   $('shNote').hidden = true;
@@ -7530,9 +7918,9 @@ function shRender(){
   var it = SH.list[SH.i];
   $('shCount').textContent = SH.seen;
   $('shWord').textContent = it.w;
-  $('shPos').textContent = it.pos || '';
   $('shMean').hidden = true;
-  $('shMean').textContent = it.k;
+  $('shMean').innerHTML = '';
+  $('shMean').appendChild(meaningBlock(it, 'sh'));
   $('shEx').hidden = true;
   $('shEx').innerHTML = '';
   if (prefs.shEx == 1 && it.ex){
@@ -7598,7 +7986,9 @@ function shJump(delta){
   if (SH.i >= SH.list.length) SH.i = 0;
   shRender();
   if (SH.playing) shPlayCurrent();
-  else { $('shMean').hidden = false; }   // 멈춘 상태에서는 뜻을 바로 보여준다
+  else {                                 // 멈춘 상태에서는 뜻을 바로 보여준다
+    $('shMean').hidden = false;
+  }
 }
 
 function shSetPlaying(on){
@@ -7632,7 +8022,7 @@ var draftTimer = null;
 function saveDraft(){
   if (!S) return;
   LS.set(KEY_DRAFT, {
-    mode:S.mode, source:S.source, idx:S.idx, maxIdx:S.maxIdx || 0, startedAt:S.startedAt, savedAt:Date.now(),
+    mode:S.mode, deck:deck, source:S.source, idx:S.idx, maxIdx:S.maxIdx || 0, startedAt:S.startedAt, savedAt:Date.now(),
     words:S.items.map(function(i){ return i.w; }),
     answers:S.answers, marks:S.marks, graded:!!S.graded
   });
@@ -7648,13 +8038,15 @@ function clearDraft(){
 function loadDraft(){
   var d = LS.get(KEY_DRAFT, null);
   if (!d || !d.words || !d.words.length || d.graded) return null;
+  var dk = DECKS[d.deck] ? d.deck : 'word';     // 다른 묶음에서 풀던 것도 복원한다
   var items = [];
   for (var i = 0; i < d.words.length; i++){
-    var it = BY_WORD[d.words[i]];
-    if (!it) return null;                       // 단어장이 바뀌었으면 복원하지 않는다
+    var it = DECKS[dk].index[d.words[i]];
+    if (!it) return null;                       // 자료가 바뀌었으면 복원하지 않는다
     items.push(it);
   }
   return {
+    deck:dk,
     mode:d.mode === 'sheet' ? 'sheet' : 'card', source:d.source || 'all', items:items,
     answers:(d.answers || []).slice(0, items.length),
     marks:(d.marks || []).slice(0, items.length),
@@ -7674,7 +8066,8 @@ function showResume(){
   var box = $('resumeBox');
   if (!d){ box.hidden = true; return; }
   box.hidden = false;
-  $('resumeDesc').textContent = (d.mode === 'card' ? '한 단어씩' : '시험지')
+  $('resumeDesc').textContent = (DECKS[d.deck] ? DECKS[d.deck].label + ' · ' : '')
+    + (d.mode === 'card' ? '한 단어씩' : '시험지')
     + (d.source === 'wrong' ? ' · 오답' : '') + ' · ' + draftProgress(d);
 }
 
@@ -7695,6 +8088,7 @@ function startSession(mode, count, pool, source){
 function resumeSession(){
   var d = loadDraft();
   if (!d){ toast('이어서 풀 시험이 없어요'); showResume(); return; }
+  if (d.deck !== deck){ setDeck(d.deck); syncDeckUI(); }   // 다른 묶음이었다면 그쪽으로 옮겨간다
   S = {
     mode:d.mode, items:d.items, source:d.source,
     answers:d.answers, marks:d.marks, idx:d.idx, maxIdx:Math.max(d.maxIdx || 0, d.idx || 0), startedAt:d.startedAt
@@ -7720,7 +8114,6 @@ function renderCard(){
   $('cardTot').textContent = S.items.length;
   $('cardProg').style.width = (answeredCount() / S.items.length * 100) + '%';
   $('cardWord').textContent = it.w;
-  $('cardPos').textContent = it.pos || '';
   $('cardIpa').textContent = it.p ? '[' + it.p + ']' : '';
   $('cardPrev').disabled = S.idx === 0;
   $('cardFwd').disabled = S.idx >= S.maxIdx;
@@ -7860,7 +8253,7 @@ function buildVerdict(host, it, ok, idx){
   host.appendChild(head);
 
   var card = el('div', 'ans-card');
-  card.appendChild(el('div', 'ans-k', it.k));
+  card.appendChild(meaningBlock(it));
   if (it.def && it.def !== it.k) card.appendChild(el('div', 'ans-def', it.def));
   if (it.ex){
     var ex = el('div', 'ex');
@@ -7871,7 +8264,7 @@ function buildVerdict(host, it, ok, idx){
     card.appendChild(ex);
   }
   var meta = el('div', 'meta-row');
-  meta.appendChild(el('span', 'tag', it.book + '권 · DAY ' + pad2(it.day)));
+  meta.appendChild(el('span', 'tag', sourceTag(it)));
   if (it.pos) meta.appendChild(el('span', 'tag lower', it.pos));
   card.appendChild(meta);
   host.appendChild(card);
@@ -7894,7 +8287,6 @@ function renderSheet(){
 
     var q = el('div', 'q');
     q.appendChild(el('span', 'qw', it.w));
-    if (it.pos) q.appendChild(el('span', 'qp', it.pos));
     if (it.p) q.appendChild(el('span', 'qi', '[' + it.p + ']'));
     bindWord(q, it);            // 탭 = 발음, 꾹 누르기 = 메모
     row.appendChild(q);
@@ -7994,7 +8386,12 @@ function paintRow(row, i, ok){
 
   var c = el('div', 'correction');
   c.appendChild(el('span', 'pen-mark', ok ? '✓' : '→'));
-  c.appendChild(el('span', 'fix', it.k));
+  var fix = el('span', 'fix');
+  fix.appendChild(document.createTextNode(it.k));
+  if (it.pos) fix.appendChild(el('i', 'fix-pos', it.pos));
+  var syn = synonymsOf(it);
+  if (syn.length) fix.appendChild(el('span', 'fix-syn', syn.join(' · ')));
+  c.appendChild(fix);
   var btn = el('button', null, ok ? '오답 처리' : '정답 인정');
   btn.onclick = function(){
     var now = !S.marks[i];
@@ -8020,7 +8417,7 @@ function finish(){
   var score = Math.round(ok / total * 100);
 
   history.unshift({
-    at: Date.now(), mode: S.mode, total: total, ok: ok, score: score,
+    at: Date.now(), mode: S.mode, deck: deck, total: total, ok: ok, score: score,
     ms: Date.now() - S.startedAt, source: S.source
   });
   if (history.length > 60) history.length = 60;
@@ -8172,6 +8569,15 @@ function fmtDate(ts){
 }
 
 /* ═══ 이벤트 ═══════════════════════════════════════════ */
+// 속어 자료가 실제로 있을 때만 범위 선택을 보여준다
+function syncDeckUI(){
+  var has = DECKS.slang.items.length > 0;
+  $('deckBox').hidden = !has;
+  $('segDeck').querySelectorAll('button').forEach(function(b){
+    b.setAttribute('aria-pressed', String(b.dataset.deck === deck));
+  });
+}
+
 function syncModeOptions(){
   var shower = prefs.mode === 'shower';
   $('quizOpts').hidden = shower;
@@ -8195,6 +8601,19 @@ function bindSeg(segId, attr, key, after){
     });
   });
 }
+$('segDeck').querySelectorAll('button').forEach(function(b){
+  b.addEventListener('click', function(){
+    if (b.dataset.deck === deck) return;
+    $('segDeck').querySelectorAll('button').forEach(function(x){
+      x.setAttribute('aria-pressed', String(x === b));
+    });
+    setDeck(b.dataset.deck);
+    syncModeOptions();
+    refreshHome();
+    toast(D().label + ' 시험으로 바꿨어요');
+  });
+});
+
 bindSeg('segShSound', 'snd', 'shSound', function(){
   $('rowShRepeat').hidden = prefs.shSound != 1;
 });
@@ -8287,7 +8706,7 @@ $('segTheme').querySelectorAll('button').forEach(function(b){
 
 $('btnStart').addEventListener('click', function(){
   if (prefs.mode === 'shower'){ startShower(prefs.shSource); return; }
-  startSession(prefs.mode, prefs.count, WORDS, 'all');
+  startSession(prefs.mode, prefs.count, D().items, "all");
 });
 $('btnResume').addEventListener('click', resumeSession);
 $('btnDropDraft').addEventListener('click', function(){
@@ -8333,7 +8752,7 @@ $('sheetQuit').addEventListener('click', function(){
 
 $('resultHome').addEventListener('click', function(){ refreshHome(); go('home'); });
 $('btnAgain').addEventListener('click', function(){
-  startSession(S.mode, S.items.length, WORDS, 'all');
+  startSession(S.mode, S.items.length, D().items, "all");
 });
 $('btnRetryWrong').addEventListener('click', function(){
   var items = window.__lastWrongItems || [];
@@ -8412,6 +8831,8 @@ document.addEventListener('visibilitychange', function(){
     if (on) found = true;
   });
   if (!found) $('segCount').querySelector('[data-n="100"]').setAttribute('aria-pressed', 'true');
+  setDeck(prefs.deck);
+  syncDeckUI();
   applyTheme(theme, false);
   bindWord($('cardWord'), function(){ return S ? S.items[S.idx] : null; });
   bindWord($('shWord'),   function(){ return SH ? SH.list[SH.i] : null; });
