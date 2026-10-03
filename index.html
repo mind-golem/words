@@ -635,6 +635,36 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
 .sh-play.paused{ background:var(--card); color:var(--pen); border:1.5px solid var(--pen-line); box-shadow:none; }
 .sh-play:active{ transform:scale(.985); }
 
+/* ── to 구분 (전명구) ──
+   뜻 채점과는 별개로, to가 부정사인지 전치사인지 골라보는 자가 점검. */
+.to-ask{ display:flex; align-items:center; gap:12px; margin-top:14px; }
+.to-ask-l{ font-size:13.5px; font-weight:560; color:var(--ink-2); flex:none; }
+.seg.mini{ margin:0; flex:1; max-width:240px; }
+.seg.mini button{ min-height:38px; padding:8px 4px; font-size:13.5px; }
+.seg.mini button:disabled{ cursor:default; }
+.seg.mini button:disabled[aria-pressed="false"]{ opacity:.45; }
+.to-row{ grid-column:2 / -1; display:flex; align-items:center; gap:10px; margin-top:2px; padding-bottom:3px; }
+.to-row .seg.mini{ max-width:200px; }
+.to-row .seg.mini button{ min-height:34px; padding:6px 4px; font-size:13px; }
+.to-verdict{ margin-top:10px; padding-top:10px; border-top:1px dashed var(--rule); }
+.to-top{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+.to-l{ font-size:10.5px; font-weight:600; letter-spacing:.06em; color:var(--ink-3); flex:none; }
+.to-res{ font-size:14px; font-weight:640; }
+.to-res.ok{ color:var(--ok); }
+.to-res.no{ color:var(--no); }
+.to-res.none{ color:var(--ink-3); font-weight:500; }
+.to-ans{ font-size:13px; color:var(--ink-2); }
+.to-note{ font-size:13px; color:var(--ink-2); margin-top:4px; line-height:1.5; }
+.fix-to{ display:block; margin-top:3px; font-size:12.5px; font-weight:560; letter-spacing:-.005em; }
+.fix-to.ok{ color:var(--ok); }
+.fix-to.no{ color:var(--no); }
+.fix-to.none{ color:var(--ink-3); font-weight:500; }
+.sh-to{ margin-top:8px; font-size:14px; color:var(--ink-2); line-height:1.5; }
+.score-to{
+  margin-top:12px; padding-top:11px; border-top:1px dashed var(--rule);
+  font-size:13.5px; color:var(--ink-2); font-variant-numeric:tabular-nums;
+}
+
 /* ── 결과 ── */
 .score-card{
   background:var(--card); border:1px solid var(--rule); border-radius:var(--r);
@@ -1172,7 +1202,7 @@ window.addEventListener('error', function(ev){
           <button data-theme-opt="dark">어둡게</button>
         </div>
 
-        <p class="build" id="buildStamp">build 2026-10-03 13:08</p>
+        <p class="build" id="buildStamp">build 2026-10-03 17:56</p>
       </div>
     </div>
   </section>
@@ -1207,6 +1237,14 @@ window.addEventListener('error', function(ev){
         <input id="cardInput" type="text" placeholder="뜻을 입력하세요"
                autocomplete="off" autocorrect="off" autocapitalize="off"
                spellcheck="false" enterkeyhint="go" lang="ko">
+      </div>
+
+      <div class="to-ask" id="cardTo" hidden>
+        <span class="to-ask-l">이 to는?</span>
+        <div class="seg mini" id="segCardTo">
+          <button data-to="inf">부정사</button>
+          <button data-to="prep">전치사</button>
+        </div>
       </div>
 
       <div class="verdict" id="cardVerdict" hidden></div>
@@ -1285,6 +1323,7 @@ window.addEventListener('error', function(ev){
             <span class="g">맞음 <b id="legOk">0</b></span>
             <span class="r">틀림 <b id="legNo">0</b></span>
           </div>
+          <div class="score-to" id="scoreTo" hidden></div>
         </div>
 
         <div id="resultActions" style="display:flex; flex-direction:column; gap:9px; margin-bottom:24px;">
@@ -7135,7 +7174,7 @@ window.addEventListener('error', function(ev){
   { "w": "get something off one's chest", "k": "속마음을 털어놓다, 응어리를 풀다", "def": "To finally say what has been worrying you.", "syn": [ "open up", "vent", "unburden oneself" ], "ex": "I need to get something off my chest — I've been upset since last week.", "tr": "속에 담아둔 얘기 좀 해야겠어. 지난주부터 계속 마음이 안 좋았거든.", "cat": "idiom", "lv": 2 },
   { "w": "be head over heels for someone", "k": "홀딱 반하다, 푹 빠지다", "def": "To be completely and helplessly in love with someone.", "syn": [ "fall for someone", "be crazy about someone", "be smitten with someone" ], "ex": "He's been head over heels for her since their first date.", "tr": "걔는 첫 데이트 때부터 그 여자한테 홀딱 반해 있어.", "cat": "idiom", "lv": 2 },
   { "w": "as cool as a cucumber", "k": "아주 침착하다, 태연하다", "def": "Very calm and relaxed in a stressful moment.", "syn": [ "calm and collected", "keep one's cool", "unfazed" ], "ex": "Everyone else was panicking, but she was as cool as a cucumber.", "tr": "다들 허둥대는데 걔만 아주 침착했어.", "cat": "idiom", "lv": 2 },
-  { "w": "take something to heart", "k": "마음에 담아두다, 진지하게 받아들이다", "def": "To be deeply affected by criticism or advice.", "syn": [ "take it personally", "let something get to you", "dwell on something" ], "ex": "Don't take his comments to heart — he criticizes everyone.", "tr": "걔 말 너무 마음에 담아두지 마. 원래 누구한테나 그렇게 말해.", "cat": "idiom", "lv": 2 },
+  { "w": "take something to heart", "k": "마음에 담아두다, 진지하게 받아들이다", "def": "To be deeply affected by criticism or advice.", "syn": [ "take it personally", "let something get to you", "dwell on something" ], "ex": "Don't take his comments to heart — he criticizes everyone.", "tr": "걔 말 너무 마음에 담아두지 마. 원래 누구한테나 그렇게 말해.", "cat": "idiom", "lv": 2, "to": "prep", "toNote": "to 뒤에 명사 heart가 오므로 전치사" },
   { "w": "give someone the cold shoulder", "k": "쌀쌀맞게 대하다, 냉대하다", "def": "To deliberately ignore someone or act unfriendly toward them.", "syn": [ "give someone the silent treatment", "freeze someone out", "snub someone" ], "ex": "Ever since the argument, she's been giving me the cold shoulder.", "tr": "그 일로 다툰 뒤로 걔가 나를 계속 쌀쌀맞게 대해.", "cat": "idiom", "lv": 2 },
   { "w": "feel like a million dollars", "k": "기분이 아주 좋다, 컨디션이 최고다", "def": "To feel wonderful, healthy and full of confidence.", "syn": [ "feel like a new person", "on top of the world", "never felt better" ], "ex": "After a good night's sleep, I feel like a million dollars.", "tr": "푹 자고 났더니 기분이 날아갈 것 같아.", "cat": "idiom", "lv": 2 },
   { "w": "rub someone the wrong way", "k": "괜히 거슬리다, 비위를 거스르다", "def": "To irritate someone without really meaning to.", "syn": [ "get on someone's nerves", "grate on someone", "put someone off" ], "ex": "I can't explain it, but something about him rubs me the wrong way.", "tr": "딱히 설명은 못 하겠는데 그 사람은 어딘가 좀 거슬려.", "cat": "idiom", "lv": 3 },
@@ -7151,17 +7190,17 @@ window.addEventListener('error', function(ev){
   { "w": "save something for a rainy day", "k": "만일에 대비해 저축해 두다", "def": "To keep money aside for a future time of need.", "syn": [ "put money aside", "squirrel money away", "build a nest egg" ], "ex": "I'd rather save part of my bonus for a rainy day than blow it on a trip.", "tr": "보너스를 여행에 다 써 버리느니 일부는 만일에 대비해 모아 두고 싶어요.", "cat": "idiom", "lv": 1 },
   { "w": "worth every penny", "k": "돈이 아깝지 않다, 값어치를 하다", "def": "Good enough to justify what it cost.", "syn": [ "worth it", "money well spent", "good value" ], "ex": "The tickets weren't cheap, but that concert was worth every penny.", "tr": "표가 싸진 않았지만 그 공연은 돈이 하나도 안 아까웠어요.", "cat": "idiom", "lv": 1 },
   { "w": "in the same boat", "k": "같은 처지다, 사정이 똑같다", "def": "In the same difficult situation as someone else.", "syn": [ "in the same position", "in it together", "in the same predicament" ], "ex": "Don't stress about the rent, we're all in the same boat this month.", "tr": "월세 걱정하지 마. 이번 달은 우리 다 같은 처지니까.", "cat": "idiom", "lv": 1 },
-  { "w": "up in the air", "k": "미정이다, 불확실하다", "def": "Still undecided or uncertain.", "syn": [ "undecided", "unsettled", "not set in stone" ], "ex": "Our summer plans are still up in the air until she hears back about the job.", "tr": "그 사람 취업 소식이 올 때까지 여름 계획은 아직 미정이에요.", "cat": "idiom", "lv": 1 },
+  { "w": "up in the air", "k": "미정이다, 불확실하다; 미정인, 불확실한", "def": "Still undecided or uncertain.", "syn": [ "undecided", "unsettled", "not set in stone" ], "ex": "Our summer plans are still up in the air until she hears back about the job.", "tr": "그 사람 취업 소식이 올 때까지 여름 계획은 아직 미정이에요.", "cat": "idiom", "lv": 1 },
   { "w": "a close call", "k": "아슬아슬한 상황, 큰일 날 뻔한 일", "def": "A narrow escape from danger or trouble.", "syn": [ "a close shave", "a near miss", "too close for comfort" ], "ex": "A car ran the light right in front of me, that was a close call.", "tr": "차 한 대가 바로 앞에서 신호를 무시하고 지나갔어요. 정말 큰일 날 뻔했죠.", "cat": "idiom", "lv": 1 },
   { "w": "in the nick of time", "k": "아슬아슬하게 제때, 가까스로 늦지 않게", "def": "At the last possible moment, just before it is too late.", "syn": [ "just in time", "with seconds to spare", "at the last minute" ], "ex": "The ambulance got there in the nick of time.", "tr": "구급차가 아슬아슬하게 제때 도착했어요.", "cat": "idiom", "lv": 2 },
   { "w": "play it by ear", "k": "상황 봐서 정하다, 즉흥적으로 하다", "def": "To decide as you go instead of planning ahead.", "syn": [ "wing it", "improvise", "see how it goes" ], "ex": "I have no idea how long the meeting will run, so let's play it by ear.", "tr": "회의가 얼마나 길어질지 몰라서 상황 봐서 정하죠.", "cat": "idiom", "lv": 2 },
-  { "w": "make ends meet", "k": "근근이 먹고살다, 겨우 생활비를 대다", "def": "To earn just enough money to cover your expenses.", "syn": [ "get by", "scrape by", "stay afloat" ], "ex": "With the rent going up again, they're struggling to make ends meet.", "tr": "월세가 또 올라서 그 집은 생활비 대기도 빠듯해요.", "cat": "idiom", "lv": 2 },
+  { "w": "make ends meet", "k": "근근이 먹고살다, 겨우 생활비를 대다; 겨우 먹고살다", "def": "To earn just enough money to cover your expenses.", "syn": [ "get by", "scrape by", "stay afloat" ], "ex": "With the rent going up again, they're struggling to make ends meet.", "tr": "월세가 또 올라서 그 집은 생활비 대기도 빠듯해요.", "cat": "idiom", "lv": 2 },
   { "w": "tighten one's belt", "k": "허리띠를 졸라매다, 씀씀이를 줄이다", "def": "To spend less money because you have less.", "syn": [ "cut back", "cut costs", "live on less" ], "ex": "We'll have to tighten our belts until the next paycheck comes in.", "tr": "다음 월급 들어올 때까지는 허리띠를 졸라매야 해요.", "cat": "idiom", "lv": 2 },
   { "w": "foot the bill", "k": "비용을 부담하다, 돈을 대다", "def": "To pay for something, often on behalf of others.", "syn": [ "pick up the tab", "cover the cost", "pay for it all" ], "ex": "In the end my dad had to foot the bill for the whole trip.", "tr": "결국 여행 경비 전부를 아빠가 부담하셨어요.", "cat": "idiom", "lv": 2 },
   { "w": "jump the gun", "k": "성급하게 굴다, 섣불리 앞서 나가다", "def": "To act too soon, before the right moment.", "syn": [ "get ahead of oneself", "act too soon", "be premature" ], "ex": "Let's not jump the gun, nothing has been signed yet.", "tr": "성급하게 굴지 맙시다. 아직 계약된 건 아무것도 없어요.", "cat": "idiom", "lv": 2 },
   { "w": "the ball is in someone's court", "k": "이제 ~가 결정할 차례다, 공이 ~에게 넘어가다", "def": "It is now the other person's turn to act.", "syn": [ "it's your call", "it's up to you", "your move" ], "ex": "I sent them our final offer, so the ball is in their court now.", "tr": "최종 제안을 보냈으니 이제 공은 그쪽으로 넘어갔어요.", "cat": "idiom", "lv": 2 },
   { "w": "a blessing in disguise", "k": "전화위복, 오히려 잘된 일", "def": "Something bad that turns out to be good later.", "syn": [ "a silver lining", "for the best", "turn out to be a good thing" ], "ex": "Getting laid off felt awful, but it was a blessing in disguise.", "tr": "해고당했을 땐 끔찍했지만 결과적으로는 오히려 잘된 일이었어요.", "cat": "idiom", "lv": 2 },
-  { "w": "cut corners", "k": "대충 하다, 절차를 생략하다", "def": "To skip proper steps to save time or money.", "syn": [ "take shortcuts", "skimp on", "do a sloppy job" ], "ex": "The ceiling leaks because the builder cut corners on materials.", "tr": "업자가 자재를 아끼려고 대충 시공해서 천장이 새요.", "cat": "idiom", "lv": 2 },
+  { "w": "cut corners", "k": "대충 하다, 절차를 생략하다; 편법을 쓰다, 일을 대충 하다; 1. 편법을 쓰다 2. 절약하다", "def": "To skip proper steps to save time or money.", "syn": [ "take shortcuts", "skimp on", "do a sloppy job" ], "ex": "The ceiling leaks because the builder cut corners on materials.", "tr": "업자가 자재를 아끼려고 대충 시공해서 천장이 새요.", "cat": "idiom", "lv": 2 },
   { "w": "on the fence", "k": "결정을 못 내리다, 망설이다", "def": "Undecided between two options.", "syn": [ "torn", "in two minds", "undecided" ], "ex": "I'm still on the fence about moving to Busan.", "tr": "부산으로 이사할지 아직 마음을 못 정했어요.", "cat": "idiom", "lv": 2 },
   { "w": "bite the bullet", "k": "이를 악물고 해내다, 마음먹고 해치우다", "def": "To force yourself to do something unpleasant.", "syn": [ "grit one's teeth", "suck it up", "just get it over with" ], "ex": "At some point you just have to bite the bullet and tell her the truth.", "tr": "언젠가는 이를 악물고 그녀에게 사실대로 말해야죠.", "cat": "idiom", "lv": 2 },
   { "w": "take something with a grain of salt", "k": "걸러 듣다, 곧이곧대로 믿지 않다", "def": "To not fully believe something; treat it skeptically.", "syn": [ "be skeptical about", "not take at face value", "take with a pinch of salt" ], "ex": "He always exaggerates, so take his story with a grain of salt.", "tr": "그 사람은 늘 과장하니까 그 얘기는 걸러 들어요.", "cat": "idiom", "lv": 2 },
@@ -7172,21 +7211,21 @@ window.addEventListener('error', function(ev){
   { "w": "a ballpark figure", "k": "대략적인 수치, 어림잡은 액수", "def": "A rough estimate rather than an exact number.", "syn": [ "a rough estimate", "a guesstimate", "an approximation" ], "ex": "I can't quote you exactly today, but a ballpark figure would be around ten thousand dollars.", "tr": "오늘 정확한 견적은 못 드리지만 대략 1만 달러 정도로 보시면 돼요.", "cat": "idiom", "lv": 3 },
   { "w": "in the red", "k": "적자다, 빚을 지고 있다", "def": "Losing money; spending more than you take in.", "syn": [ "in debt", "operating at a loss", "in the hole" ], "ex": "The café has been in the red for three quarters straight.", "tr": "그 카페는 세 분기 연속으로 적자예요.", "cat": "idiom", "lv": 3 },
   { "w": "break the ice", "k": "어색한 분위기를 깨다, 서먹함을 풀다", "def": "Say or do something to ease initial social tension.", "syn": [ "break the tension", "loosen things up", "get people talking" ], "ex": "I told a terrible joke just to break the ice at the meeting.", "tr": "회의 분위기 좀 풀어보려고 썰렁한 농담을 했어.", "cat": "idiom", "lv": 1 },
-  { "w": "see eye to eye", "k": "의견이 일치하다, 뜻이 맞다", "def": "Agree completely with someone about something.", "syn": [ "be on the same page", "see things the same way", "be in agreement" ], "ex": "My dad and I don't see eye to eye on politics, so we just avoid it.", "tr": "아빠랑 나는 정치 얘기에선 의견이 안 맞아서 그냥 그 얘긴 안 해.", "cat": "idiom", "lv": 1 },
+  { "w": "see eye to eye", "k": "의견이 일치하다, 뜻이 맞다", "def": "Agree completely with someone about something.", "syn": [ "be on the same page", "see things the same way", "be in agreement" ], "ex": "My dad and I don't see eye to eye on politics, so we just avoid it.", "tr": "아빠랑 나는 정치 얘기에선 의견이 안 맞아서 그냥 그 얘긴 안 해.", "cat": "idiom", "lv": 1, "to": "prep", "toNote": "to 뒤에 명사 eye가 오므로 전치사" },
   { "w": "hit it off", "k": "금세 친해지다, 처음부터 잘 통하다", "def": "Like each other immediately after first meeting.", "syn": [ "click with someone", "get along right away", "take a liking to each other" ], "ex": "We hit it off the moment we started talking about music.", "tr": "우리는 음악 얘기를 시작하자마자 바로 통했어.", "cat": "idiom", "lv": 1 },
   { "w": "be on the same page", "k": "같은 생각이다, 의견이 일치하다", "def": "Understand and agree about what is going on.", "syn": [ "see eye to eye", "be in sync", "be of one mind" ], "ex": "Before we email the client, let's make sure we're on the same page.", "tr": "고객한테 메일 보내기 전에 우리 생각이 같은지 확인하자.", "cat": "idiom", "lv": 1 },
-  { "w": "beat around the bush", "k": "빙빙 돌려 말하다, 요점을 피하다", "def": "Avoid saying directly what you really mean.", "syn": [ "talk in circles", "dance around the issue", "skirt the issue" ], "ex": "Stop beating around the bush and just tell me what you want.", "tr": "빙빙 돌리지 말고 원하는 게 뭔지 그냥 말해.", "cat": "idiom", "lv": 1 },
+  { "w": "beat around the bush", "k": "빙빙 돌려 말하다, 요점을 피하다; 에둘러 말하다", "def": "Avoid saying directly what you really mean.", "syn": [ "talk in circles", "dance around the issue", "skirt the issue" ], "ex": "Stop beating around the bush and just tell me what you want.", "tr": "빙빙 돌리지 말고 원하는 게 뭔지 그냥 말해.", "cat": "idiom", "lv": 1 },
   { "w": "keep in touch", "k": "연락하고 지내다", "def": "Stay in regular contact with someone over time.", "syn": [ "stay in touch", "stay in contact", "check in now and then" ], "ex": "We've kept in touch ever since we worked together in Busan.", "tr": "부산에서 같이 일한 뒤로 우리는 계속 연락하고 지내.", "cat": "idiom", "lv": 1 },
   { "w": "talk behind someone's back", "k": "뒤에서 험담하다, 뒷담화하다", "def": "Say unkind things about someone who isn't there.", "syn": [ "badmouth someone", "gossip about someone", "run someone down" ], "ex": "If you have a problem with me, say it to my face instead of talking behind my back.", "tr": "나한테 불만 있으면 뒤에서 험담하지 말고 면전에 대고 말해.", "cat": "idiom", "lv": 1 },
   { "w": "make small talk", "k": "가벼운 잡담을 나누다", "def": "Chat politely about unimportant everyday topics.", "syn": [ "chitchat", "shoot the breeze", "make conversation" ], "ex": "I'm terrible at making small talk with strangers at parties.", "tr": "나는 파티에서 처음 보는 사람이랑 가벼운 잡담 하는 걸 정말 못해.", "cat": "idiom", "lv": 1 },
-  { "w": "spill the beans", "k": "비밀을 털어놓다, 다 말해버리다", "def": "Reveal a secret, often without meaning to.", "syn": [ "let the cat out of the bag", "give it away", "blab" ], "ex": "Don't tell Mina about the party — she'll spill the beans.", "tr": "미나한테 파티 얘기하지 마. 걔는 다 말해버릴걸.", "cat": "idiom", "lv": 1 },
+  { "w": "spill the beans", "k": "비밀을 털어놓다, 다 말해버리다; 비밀을 누설하다", "def": "Reveal a secret, often without meaning to.", "syn": [ "let the cat out of the bag", "give it away", "blab" ], "ex": "Don't tell Mina about the party — she'll spill the beans.", "tr": "미나한테 파티 얘기하지 마. 걔는 다 말해버릴걸.", "cat": "idiom", "lv": 1 },
   { "w": "clear the air", "k": "오해를 풀다, 앙금을 없애다", "def": "Remove tension by talking about a problem openly.", "syn": [ "talk things out", "hash things out", "settle a misunderstanding" ], "ex": "We finally sat down and cleared the air about what happened last month.", "tr": "우리는 결국 마주 앉아서 지난달 일에 대한 오해를 풀었어.", "cat": "idiom", "lv": 2 },
   { "w": "bury the hatchet", "k": "화해하다, 싸움을 끝내다", "def": "Stop fighting and make peace with someone.", "syn": [ "make peace", "call a truce", "let bygones be bygones" ], "ex": "The two brothers finally buried the hatchet after almost ten years.", "tr": "그 두 형제는 거의 10년 만에 드디어 화해했어.", "cat": "idiom", "lv": 2 },
   { "w": "put oneself in someone's shoes", "k": "상대 입장에서 생각하다, 역지사지하다", "def": "Imagine how another person feels in their situation.", "syn": [ "see it from someone's perspective", "walk in someone's shoes", "empathize with someone" ], "ex": "Put yourself in her shoes — she just lost her job last week.", "tr": "그 사람 입장에서 좀 생각해 봐. 지난주에 막 직장을 잃었잖아.", "cat": "idiom", "lv": 2 },
   { "w": "speak one's mind", "k": "솔직하게 할 말을 다 하다", "def": "Say honestly and openly what you really think.", "syn": [ "be blunt", "tell it like it is", "say it straight" ], "ex": "She's never afraid to speak her mind in meetings.", "tr": "그 사람은 회의에서 할 말은 거침없이 하는 편이야.", "cat": "idiom", "lv": 2 },
-  { "w": "agree to disagree", "k": "서로 생각이 다름을 인정하다", "def": "Accept a difference of opinion and stop arguing.", "syn": [ "agree to differ", "leave it at that", "drop the argument" ], "ex": "We're never going to settle this, so let's just agree to disagree.", "tr": "이건 결론이 안 날 테니 그냥 서로 생각이 다르다고 인정하자.", "cat": "idiom", "lv": 2 },
+  { "w": "agree to disagree", "k": "서로 생각이 다름을 인정하다", "def": "Accept a difference of opinion and stop arguing.", "syn": [ "agree to differ", "leave it at that", "drop the argument" ], "ex": "We're never going to settle this, so let's just agree to disagree.", "tr": "이건 결론이 안 날 테니 그냥 서로 생각이 다르다고 인정하자.", "cat": "idiom", "lv": 2, "to": "inf", "toNote": "to 뒤에 동사원형 disagree가 오므로 부정사" },
   { "w": "read between the lines", "k": "숨은 뜻을 파악하다, 행간을 읽다", "def": "Understand a meaning that is implied, not stated.", "syn": [ "pick up on the subtext", "catch the implied meaning", "sense what's unsaid" ], "ex": "Read between the lines — she wasn't asking, she was complaining.", "tr": "행간을 좀 읽어 봐. 물어본 게 아니라 불평한 거야.", "cat": "idiom", "lv": 2 },
-  { "w": "cut to the chase", "k": "본론으로 바로 들어가다", "def": "Get to the important point without wasting time.", "syn": [ "get to the point", "get down to business", "skip the preamble" ], "ex": "Let me cut to the chase: we can't afford to hire anyone right now.", "tr": "바로 본론만 말할게. 지금은 사람을 뽑을 여력이 없어.", "cat": "idiom", "lv": 2 },
+  { "w": "cut to the chase", "k": "본론으로 바로 들어가다; 본론으로 바로 들어간다; 본론으로 들어가다", "def": "Get to the important point without wasting time.", "syn": [ "get to the point", "get down to business", "skip the preamble" ], "ex": "Let me cut to the chase: we can't afford to hire anyone right now.", "tr": "바로 본론만 말할게. 지금은 사람을 뽑을 여력이 없어.", "cat": "idiom", "lv": 2, "to": "prep", "toNote": "to 뒤에 명사구 the chase가 오므로 전치사" },
   { "w": "two peas in a pod", "k": "쏙 빼닮은 사이, 늘 붙어 다니는 둘", "def": "Two people who are very similar and inseparable.", "syn": [ "cut from the same cloth", "joined at the hip", "birds of a feather" ], "ex": "Those two are like two peas in a pod — same jokes, same taste, everything.", "tr": "쟤네 둘은 붕어빵이야. 농담도 취향도 다 똑같아.", "cat": "idiom", "lv": 2 },
   { "w": "go back a long way", "k": "오래 알고 지낸 사이다", "def": "Have known each other for many years.", "syn": [ "be old friends", "know someone for ages", "have a long history together" ], "ex": "Trust me, Jinsu and I go back a long way.", "tr": "믿어도 돼. 진수랑 나는 알고 지낸 지 아주 오래됐어.", "cat": "idiom", "lv": 2 },
   { "w": "mend fences", "k": "틀어진 관계를 회복하다", "def": "Repair a relationship damaged by a past conflict.", "syn": [ "patch things up", "bury the hatchet", "make amends" ], "ex": "He flew home over the holidays to mend fences with his sister.", "tr": "그는 누나와 관계를 회복하려고 연휴에 고향으로 갔어.", "cat": "idiom", "lv": 3 },
@@ -7199,15 +7238,15 @@ window.addEventListener('error', function(ev){
   { "w": "go the extra mile", "k": "한층 더 노력하다, 수고를 아끼지 않다", "def": "To do more than what is required or expected.", "syn": [ "go above and beyond", "put in extra effort", "go out of one's way" ], "ex": "She always goes the extra mile for her students, even on weekends.", "tr": "그 선생님은 주말에도 학생들을 위해 늘 한 발 더 애쓰신다.", "cat": "idiom", "lv": 1 },
   { "w": "nail it", "k": "완벽하게 해내다, 딱 맞히다", "def": "To do something perfectly or exactly right.", "syn": [ "ace it", "crush it", "get it exactly right" ], "ex": "You totally nailed it in there — the client didn't ask a single question.", "tr": "너 아까 완전 잘했어. 고객이 질문 하나도 안 하더라.", "cat": "idiom", "lv": 1 },
   { "w": "pull an all-nighter", "k": "밤을 새우다, 철야하다", "def": "To stay up all night working or studying.", "syn": [ "stay up all night", "work through the night" ], "ex": "I pulled an all-nighter to finish the deck and I regret everything.", "tr": "발표 자료 끝내려고 밤을 꼬박 새웠는데, 정말 후회된다.", "cat": "idiom", "lv": 1 },
-  { "w": "give it one's best shot", "k": "최선을 다해 보다", "def": "To try as hard as you can, even if unsure.", "syn": [ "do one's best", "give it a go", "give it everything" ], "ex": "I don't know if I'll get the job, but I gave it my best shot.", "tr": "합격할지는 모르겠지만 나는 최선을 다했어.", "cat": "idiom", "lv": 1 },
+  { "w": "give it one's best shot", "k": "최선을 다해 보다; 최선을 다하다", "def": "To try as hard as you can, even if unsure.", "syn": [ "do one's best", "give it a go", "give it everything" ], "ex": "I don't know if I'll get the job, but I gave it my best shot.", "tr": "합격할지는 모르겠지만 나는 최선을 다했어.", "cat": "idiom", "lv": 1 },
   { "w": "from scratch", "k": "맨 처음부터, 아무것도 없는 상태에서", "def": "From the very beginning, using nothing already prepared.", "syn": [ "from the ground up", "from square one", "starting completely over" ], "ex": "The file got corrupted, so I had to rebuild the whole report from scratch.", "tr": "파일이 손상되는 바람에 보고서를 처음부터 다시 만들어야 했다.", "cat": "idiom", "lv": 1 },
   { "w": "a piece of cake", "k": "아주 쉬운 일, 식은 죽 먹기", "def": "Something very easy to do.", "syn": [ "a walk in the park", "child's play", "easy as pie" ], "ex": "After last year's project, this one is a piece of cake.", "tr": "작년 프로젝트에 비하면 이건 식은 죽 먹기야.", "cat": "idiom", "lv": 1 },
   { "w": "have one's hands full", "k": "몹시 바쁘다, 눈코 뜰 새 없다", "def": "To be very busy with as much as you can handle.", "syn": [ "be swamped", "be tied up", "be up to one's ears" ], "ex": "Don't ask Mia for help right now — she has her hands full with the audit.", "tr": "지금 미아한테 도와달라고 하지 마. 감사 준비로 정신없이 바빠.", "cat": "idiom", "lv": 1 },
   { "w": "on the right track", "k": "제대로 하고 있는, 방향을 잘 잡은", "def": "Doing something in a way that will likely succeed.", "syn": [ "on the right path", "headed in the right direction", "on course" ], "ex": "The numbers aren't perfect yet, but we're on the right track.", "tr": "수치가 아직 완벽하진 않지만 방향은 제대로 잡았어.", "cat": "idiom", "lv": 1 },
   { "w": "burn the midnight oil", "k": "밤늦게까지 일하다, 야근하다", "def": "To work or study late into the night.", "syn": [ "work late into the night", "put in late hours", "stay up working" ], "ex": "He's been burning the midnight oil all week to hit the deadline.", "tr": "그는 마감을 맞추려고 일주일 내내 밤늦게까지 일하고 있다.", "cat": "idiom", "lv": 2 },
-  { "w": "pull one's weight", "k": "제 몫을 하다, 자기 일을 다하다", "def": "To do your fair share of the work.", "syn": [ "do one's part", "do one's fair share", "carry one's own load" ], "ex": "The project would be fine if everyone pulled their weight.", "tr": "다들 자기 몫만 제대로 했어도 이 프로젝트는 문제없었을 거야.", "cat": "idiom", "lv": 2 },
+  { "w": "pull one's weight", "k": "제 몫을 하다, 자기 일을 다하다; 자신의 몫을 다하다", "def": "To do your fair share of the work.", "syn": [ "do one's part", "do one's fair share", "carry one's own load" ], "ex": "The project would be fine if everyone pulled their weight.", "tr": "다들 자기 몫만 제대로 했어도 이 프로젝트는 문제없었을 거야.", "cat": "idiom", "lv": 2 },
   { "w": "bite off more than one can chew", "k": "감당 못 할 일을 벌이다, 무리하다", "def": "To take on more work than you can actually handle.", "syn": [ "take on too much", "overcommit", "spread oneself too thin" ], "ex": "I bit off more than I could chew when I agreed to run two teams.", "tr": "두 팀을 맡겠다고 한 건 내가 감당 못 할 일을 벌인 거였다.", "cat": "idiom", "lv": 2 },
-  { "w": "back to the drawing board", "k": "원점으로 돌아가다, 처음부터 다시 하다", "def": "Starting over again after a plan has failed.", "syn": [ "back to square one", "start over", "rethink from the start" ], "ex": "The client hated all three designs, so it's back to the drawing board.", "tr": "고객이 시안 세 개를 다 마음에 안 들어 해서 처음부터 다시 해야 한다.", "cat": "idiom", "lv": 2 },
+  { "w": "back to the drawing board", "k": "원점으로 돌아가다, 처음부터 다시 하다", "def": "Starting over again after a plan has failed.", "syn": [ "back to square one", "start over", "rethink from the start" ], "ex": "The client hated all three designs, so it's back to the drawing board.", "tr": "고객이 시안 세 개를 다 마음에 안 들어 해서 처음부터 다시 해야 한다.", "cat": "idiom", "lv": 2, "to": "prep", "toNote": "to 뒤에 명사구 the drawing board가 오므로 전치사" },
   { "w": "hit the ground running", "k": "시작부터 전력으로 해내다, 처음부터 잘 나가다", "def": "To start something quickly and energetically from day one.", "syn": [ "start strong", "get going immediately", "come out of the gate fast" ], "ex": "She hit the ground running and closed two deals in her first week.", "tr": "그녀는 시작부터 전력을 다해 첫 주에만 계약 두 건을 따냈다.", "cat": "idiom", "lv": 2 },
   { "w": "throw in the towel", "k": "포기하다, 손을 들다", "def": "To give up or admit defeat.", "syn": [ "give up", "call it quits", "admit defeat" ], "ex": "After the fifth rejection, he almost threw in the towel.", "tr": "다섯 번째 거절을 당하고 그는 거의 포기할 뻔했다.", "cat": "idiom", "lv": 2 },
   { "w": "learn the ropes", "k": "일을 배우다, 요령을 익히다", "def": "To learn how a job or system actually works.", "syn": [ "get the hang of it", "learn the basics", "find one's feet" ], "ex": "Give him a month to learn the ropes before you judge his work.", "tr": "그의 성과를 평가하기 전에 일을 익힐 한 달은 줘.", "cat": "idiom", "lv": 2 },
@@ -7218,7 +7257,7 @@ window.addEventListener('error', function(ev){
   { "w": "move the needle", "k": "실질적인 변화를 만들다, 성과를 내다", "def": "To make a noticeable difference in the results.", "syn": [ "make a real difference", "have a real impact", "shift the numbers" ], "ex": "Another logo tweak isn't going to move the needle on sales.", "tr": "로고를 또 손본다고 매출이 실제로 달라지진 않는다.", "cat": "idiom", "lv": 3 },
   { "w": "fall through the cracks", "k": "누락되다, 간과되다", "def": "To be forgotten or missed by a system.", "syn": [ "get overlooked", "slip through the net", "go unnoticed" ], "ex": "Two orders fell through the cracks while the manager was out.", "tr": "매니저가 자리를 비운 사이 주문 두 건이 누락됐다.", "cat": "idiom", "lv": 3 },
   { "w": "jump through hoops", "k": "온갖 까다로운 절차를 거치다, 갖은 고생을 하다", "def": "To do many difficult things just to get approval.", "syn": [ "go through red tape", "clear endless hurdles", "deal with endless paperwork" ], "ex": "I had to jump through hoops just to get the software approved.", "tr": "그 소프트웨어 승인을 받으려고 온갖 절차를 다 거쳐야 했다.", "cat": "idiom", "lv": 3 },
-  { "w": "rise to the occasion", "k": "위기에 잘 대처하다, 기대에 부응하다", "def": "To perform well when a difficult situation demands it.", "syn": [ "step up", "come through", "deliver under pressure" ], "ex": "Our junior designer really rose to the occasion when the lead quit.", "tr": "팀장이 그만뒀을 때 신입 디자이너가 정말 훌륭하게 해냈다.", "cat": "idiom", "lv": 3 },
+  { "w": "rise to the occasion", "k": "위기에 잘 대처하다, 기대에 부응하다", "def": "To perform well when a difficult situation demands it.", "syn": [ "step up", "come through", "deliver under pressure" ], "ex": "Our junior designer really rose to the occasion when the lead quit.", "tr": "팀장이 그만뒀을 때 신입 디자이너가 정말 훌륭하게 해냈다.", "cat": "idiom", "lv": 3, "to": "prep", "toNote": "to 뒤에 명사구 the occasion이 오므로 전치사" },
   { "w": "hit it out of the park", "k": "대성공을 거두다, 아주 훌륭하게 해내다", "def": "To do something extremely well; achieve a big success.", "syn": [ "knock it out of the park", "smash it", "do brilliantly" ], "ex": "That keynote was incredible — you hit it out of the park.", "tr": "그 기조연설 정말 대단했어. 완전히 성공적이었어.", "cat": "idiom", "lv": 3 },
   { "w": "give in", "k": "굴복하다, 마지못해 받아들이다", "def": "To stop resisting and accept what someone wants.", "syn": [ "cave in", "back down", "give way" ], "ex": "I kept saying no, but he begged so much that I finally gave in.", "tr": "계속 안 된다고 했는데, 하도 졸라대서 결국 굴복했어.", "cat": "phrasal", "lv": 1 },
   { "w": "count on someone", "k": "믿다, 의지하다", "def": "To trust someone to do what you need.", "syn": [ "rely on", "depend on", "bank on" ], "ex": "You can count on me to keep this between us.", "tr": "이건 우리끼리만 아는 걸로 할 테니까 나만 믿어.", "cat": "phrasal", "lv": 1 },
@@ -7228,10 +7267,10 @@ window.addEventListener('error', function(ev){
   { "w": "put on", "k": "입다, 착용하다", "def": "To dress yourself in clothing or accessories.", "syn": [ "throw on", "slip into", "pull on" ], "ex": "Put on a jacket — it's freezing out there.", "tr": "밖에 엄청 추우니까 재킷 하나 걸쳐.", "cat": "phrasal", "lv": 1 },
   { "w": "check in", "k": "체크인하다, 연락해 확인하다", "def": "To register somewhere, or briefly contact someone.", "syn": [ "sign in", "touch base", "reach out" ], "ex": "I just wanted to check in and see how you're holding up.", "tr": "그냥 잘 지내나 싶어서 연락해 봤어.", "cat": "phrasal", "lv": 1 },
   { "w": "work on something", "k": "공들이다, 손보다", "def": "To spend effort improving or repairing something.", "syn": [ "tinker with", "fine-tune", "put effort into" ], "ex": "She's still working on her speech for tomorrow.", "tr": "걔는 내일 할 연설을 아직 다듬고 있어.", "cat": "phrasal", "lv": 1 },
-  { "w": "move on", "k": "잊고 나아가다, 넘어가다", "def": "To leave something behind and go forward.", "syn": [ "get over it", "put it behind you", "let it go" ], "ex": "It's been two years — you really need to move on.", "tr": "벌써 2년이나 지났잖아. 이제 그만 잊고 앞으로 나아가야지.", "cat": "phrasal", "lv": 1 },
+  { "w": "move on", "k": "잊고 나아가다, 넘어가다; (실수·과거를) 털어버리고 앞으로 나아가다", "def": "To leave something behind and go forward.", "syn": [ "get over it", "put it behind you", "let it go" ], "ex": "It's been two years — you really need to move on.", "tr": "벌써 2년이나 지났잖아. 이제 그만 잊고 앞으로 나아가야지.", "cat": "phrasal", "lv": 1 },
   { "w": "go on", "k": "계속되다, 일어나다", "def": "To continue happening, or to take place.", "syn": [ "carry on", "take place", "keep going" ], "ex": "What on earth is going on in here?", "tr": "도대체 여기서 무슨 일이 벌어지고 있는 거야?", "cat": "phrasal", "lv": 1 },
   { "w": "fill in", "k": "작성하다, 기입하다", "def": "To write the required information in a form.", "syn": [ "fill out", "write in", "complete" ], "ex": "Just fill in your name and email at the top.", "tr": "맨 위에 이름이랑 이메일만 적어 주세요.", "cat": "phrasal", "lv": 1 },
-  { "w": "take on", "k": "떠맡다, 고용하다", "def": "To accept new work, or to hire someone.", "syn": [ "undertake", "shoulder", "bring on" ], "ex": "Don't take on more work than you can handle.", "tr": "감당할 수 있는 것보다 더 많은 일을 떠맡지 마.", "cat": "phrasal", "lv": 2 },
+  { "w": "take on", "k": "떠맡다, 고용하다; (특징을) 띠다; 1. (성격·책임 등을) 띠다 2. 수용하다·받아들이다; 1. ~을 맡다 2. (모습을) 띠다; 1. ~을 맡다, 책임지다 2. 모습을 띠다", "def": "To accept new work, or to hire someone.", "syn": [ "undertake", "shoulder", "bring on" ], "ex": "Don't take on more work than you can handle.", "tr": "감당할 수 있는 것보다 더 많은 일을 떠맡지 마.", "cat": "phrasal", "lv": 2 },
   { "w": "get on with someone", "k": "잘 지내다, 사이가 좋다", "def": "To have a friendly relationship with someone.", "syn": [ "get along with", "hit it off", "click with" ], "ex": "I get on with my roommate better than I expected.", "tr": "룸메이트랑 생각보다 훨씬 잘 지내고 있어.", "cat": "phrasal", "lv": 2 },
   { "w": "drop in", "k": "불쑥 들르다, 잠깐 방문하다", "def": "To visit someone briefly without arranging it first.", "syn": [ "stop by", "pop in", "swing by" ], "ex": "Feel free to drop in if you're ever in the neighborhood.", "tr": "이 근처 올 일 있으면 언제든 편하게 들러.", "cat": "phrasal", "lv": 2 },
   { "w": "chip in", "k": "돈을 보태다, 거들다", "def": "To contribute money or help together with others.", "syn": [ "pitch in", "kick in", "contribute" ], "ex": "We all chipped in twenty bucks for her birthday gift.", "tr": "우리 다 같이 20달러씩 보태서 걔 생일 선물 샀어.", "cat": "phrasal", "lv": 2 },
@@ -7243,12 +7282,12 @@ window.addEventListener('error', function(ev){
   { "w": "tune in", "k": "채널을 맞춰 보다, 시청하다", "def": "To watch or listen to a particular broadcast.", "syn": [ "listen in", "catch", "watch" ], "ex": "Tune in next week to find out who wins.", "tr": "누가 이기는지는 다음 주 방송에서 확인하세요.", "cat": "phrasal", "lv": 2 },
   { "w": "look into something", "k": "조사하다, 알아보다", "def": "To examine something to find out the facts.", "syn": [ "dig into", "check out", "investigate" ], "ex": "I'll look into it and get back to you tomorrow.", "tr": "제가 좀 알아보고 내일 다시 연락드릴게요.", "cat": "phrasal", "lv": 2 },
   { "w": "cash in on something", "k": "편승해 이득을 보다, 이용해 돈을 벌다", "def": "To make money from a situation, often unfairly.", "syn": [ "capitalize on", "profit from", "milk" ], "ex": "Every brand is trying to cash in on the nostalgia trend.", "tr": "브랜드마다 복고 열풍에 편승해서 돈을 벌려고 난리야.", "cat": "phrasal", "lv": 3 },
-  { "w": "catch on", "k": "유행하다, 인기를 얻다", "def": "To become popular with a lot of people.", "syn": [ "take off", "gain traction", "blow up" ], "ex": "Nobody liked the app at first, but it caught on fast.", "tr": "처음엔 아무도 그 앱을 안 좋아했는데 금세 인기를 끌었어.", "cat": "phrasal", "lv": 3 },
+  { "w": "catch on", "k": "유행하다, 인기를 얻다; 1. 이해하다 2. 유행하다", "def": "To become popular with a lot of people.", "syn": [ "take off", "gain traction", "blow up" ], "ex": "Nobody liked the app at first, but it caught on fast.", "tr": "처음엔 아무도 그 앱을 안 좋아했는데 금세 인기를 끌었어.", "cat": "phrasal", "lv": 3 },
   { "w": "dwell on something", "k": "곱씹다, 연연하다", "def": "To keep thinking or talking about something unpleasant.", "syn": [ "fixate on", "brood over", "harp on" ], "ex": "There's no point dwelling on mistakes you can't undo.", "tr": "되돌릴 수도 없는 실수를 계속 곱씹어 봐야 소용없어.", "cat": "phrasal", "lv": 3 },
   { "w": "touch on something", "k": "간단히 언급하다, 짚고 넘어가다", "def": "To mention a topic briefly without going deep.", "syn": [ "allude to", "mention in passing", "gloss over" ], "ex": "She touched on the budget issue but didn't go into detail.", "tr": "그 사람이 예산 문제를 잠깐 언급하긴 했는데 자세히는 안 다뤘어.", "cat": "phrasal", "lv": 3 },
   { "w": "sit in on something", "k": "참관하다, 청강하다", "def": "To attend a meeting or class as an observer.", "syn": [ "audit", "observe", "listen in on" ], "ex": "Do you mind if I sit in on the interview?", "tr": "제가 그 면접에 참관해도 괜찮을까요?", "cat": "phrasal", "lv": 3 },
   { "w": "pick up on something", "k": "알아채다, 눈치채다", "def": "To notice something subtle that others miss.", "syn": [ "catch", "sense", "notice" ], "ex": "I picked up on the tension between them right away.", "tr": "나는 둘 사이의 냉랭한 기류를 바로 눈치챘어.", "cat": "phrasal", "lv": 3 },
-  { "w": "take over", "k": "인수하다, 넘겨받다", "def": "To take control of a company, job, or situation.", "syn": [ "take charge of", "assume control of", "take the reins" ], "ex": "When the manager quit, Dana took over the whole project.", "tr": "매니저가 그만두자 데이나가 프로젝트 전체를 넘겨받았다.", "cat": "phrasal", "lv": 2 },
+  { "w": "take over", "k": "인수하다, 넘겨받다; 1. 인수하다 2. 장악하다; 1. 인계받다 2. 장악하다", "def": "To take control of a company, job, or situation.", "syn": [ "take charge of", "assume control of", "take the reins" ], "ex": "When the manager quit, Dana took over the whole project.", "tr": "매니저가 그만두자 데이나가 프로젝트 전체를 넘겨받았다.", "cat": "phrasal", "lv": 2 },
   { "w": "get over something", "k": "극복하다, 이겨내다", "def": "To recover from an illness, shock, or bad experience.", "syn": [ "recover from", "move on from", "come to terms with" ], "ex": "It took her months to get over the breakup.", "tr": "그녀는 그 이별을 극복하는 데 몇 달이 걸렸다.", "cat": "phrasal", "lv": 1 },
   { "w": "hand something over", "k": "넘겨주다, 인계하다", "def": "To give something to someone else, often unwillingly.", "syn": [ "turn over", "surrender", "relinquish" ], "ex": "The officer told him to hand over his keys.", "tr": "경찰관이 그에게 열쇠를 넘기라고 했다.", "cat": "phrasal", "lv": 1 },
   { "w": "pull over", "k": "차를 길가에 세우다", "def": "To move a vehicle to the side of the road and stop.", "syn": [ "pull off the road", "pull up", "pull to the curb" ], "ex": "A cop flashed his lights behind me, so I pulled over.", "tr": "뒤에서 경찰이 경광등을 번쩍여서 차를 갓길에 세웠다.", "cat": "phrasal", "lv": 2 },
@@ -7263,15 +7302,15 @@ window.addEventListener('error', function(ev){
   { "w": "give something away", "k": "무심코 드러내다, 발설하다", "def": "To reveal a secret, often without meaning to.", "syn": [ "let slip", "spill", "let the cat out of the bag" ], "ex": "Don't tell Amy about the party — she'll give it away.", "tr": "에이미한테 파티 얘기하지 마. 걔가 다 말해 버릴 거야.", "cat": "phrasal", "lv": 2 },
   { "w": "throw something away", "k": "버리다, 날려버리다", "def": "To discard something, or to waste a good opportunity.", "syn": [ "toss out", "get rid of", "squander" ], "ex": "You're throwing away a great job over one argument.", "tr": "너 말다툼 한 번 때문에 좋은 직장을 날려버리는 거야.", "cat": "phrasal", "lv": 1 },
   { "w": "put something away", "k": "제자리에 치우다, 정리하다", "def": "To put something back where it belongs.", "syn": [ "tidy up", "clear away", "stow" ], "ex": "Put your laundry away before your friends get here.", "tr": "친구들 오기 전에 빨래 좀 치워 놔.", "cat": "phrasal", "lv": 1 },
-  { "w": "pass away", "k": "돌아가시다, 세상을 떠나다", "def": "To die, said in a gentle or polite way.", "syn": [ "pass on", "die", "be no longer with us" ], "ex": "Her grandfather passed away last spring.", "tr": "그녀의 할아버지는 지난봄에 돌아가셨다.", "cat": "phrasal", "lv": 2 },
+  { "w": "pass away", "k": "돌아가시다, 세상을 떠나다; 사라지다", "def": "To die, said in a gentle or polite way.", "syn": [ "pass on", "die", "be no longer with us" ], "ex": "Her grandfather passed away last spring.", "tr": "그녀의 할아버지는 지난봄에 돌아가셨다.", "cat": "phrasal", "lv": 2 },
   { "w": "blow someone away", "k": "깜짝 놀라게 하다, 감동시키다", "def": "To impress or amaze someone completely.", "syn": [ "knock someone's socks off", "floor someone", "wow someone" ], "ex": "That final scene absolutely blew me away.", "tr": "그 마지막 장면에 완전히 압도당했다.", "cat": "phrasal", "lv": 2 },
   { "w": "back down", "k": "물러서다, 뜻을 굽히다", "def": "To stop arguing or demanding something after facing opposition.", "syn": [ "give in", "yield", "climb down" ], "ex": "She knew she was right, and she wasn't about to back down.", "tr": "그녀는 자기가 옳다는 걸 알았고 물러설 생각이 전혀 없었다.", "cat": "phrasal", "lv": 2 },
   { "w": "pay someone back", "k": "갚다, 되갚아주다", "def": "To return money you owe, or to take revenge.", "syn": [ "repay", "settle up with", "get even with" ], "ex": "I'll pay you back as soon as I get paid.", "tr": "월급 받는 대로 바로 갚을게.", "cat": "phrasal", "lv": 1 },
-  { "w": "hold back", "k": "참다, 억누르다", "def": "To stop yourself from showing emotion or saying something.", "syn": [ "restrain yourself", "keep it in", "bite your tongue" ], "ex": "He could barely hold back his tears during the speech.", "tr": "그는 연설 내내 눈물을 겨우 참았다.", "cat": "phrasal", "lv": 2 },
+  { "w": "hold back", "k": "참다, 억누르다; 억제하다", "def": "To stop yourself from showing emotion or saying something.", "syn": [ "restrain yourself", "keep it in", "bite your tongue" ], "ex": "He could barely hold back his tears during the speech.", "tr": "그는 연설 내내 눈물을 겨우 참았다.", "cat": "phrasal", "lv": 2 },
   { "w": "cut back on something", "k": "줄이다, 절감하다", "def": "To reduce the amount of something you use or do.", "syn": [ "cut down on", "scale back", "ease up on" ], "ex": "I'm trying to cut back on coffee, but it's not going well.", "tr": "커피를 줄이려고 하는데 잘 안 되네.", "cat": "phrasal", "lv": 2 },
   { "w": "bounce back", "k": "회복하다, 다시 일어서다", "def": "To recover quickly after a setback or illness.", "syn": [ "recover", "rebound", "get back on your feet" ], "ex": "The team lost badly on Friday but bounced back on Sunday.", "tr": "그 팀은 금요일에 크게 졌지만 일요일에 다시 살아났다.", "cat": "phrasal", "lv": 2 },
   { "w": "look back on something", "k": "되돌아보다, 회상하다", "def": "To think about something that happened in the past.", "syn": [ "reflect on", "think back on", "reminisce about" ], "ex": "You'll look back on this someday and laugh.", "tr": "언젠가 이때를 돌아보면 웃게 될 거야.", "cat": "phrasal", "lv": 1 },
-  { "w": "come around", "k": "마음을 바꾸다, 결국 수긍하다", "def": "To finally change your mind and agree with someone.", "syn": [ "change your mind", "see it your way", "warm up to the idea" ], "ex": "Give him time — he'll come around eventually.", "tr": "시간을 좀 줘. 결국엔 마음을 돌릴 거야.", "cat": "phrasal", "lv": 2 },
+  { "w": "come around", "k": "마음을 바꾸다, 결국 수긍하다; 1. 정신을 차리다 2. 마음을 바꾸다 3. 방문하다", "def": "To finally change your mind and agree with someone.", "syn": [ "change your mind", "see it your way", "warm up to the idea" ], "ex": "Give him time — he'll come around eventually.", "tr": "시간을 좀 줘. 결국엔 마음을 돌릴 거야.", "cat": "phrasal", "lv": 2 },
   { "w": "turn something around", "k": "상황을 반전시키다, 호전시키다", "def": "To change a failing situation into a successful one.", "syn": [ "get back on track", "turn the tide", "reverse" ], "ex": "The new coach turned the whole season around.", "tr": "새 감독이 시즌 분위기를 완전히 바꿔 놓았다.", "cat": "phrasal", "lv": 2 },
   { "w": "hang around", "k": "어울려 다니다, 서성거리다", "def": "To spend time somewhere doing nothing in particular.", "syn": [ "hang out", "stick around", "kill time" ], "ex": "We just hung around the mall until it got dark.", "tr": "우리는 어두워질 때까지 그냥 쇼핑몰에서 시간을 보냈다.", "cat": "phrasal", "lv": 1 },
   { "w": "show someone around", "k": "구경시켜 주다, 안내하다", "def": "To guide someone through a place that is new to them.", "syn": [ "give someone a tour", "take someone around" ], "ex": "I'll show you around the office on your first day.", "tr": "첫 출근날에 내가 사무실을 구경시켜 줄게.", "cat": "phrasal", "lv": 1 },
@@ -7288,7 +7327,7 @@ window.addEventListener('error', function(ev){
   { "w": "hang out", "k": "어울려 놀다, 시간을 보내다", "def": "to spend time relaxing with people you like", "syn": [ "chill", "spend time together", "kick it" ], "ex": "We used to hang out at that café every weekend.", "tr": "우리 주말마다 저 카페에서 놀곤 했어.", "cat": "phrasal", "lv": 1 },
   { "w": "get off", "k": "(차에서) 내리다, 퇴근하다", "def": "to leave a bus or train, or finish work", "syn": [ "step off", "clock out" ], "ex": "Get off at the next stop and walk two blocks north.", "tr": "다음 정거장에서 내려서 북쪽으로 두 블록만 걸어가.", "cat": "phrasal", "lv": 1 },
   { "w": "pull something off", "k": "해내다, 성공시키다", "def": "to succeed at something difficult or unlikely", "syn": [ "manage", "nail it", "carry off" ], "ex": "I don't know how you pulled it off, but the party was perfect.", "tr": "어떻게 해낸 건지 모르겠지만 파티 진짜 완벽했어.", "cat": "phrasal", "lv": 2 },
-  { "w": "turn out", "k": "~로 밝혀지다, 결국 ~이 되다", "def": "to happen to be the case in the end", "syn": [ "end up", "prove to be" ], "ex": "It turned out that he'd known about the surprise all along.", "tr": "알고 보니 그는 처음부터 그 서프라이즈를 알고 있었어.", "cat": "phrasal", "lv": 2 },
+  { "w": "turn out", "k": "~로 밝혀지다, 결국 ~이 되다; 1. 결국 ~로 밝혀지다 2. ~을 생산하다", "def": "to happen to be the case in the end", "syn": [ "end up", "prove to be" ], "ex": "It turned out that he'd known about the surprise all along.", "tr": "알고 보니 그는 처음부터 그 서프라이즈를 알고 있었어.", "cat": "phrasal", "lv": 2 },
   { "w": "point something out", "k": "지적하다, 짚어 주다", "def": "to draw attention to a fact or a mistake", "syn": [ "note", "flag", "bring up" ], "ex": "She politely pointed out that my slides had the wrong numbers.", "tr": "그녀가 내 슬라이드 숫자가 틀렸다고 정중하게 짚어 줬어.", "cat": "phrasal", "lv": 2 },
   { "w": "rip someone off", "k": "바가지를 씌우다, 등쳐먹다", "def": "to charge someone far too much or cheat them", "syn": [ "overcharge", "fleece", "con" ], "ex": "Forty bucks for a ten-minute cab ride — they totally ripped you off.", "tr": "10분 타는 택시비가 40달러라니, 완전 바가지 씌운 거네.", "cat": "phrasal", "lv": 2 },
   { "w": "pay off", "k": "결실을 맺다, 성과를 내다", "def": "for effort or risk to finally produce good results", "syn": [ "bear fruit", "be worth it", "pay dividends" ], "ex": "All those late nights finally paid off when she got the job.", "tr": "그 숱한 밤샘이 드디어 결실을 맺어서 그녀가 그 자리에 붙었어.", "cat": "phrasal", "lv": 2 },
@@ -7296,7 +7335,7 @@ window.addEventListener('error', function(ev){
   { "w": "back off", "k": "물러서다, 참견을 그만두다", "def": "to stop pressuring someone or retreat from a confrontation", "syn": [ "ease up", "lay off", "give someone space" ], "ex": "Just back off and let him make his own decision.", "tr": "그만 좀 참견하고 걔가 알아서 결정하게 둬.", "cat": "phrasal", "lv": 2 },
   { "w": "set off", "k": "출발하다, 유발하다", "def": "to start a journey, or to trigger a reaction", "syn": [ "head out", "trigger", "spark" ], "ex": "We set off before sunrise to beat the traffic.", "tr": "차 막히는 걸 피하려고 해 뜨기 전에 출발했어.", "cat": "phrasal", "lv": 2 },
   { "w": "doze off", "k": "깜빡 졸다, 스르르 잠들다", "def": "to fall asleep briefly without meaning to", "syn": [ "nod off", "drift off", "fall asleep" ], "ex": "I dozed off during the second half of the movie.", "tr": "영화 후반부에 깜빡 졸았어.", "cat": "phrasal", "lv": 2 },
-  { "w": "burn out", "k": "탈진하다, 번아웃되다", "def": "to become exhausted from working too hard for too long", "syn": [ "wear oneself out", "run oneself ragged" ], "ex": "He burned out after three years of eighty-hour weeks.", "tr": "주 80시간씩 3년을 일하더니 그는 완전히 지쳐 나가떨어졌어.", "cat": "phrasal", "lv": 2 },
+  { "w": "burn out", "k": "탈진하다, 번아웃되다; 탈진하다; 1. 지치다 2. 다 태우다", "def": "to become exhausted from working too hard for too long", "syn": [ "wear oneself out", "run oneself ragged" ], "ex": "He burned out after three years of eighty-hour weeks.", "tr": "주 80시간씩 3년을 일하더니 그는 완전히 지쳐 나가떨어졌어.", "cat": "phrasal", "lv": 2 },
   { "w": "chicken out", "k": "겁먹고 그만두다, 꽁무니를 빼다", "def": "to decide not to do something because you're scared", "syn": [ "back out", "get cold feet", "bail" ], "ex": "I was going to ask for a raise, but I chickened out.", "tr": "연봉 올려달라고 하려다가 겁나서 결국 말 못 했어.", "cat": "phrasal", "lv": 2 },
   { "w": "iron something out", "k": "(문제를) 해결하다, 조율하다", "def": "to settle small problems or differences in a plan", "syn": [ "work out", "smooth over", "resolve" ], "ex": "We still have a few details to iron out before we sign.", "tr": "서명하기 전에 아직 조율할 세부 사항이 몇 가지 남았어.", "cat": "phrasal", "lv": 3 },
   { "w": "pan out", "k": "잘 풀리다, 성사되다", "def": "to develop successfully or as someone hoped", "syn": [ "work out", "come together", "materialize" ], "ex": "The job in Berlin didn't pan out, so he moved back home.", "tr": "베를린 일자리가 잘 안 풀려서 그는 고향으로 돌아왔어.", "cat": "phrasal", "lv": 3 },
@@ -7309,7 +7348,7 @@ window.addEventListener('error', function(ev){
   { "w": "give up", "k": "포기하다, 그만두다", "def": "To stop trying because something is too difficult.", "syn": ["quit", "throw in the towel", "call it quits"], "ex": "Don't give up now, you're almost there.", "tr": "지금 포기하지 마, 거의 다 왔어.", "cat": "phrasal", "lv": 1 },
   { "w": "look something up", "k": "찾아보다, 검색하다", "def": "To search for information in a book or online.", "syn": ["search for", "check", "google"], "ex": "I had to look up the address before heading out.", "tr": "나가기 전에 주소를 찾아봐야 했다.", "cat": "phrasal", "lv": 1 },
   { "w": "calm down", "k": "진정하다, 진정시키다", "def": "To become or make someone less angry or upset.", "syn": ["relax", "chill out", "cool off"], "ex": "Just calm down and tell me what actually happened.", "tr": "일단 진정하고 무슨 일이 있었는지 말해 봐.", "cat": "phrasal", "lv": 1 },
-  { "w": "show up", "k": "나타나다, 모습을 보이다", "def": "To arrive or appear, especially at an event.", "syn": ["turn up", "appear", "make an appearance"], "ex": "He didn't even show up to his own birthday party.", "tr": "걔는 자기 생일 파티에 나타나지도 않았어.", "cat": "phrasal", "lv": 1 },
+  { "w": "show up", "k": "나타나다, 모습을 보이다; 1. 나타나다 2. (show sb up) ~을 망신시키다 3. 지지하다", "def": "To arrive or appear, especially at an event.", "syn": ["turn up", "appear", "make an appearance"], "ex": "He didn't even show up to his own birthday party.", "tr": "걔는 자기 생일 파티에 나타나지도 않았어.", "cat": "phrasal", "lv": 1 },
   { "w": "pick someone up", "k": "차로 데리러 가다, 태우러 가다", "def": "To collect someone in a car.", "syn": ["give someone a ride", "collect", "come get someone"], "ex": "Can you pick up the kids from school today?", "tr": "오늘 학교에서 애들 좀 데려와 줄 수 있어?", "cat": "phrasal", "lv": 1 },
   { "w": "break down", "k": "고장 나다, (감정이) 무너지다", "def": "To stop working, or to lose emotional control.", "syn": ["conk out", "give out", "fall apart"], "ex": "My car broke down on the highway again this morning.", "tr": "오늘 아침에 고속도로에서 또 차가 고장 났어.", "cat": "phrasal", "lv": 1 },
   { "w": "slow down", "k": "속도를 줄이다, 천천히 하다", "def": "To move, speak, or happen more slowly.", "syn": ["ease up", "take it easy", "decelerate"], "ex": "Slow down, I can't understand a word you're saying.", "tr": "천천히 말해, 무슨 말인지 하나도 못 알아듣겠어.", "cat": "phrasal", "lv": 1 },
@@ -7329,27 +7368,665 @@ window.addEventListener('error', function(ev){
   { "w": "crack down on someone/something", "k": "단속하다, 엄하게 다스리다", "def": "To take strict action against bad or illegal behavior.", "syn": ["clamp down on", "get tough on", "take a hard line on"], "ex": "The city has promised to crack down on illegal parking downtown.", "tr": "시는 도심 불법 주차를 강력히 단속하겠다고 했다.", "cat": "phrasal", "lv": 3 },
   { "w": "play something down", "k": "축소하다, 대수롭지 않게 말하다", "def": "To make something seem less important than it really is.", "syn": ["downplay", "minimize", "make light of"], "ex": "The company tried to play down the security breach.", "tr": "회사는 그 보안 사고를 대수롭지 않은 일로 넘기려 했다.", "cat": "phrasal", "lv": 3 },
   { "w": "water something down", "k": "약화시키다, 희석하다", "def": "To make something weaker or less effective.", "syn": ["dilute", "tone down", "weaken"], "ex": "They watered down the bill until it meant almost nothing.", "tr": "그들은 그 법안을 거의 아무 의미도 없을 만큼 약화시켰다.", "cat": "phrasal", "lv": 3 },
-  { "w": "own up to something", "k": "(잘못을) 인정하다, 시인하다", "def": "To admit that you did something wrong.", "syn": ["admit", "come clean", "fess up"], "ex": "Nobody wanted to own up to breaking the window.", "tr": "아무도 창문 깬 게 자기라고 인정하려 하지 않았다.", "cat": "phrasal", "lv": 3 },
+  { "w": "own up to something", "k": "(잘못을) 인정하다, 시인하다", "def": "To admit that you did something wrong.", "syn": ["admit", "come clean", "fess up"], "ex": "Nobody wanted to own up to breaking the window.", "tr": "아무도 창문 깬 게 자기라고 인정하려 하지 않았다.", "cat": "phrasal", "lv": 3, "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사(own up to -ing)" },
   { "w": "double down on something", "k": "더 밀어붙이다, 고집을 꺾지 않다", "def": "To commit even harder to a risky position.", "syn": ["go all in on", "stick to your guns", "dig in"], "ex": "Instead of apologizing, he doubled down on his comments.", "tr": "그는 사과하기는커녕 자기 발언을 더 밀어붙였다.", "cat": "phrasal", "lv": 3 },
-  { "w": "wind down", "k": "긴장을 풀다, 서서히 마무리되다", "def": "To relax gradually, or slowly come to an end.", "syn": ["unwind", "decompress", "taper off"], "ex": "I usually wind down with a book before bed.", "tr": "나는 보통 자기 전에 책을 읽으며 긴장을 푼다.", "cat": "phrasal", "lv": 3 }
+  { "w": "wind down", "k": "긴장을 풀다, 서서히 마무리되다", "def": "To relax gradually, or slowly come to an end.", "syn": ["unwind", "decompress", "taper off"], "ex": "I usually wind down with a book before bed.", "tr": "나는 보통 자기 전에 책을 읽으며 긴장을 푼다.", "cat": "phrasal", "lv": 3 },
+  { "w": "equip A with B", "k": "A에게 B를 갖추어주다, 제공하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "infuse A with B", "k": "A에게 B를 불어넣다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "define A as B", "k": "A를 B라고 정의하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "derive A from B", "k": "A를 B에서 도출하다", "def": "deprive (x) 헷갈림", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "impose A upon B", "k": "A를 B에게 강요하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "impose A upon/on B" },
+  { "w": "reduce A to B", "k": "A를 B로 축소시키다·귀결시키다", "def": "결론에 도달시키다", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사(reduce to tears)" },
+  { "w": "trust A for B", "k": "A를 B라고 믿다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "weigh A against B", "k": "A와 B를 비교·검토하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "replace A with B", "k": "A를 B로 교체하다", "def": "나오면 뒤에 with 찾아보기", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "distinguish A from B", "k": "A와 B를 구별하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "fill A with B", "k": "A를 B로 채우다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "promote A to B", "k": "A를 B로 승진시키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 직위 명사가 오므로 전치사(promote to manager)" },
+  { "w": "supplement A with B", "k": "A를 B로 보완하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "mistake A for B", "k": "A와 B를 착각하다", "def": "자꾸 실수함", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "confuse A with B", "k": "A와 B를 혼동하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "carve A into B", "k": "A를 쪼개서 B로 만들다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "picture A as B", "k": "A를 B로 그리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "tie A to B", "k": "A를 B에 연결짓다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(tie it to the post)" },
+  { "w": "apply A to B", "k": "A를 B에 적용하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(apply the rule to cases)" },
+  { "w": "away from A toward B", "k": "A로부터 멀어져 B를 향해", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "combine A into B", "k": "A를 결합하여 B로 만들다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take A to B", "k": "A를 B로 데려가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 장소 명사가 오므로 전치사(take him to school)" },
+  { "w": "place A within B", "k": "A를 B 안에 놓다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "owe A to B", "k": "1. A는 B 덕분이다 2. A를 B에게 빚지다; 1. A를 B 덕분으로 돌리다 2. B에게 A라는 빚을 지고 있다", "def": "A = 결과, B = 원인", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 사람·명사가 오므로 전치사(owe it to you)" },
+  { "w": "deliver A from B", "k": "A를 B로부터 구하다; A를 B로부터 구원하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "condemn A to B", "k": "A를 B로 몰아넣다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사(condemn to death)" },
+  { "w": "lend A to B", "k": "B에게 A를 부여하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(lend weight to a claim)" },
+  { "w": "the other way around", "k": "반대로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "not least of all because", "k": "특히 ~라는 이유 때문에", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "that is not true of", "k": "뒤에는 해당되지 않는다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come to grips with", "k": "~을 제대로 이해하고 다루기 시작하다, ~을 직면하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사 grips가 오므로 전치사" },
+  { "w": "grapple with", "k": "~을 해결하려 노력하다; ~와 씨름하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "even as", "k": "~하는 바로 그 와중에도", "def": "접속사", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "what it means to", "k": "그것이 무엇을 의미하는지", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "what it means to R", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(what it means to be)" },
+  { "w": "wake-up call", "k": "경종을 울리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "burst back to life", "k": "세차게 다시 살아나다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사 life가 오므로 전치사" },
+  { "w": "avail oneself of", "k": "~을 이용하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be out of (all) proportion to", "k": "~와 전혀 균형이 맞지 않다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(proportion to the offense)" },
+  { "w": "have a bearing on", "k": "~에 영향을 미치다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "long way", "k": "'발전하다' 라는 뜻으로도 쓰임", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pass A by as B", "k": "A를 B로 여기고 지나치다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "give way to", "k": "~에게 자리를 내주다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(give way to anger)" },
+  { "w": "be reduced to", "k": "~로 축소된다, ~로 전락한다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사(reduced to begging)" },
+  { "w": "make one's way to", "k": "~로 나아가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 장소 명사가 오므로 전치사(way to the exit)" },
+  { "w": "when it comes to", "k": "~에 관하여", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사(comes to cooking)" },
+  { "w": "make oneself understood", "k": "의사소통하다", "def": "무조건 P.P", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "give rise to", "k": "~을 일으키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(give rise to problems)" },
+  { "w": "get a sense", "k": "이해하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make sense", "k": "이치에 맞다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make little sense", "k": "이치에 맞지 않다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "at stake", "k": "위기에 처한, 위태로운", "def": "stick to : 고수하다", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "go hand in hand with", "k": "1. 손잡고 제휴하여 2. ~와 동반하여", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "cope with", "k": "대처하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "live up to", "k": "기대에 부응하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(live up to expectations)" },
+  { "w": "be scheduled to", "k": "~할 예정이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be scheduled to + R", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(scheduled to open)" },
+  { "w": "be apt to", "k": "~하기 쉽다, ~하는 경향이 있다; 1. ~하기 쉽다 2. ~하는 경향이 있다 3. ~할 가능성이 있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be apt to R", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(apt to forget)" },
+  { "w": "put through", "k": "성사시키다, 완수하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "at one's disposal", "k": "~의 마음대로/자유롭게 쓸 수 있는", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "turn a blind eye", "k": "못 본체하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take out of the gutter", "k": "수렁에서 구해내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "put on the back burner", "k": "~을 뒤로 미루다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "set in motion", "k": "시작하다", "def": "set = 놓다, motion = 움직임", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "put in place", "k": "(제도 등을) 시행하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be concerned with", "k": "~와 관련이 있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be concerned about", "k": "~을 걱정하다", "def": "be concerned with 줄 위에 작게 적힌 about 항목", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be central to", "k": "~의 핵심이다; ~에 핵심적이다", "def": "= crucial, key, essential / to 는 전치사(전) / 빨간 별 2개, to 파란 밑줄(전치사)", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(central to the plan)" },
+  { "w": "be named after", "k": "B의 이름을 따서 A가 지어지다", "def": "= name A after B", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be named after B" },
+  { "w": "take it for granted", "k": "당연하게 받아들이다, 인정하다", "def": "it 빼면 that 없이 목적어만 → it 쓰면 뒤에 100% that절 (to V 불가)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make sure", "k": "확실히 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "kill off", "k": "전멸시키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pull out", "k": "1. 빠져나오다 2. 꺼내다, 뽑아내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "work out to", "k": "결국 ~가 되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 금액·수량 명사가 오므로 전치사(work out to $50)" },
+  { "w": "put together", "k": "1. 모으다 2. 조립하다 3. 구성하다; 1. 조립하다 2. 합치다", "def": "동사", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "eye of the beholder", "k": "보는 사람의 판단은 사람마다 다르다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "turn upside down", "k": "거꾸로 뒤집다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come in full swing", "k": "한창 진행되다, 절정에 이르다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "refer back to", "k": "~로 다시 되돌아가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(refer back to the chart)" },
+  { "w": "have A in common with B", "k": "A를 B와 공통으로 가지다; A와 B라는 공통점을 가지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "put out", "k": "내놓다; 1. 내놓다 2. 불을 끄다; ~을 끄다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be up for", "k": "~할 기분이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "do well", "k": "(건강 상태 등이) 잘 지내다, 호전되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be contented with", "k": "~에 만족하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "chew the fat", "k": "수다를 떨다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "blow a fuse", "k": "버럭 화를 내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "turn to", "k": "1. (사람) ~에게 도움을 구하다 2. (사물) ~로 향하다; ~에 의지하다; 1. ~에 의지하다 2. ~로 전환하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 사람·사물 명사가 오므로 전치사(turn to a friend)" },
+  { "w": "turn away from", "k": "~로부터 돌아서다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be no stranger to", "k": "~를 겪어서 알고 있다", "def": "to 는 전치사(전)", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사(stranger to hardship)" },
+  { "w": "set a boundary upon", "k": "~에 한계를 설정하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "have come to", "k": "~하게 되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(have come to realize)" },
+  { "w": "be fitted to", "k": "~하는데 적합하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be fitted to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(fitted to lead)" },
+  { "w": "take A and reframe A as B", "k": "A를 가져와서 B로 재정의하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "think twice", "k": "다시 생각하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "no matter", "k": "~와 상관없이", "def": "뒤에 명사(ⓝ)가 온다", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "no matter + 명사" },
+  { "w": "latch on to", "k": "~에 달라붙다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(latch on to an idea)" },
+  { "w": "in the grip of", "k": "~에 완전히 사로잡힌, ~의 지배를 받는", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pass by", "k": "(옆을) 지나가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "horse around", "k": "미쳐 날뛰다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "jump down one's throat", "k": "화를 내다", "def": "throat = 목구멍", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pull one's leg", "k": "놀리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "let the cat out of the bag", "k": "비밀을 누설하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "lash out", "k": "비난하다", "def": "out 위에 at 추가 표시 / lash = 때리다", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "lash out (at)" },
+  { "w": "grow tired of", "k": "~에 질리다, ~에 피로감을 느끼다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "keep up with", "k": "~와 속도를 맞추다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "for the sake of", "k": "~을 위하여", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "for its own sake", "k": "그 자체를 위해", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "press for", "k": "~를 강요하다, 요청하다; 강력히 요구하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take advantage of", "k": "1. ~을 이용하다 2. ~을 악용하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "go out", "k": "외출하다; 밖으로 나가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "credit A with B", "k": "A에게 B에 대한 공로를 돌리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "swap A against B", "k": "A를 B로 교환하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "incorporate A into B", "k": "A를 B에 통합하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "inform A of B", "k": "A에게 B를 알리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "mislead A into B", "k": "A를 속여서 B하게 만들다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "shield A from B", "k": "A를 B로부터 차단하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "expose A to B", "k": "A를 B에 노출시키다", "def": "to 위에 전(전치사) 표시", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(expose kids to risk)" },
+  { "w": "predispose A to B", "k": "A를 B 하기 쉬운 상태로 만들다", "def": "~하는 경향이 있다 / to 위에 전(전치사) 표시", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(predispose to disease)" },
+  { "w": "surrender A to B", "k": "A를 B에게 넘겨주다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 사람·명사가 오므로 전치사(surrender it to police)" },
+  { "w": "distill A into B", "k": "A를 B로 증류시키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "instill A in/into B", "k": "A를 B에 주입하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "instigate A to B", "k": "A를 B에 부추기다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(instigate to violence)" },
+  { "w": "exchange A for B", "k": "A를 B와 교환하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "denounce A as B", "k": "A를 B라고 규정하며 비난하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pay A for B", "k": "B에 대해 A라는 대가를 치르다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "base A on B", "k": "B에 기반하여 A를 결정하다; A의 기반을 B에 두다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "with A as B", "k": "A를 B로 삼은 채로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "replace A with/by B", "k": "A를 B로 교체하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "conflate A with B", "k": "A와 B를 합치다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "couple A with B", "k": "A와 B를 결합하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "ground A in B", "k": "A의 바탕·근거를 B에 두다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "privilege A over B", "k": "B보다 A를 우선시하다·특혜를 주다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "compare A to B", "k": "A를 B에 비교하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(compare life to a journey)" },
+  { "w": "receive A from B", "k": "B로부터 A를 받다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "relate A to B", "k": "A를 B와 연관짓다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(relate stress to illness)" },
+  { "w": "insulate A from B", "k": "A를 B로부터 격리하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "focus A on B", "k": "A를 B에 집중시키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come to terms with", "k": "~와 타협하다", "def": "terms 위에 작은 글씨 '조건'", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사 terms가 오므로 전치사" },
+  { "w": "come away with", "k": "~을 손에 넣다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be sure to", "k": "반드시 ~하기 마련이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be sure to + R", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(sure to succeed)" },
+  { "w": "be fond of", "k": "~를 좋아하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be made up of", "k": "~로 구성되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "stand for", "k": "~를 상징하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "do someone good", "k": "~에게 이롭다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "fall back on", "k": "~에 의지하다", "def": "= resort to, turn to", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "call off", "k": "취소하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "acquire an advantage over", "k": "~보다 우위를 점하다", "def": "노트에는 adventage 로 적힘(오타)", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "acquire an advantage/superiority/dominance over" },
+  { "w": "acquire superiority over", "k": "~보다 우위를 점하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "acquire an advantage/superiority/dominance over" },
+  { "w": "acquire dominance over", "k": "~보다 우위를 점하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "acquire an advantage/superiority/dominance over" },
+  { "w": "come alive", "k": "살아나다, 생생해지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "use up", "k": "고갈시키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "there is no room for", "k": "~를 위한 공간은 없다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "get to", "k": "~하게 되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "get to + R", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(get to know)" },
+  { "w": "fritter away", "k": "조금씩 낭비하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in the wake of", "k": "~의 결과로; ~의 뒤를 이어, ~ 이후에", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make use of", "k": "~을 이용하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make out", "k": "1. 이해하다 2. 작성하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "taper off", "k": "줄어들다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "report to work", "k": "출근하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사 work가 오므로 전치사(출근 장소)" },
+  { "w": "be related to", "k": "~와 연관되어 있다", "def": "노트에 'to V' 로 적혀 있음 (실제로는 to + 명사가 일반적)", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be related to V", "toHint": "inf", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(related to the issue)" },
+  { "w": "make reference to", "k": "~을 언급하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(reference to the report)" },
+  { "w": "be charged with", "k": "1. ~의 혐의를 받다 2. ~의 책임을 맡다 3. ~로 가득 차다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "settle for", "k": "~에 안주하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "reach for", "k": "~을 갈망하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in an effort to", "k": "~하려는 노력의 일환으로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "in an effort to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(effort to reduce)" },
+  { "w": "cater to", "k": "충족시키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "cater to + 사람/욕구/필요", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 사람·욕구 명사가 오므로 전치사(cater to needs)" },
+  { "w": "call attention to", "k": "~에 관심을 갖게 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(attention to the fact)" },
+  { "w": "perk up", "k": "활기를 띠다; 활기를 되찾다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "intent upon", "k": "~에 집중하는", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make a quick buck", "k": "쉽게 돈을 벌다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "play down", "k": "대수롭지 않게 여기다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "run into", "k": "1. 우연히 마주치다 2. (문제에) 직면하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "capitalize on", "k": "1. ~을 이용하다 2. ~을 기회로 삼아 이익을 얻다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "dwell on", "k": "심사숙고하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take it for granted that", "k": "that 이하를 당연시하게 여기다", "def": "it: ~로서 p.p / 주어진 걸로 당연시하게", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "take (it) for granted (that)" },
+  { "w": "by way of", "k": "~의 방식으로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "lend itself to", "k": "~에 적합하다; 1. ~에 적합하다 2. ~하기 쉽다 3. 초래·유발하다", "def": "to = 전치사", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사(lend itself to analysis)" },
+  { "w": "stray from", "k": "~에서 벗어나다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "the mirror image of", "k": "~와 정반대인 것", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "fall to", "k": "~하기 시작하다; 1. ~로 떨어지다 2. ~의 몫이 되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "fall to R", "toHint": "inf", "to": "prep", "toNote": "to 뒤에 명사·동명사(fall to doing)가 오므로 전치사" },
+  { "w": "be on the same wavelength", "k": "생각이 통하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "commensurate with", "k": "~에 상응하는", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "wash away", "k": "씻어 없애다, 물에 휩쓸어가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "noting that", "k": "~라는 점을 지적·주목하면서", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be meant to", "k": "1. ~하기로 되어있다 2. ~할 의도이다; ~할 의도이다, ~하기로 되어있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be meant to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(meant to be)" },
+  { "w": "rule in favour of", "k": "~에게 유리한 판결을 내리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "put up", "k": "설치하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "mourn for", "k": "애도하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "move on to", "k": "~로 넘어가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(move on to the next topic)" },
+  { "w": "argue for", "k": "~를 옹호하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "rest on", "k": "1. ~에 달려있다, 의존하다 2. ~에 놓여있다 3. ~에 기반하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "an assortment of", "k": "여러가지의, 갖가지의", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be festooned with", "k": "~로 장식되어있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "leave out", "k": "생략하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be absent from", "k": "~에 결석하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take after", "k": "~을 닮다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "lag behind", "k": "뒤처지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "one's way home", "k": "귀가 길에", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "on one's way to", "k": "~로 가는 길에", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 장소 명사·동명사가 오므로 전치사(way to school)" },
+  { "w": "make sure that", "k": "반드시 ~하도록 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in dire straits", "k": "곤경에 처한", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "land sb in", "k": "~ 상황에 빠뜨리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "put ~ at risk", "k": "~를 위태로운 처지에 놓이게 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "raise the profile", "k": "인지도를 높이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "the child of", "k": "~의 자식·결실", "def": "은유적 표현", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "mean to", "k": "~할 의도이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "mean to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(mean to say)" },
+  { "w": "ask a favor", "k": "부탁을 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "bow down before", "k": "~ 앞에 엎드려 절하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make up one's mind", "k": "마음을 정하다, 주관을 가지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "clamor for", "k": "~를 강력히 요구하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "yearn for", "k": "~를 갈망하다", "def": "= long, crave", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pine for", "k": "~을 그리워하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "push out", "k": "몰아내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take a day off", "k": "하루 휴가내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "rapt in awe", "k": "경외감에 사로잡힌", "def": "rapt: 넋을 잃은 / awe: 경외감", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "from coast to coast", "k": "전국을 걸쳐", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사 coast 가 오므로 전치사" },
+  { "w": "take aim at", "k": "~을 겨냥하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be convinced that", "k": "~라는 것을 확신하다; ~라고 확신하다, 설득당하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come to mind", "k": "생각나다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사 mind 가 오므로 전치사" },
+  { "w": "loom large", "k": "크게 다가오다, 중요한 비중을 차지하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be glad to", "k": "~해서 기쁘다", "def": "of 명사, to R, that 절 모두 가능", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be glad of 명사 / to R / that 절", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(glad to hear)" },
+  { "w": "get the job done", "k": "본분을 다하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "get a grip on", "k": "1. ~을 통제하다 2. ~을 파악하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "have a good grasp of", "k": "~을 잘 이해하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "let go of one's grip", "k": "~의 손아귀를 놓다", "def": "let go of = ~을 놓다", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "touch off", "k": "야기시키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "drive away", "k": "쫓아내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be due to", "k": "~할 예정이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be due to V", "toHint": "inf", "to": "inf", "toNote": "'~할 예정' 뜻은 to 뒤 동사원형이므로 부정사(due to arrive)" },
+  { "w": "pose a threat to", "k": "~에게 위협을 가하다", "def": "전 (to는 전치사)", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(threat to security)" },
+  { "w": "hold good", "k": "유효하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "on one's own", "k": "자력으로, 독립해서", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "sleep in", "k": "늦잠을 자다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "draw on", "k": "1. ~에 의존하다 2. ~을 활용하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "at face value", "k": "액면가 (겉모습) 그대로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "bottom out", "k": "최저점에 도달하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "get on in the world", "k": "출세하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "have a word with", "k": "~와 이야기를 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "as the saying goes", "k": "속담에 있듯이", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come to light", "k": "밝혀지다, 드러나다; 드러나다, 밝혀지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사 light 가 오므로 전치사" },
+  { "w": "conceive of A", "k": "~를 A라고 생각·개념화하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come into tension", "k": "긴장상태에 놓이다, 갈등·충돌을 겪다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "reach out to", "k": "1. ~에게 관심을 보이다·접근하다 2. 연락을 취하려 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 사람 명사가 오므로 전치사(reach out to them)" },
+  { "w": "take out", "k": "꺼내다, 인출하다; 1. 꺼내다 2. ~을 제거하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "see about", "k": "조치하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come about", "k": "일어나다, 발생하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come upon", "k": "우연히 발견하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be contingent on", "k": "~에 의존하는", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be bent upon", "k": "~에 혈안이 되다, ~에 전념하다", "def": "upon 뒤에 -ing", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be bent upon -ing" },
+  { "w": "be bathed in", "k": "~으로 뒤덮이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in the same measure as", "k": "~하는 것과 같은 정도로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "bask in", "k": "~를 즐기다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in reverse proportion to", "k": "~에 반비례하여", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(proportion to income)" },
+  { "w": "pull into", "k": "차가 들어가다, 정차하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take up", "k": "1. 차지하다 2. 시작하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be poised to", "k": "~할 준비가 되어있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(poised to strike)" },
+  { "w": "on the fly", "k": "즉흥적으로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "set out", "k": "시작하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be subject to", "k": "1. ~의 영향을 받기 쉽다 2. ~의 지배를 받다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(subject to change)" },
+  { "w": "come into and out of", "k": "~을 드나들다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be designed to", "k": "~하도록 설계되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be designed to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(designed to help)" },
+  { "w": "feel compelled to", "k": "어쩔수없이 ~해야한다고 느끼다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "feel compelled to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(compelled to act)" },
+  { "w": "be ready to", "k": "~할 준비가 되어있다; 기꺼이 ~할 준비가 되어있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be ready to R", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(ready to go)" },
+  { "w": "scramble to", "k": "~하기위해 노력하다, 앞다투어 ~하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "scramble to R", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(scramble to find)" },
+  { "w": "acquire a life of its own", "k": "독자적인 생명력을 가진다", "def": "→ 스스로 영향력을 가짐", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "call A into existence", "k": "A를 존재하게 만들다", "def": "= call A into being; 생겨나게 하다", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "call A into existence / being" },
+  { "w": "make clear", "k": "~을 분명히 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be driven by", "k": "~에 사로잡히다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be bound to", "k": "반드시 ~하게 되다; 반드시 ~하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be bound to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(bound to happen)" },
+  { "w": "set ~ in motion", "k": "~을 움직이게 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pick up the pieces", "k": "사태를 수습하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "spend their way to", "k": "돈을 써서 ~까지 다다르다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(way to victory)" },
+  { "w": "hunt down", "k": "추적하여 잡다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come up", "k": "(대화·주제 등에서) 언급되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "move out", "k": "(밖으로) 나가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "wreak havoc on", "k": "피해·파괴를 야기시키다", "def": "wreak 과거형: wrought/wreaked", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "give voice to", "k": "~를 대변하다", "def": "to = 전치사", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(voice to concerns)" },
+  { "w": "step into", "k": "~에 발을 들여놓다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "flow in upon", "k": "~로 밀려들어오다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "brace oneself for", "k": "마음의 준비를 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be laden with", "k": "~로 가득차다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "clear away", "k": "~을 쓸어버리다, 없애주다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "put A upon", "k": "A로 하여금 ~하게 만들다, 촉진하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "put A upon -ing" },
+  { "w": "cut a figure", "k": "~한 모습을 보이다", "def": "cut 위에 작게 give 적힘 (give a figure)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "distinguish oneself", "k": "두각을 나타내다, 자신을 돋보이게 만들다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "think out", "k": "신중히 생각하다", "def": "→ well/poorly thought out : 잘/허술히 구상된", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "well/poorly thought out", "k": "잘/허술히 구상된", "def": "think out 에서 파생 (같은 줄에 적힘)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "go out on a limb", "k": "위험을 감수하고 나가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "hit the nail on the head", "k": "정곡을 찌르다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be involved in", "k": "~에 관여하다·연루되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "act out of", "k": "~의 감정/동기에서 비롯되어 행동하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "fall prey to", "k": "~의 희생양이 되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(prey to scams)" },
+  { "w": "be forced to", "k": "~하도록 강요되다; ~하도록 강요받다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be forced to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(forced to leave)" },
+  { "w": "get into", "k": "1. ~에 들어가다 2. ~에 빠지다, 처하게 되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "hold dear", "k": "소중히 여기다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "break away", "k": "1. 떨어져 나가다 2. 벗어나다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make A of B", "k": "B를 A로 만들다", "def": "be made of : ~로 구성되다 (재료 남음) / be made from : ~로 만들어지다 (재료 안남음)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be made of", "k": "~로 구성되다 (재료 남음)", "def": "make A of B 옆 보충", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be made from", "k": "~로 만들어지다 (재료 안남음)", "def": "make A of B 옆 보충", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be denominated in", "k": "~로 표시되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be denominated in + 화폐/단위" },
+  { "w": "hollow out", "k": "~의 속을 파내다, 갉아먹다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take issue with", "k": "이의를 제기하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "reckon with", "k": "고려하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "at a discount", "k": "할인된 가격으로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "without any reason", "k": "아무 이유없이", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make out a case for", "k": "~를 지지하는 주장을 펼치다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "to speak of", "k": "특출나게 말할만한 ~가 없는", "def": "부정어 + 명사 뒤에 쓰임", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "부정 + 명사 + to speak of", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형 speak 가 오므로 부정사" },
+  { "w": "develop a habit", "k": "습관이 생기다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "on one's way", "k": "가는 길에", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "visit upon", "k": "(~에게 벌·재앙 등을) 받게 하다, 가하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "visit upon + 사람/대상" },
+  { "w": "not that I know of", "k": "내가 아는 한 아니다", "def": "that 자리에 as far as 도 가능: as far as ~ : ~하는 한", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "spare one's feeling", "k": "~의 감정을 다치지 않게 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "mess around", "k": "어설프게 행동하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "every square inch", "k": "구석구석 모든 부분", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "gloss over", "k": "슬그머니 넘어가다, 얼버무리다, 경시하다; 얼버무리고 넘어가다", "def": "빨간 별 2개", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "die out", "k": "멸종하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "connect A with B", "k": "A와 B를 연결하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "endue A with B", "k": "A에게 B를 수여하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "assign A to B", "k": "A를 B에 배정·할당하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사 B 가 오므로 전치사" },
+  { "w": "include A as B", "k": "A를 B로 포함하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "substitute A for B", "k": "A로 B를 대체하다", "def": "파란 화살표: B → A 방향 표시 (노트에는 'Substitue'로 적힘)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "leave A with B", "k": "A에게 B를 남기다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "convert A into B", "k": "A를 B로 바꾸다", "def": "into 에 동그라미 표시", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "plug A into B", "k": "A를 B에 꽂다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "trick A into B", "k": "A를 현혹하여 B하게 만들다", "def": "현혹하여 = 속여서", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "process A into B", "k": "A를 B로 바꾸다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "compare A with/to B", "k": "A와 B를 비교하다", "def": "comparing 〃 (같은 뜻)", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사 B 가 오므로 전치사" },
+  { "w": "A compared with/to B", "k": "A와 B를 비교하다", "def": "compare A with/to B 와 같은 뜻 (분사 꼴)", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사 B 가 오므로 전치사" },
+  { "w": "move A off B to C", "k": "A를 B에서 떼어내어 C로 이동시키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사 C 가 오므로 전치사" },
+  { "w": "associate A with B", "k": "A를 B와 연관짓다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take A for B", "k": "A를 B로 여기다, 생각하다, 착각하다", "def": "take A as B 위에 작게 적힘", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take A as B", "k": "A를 B로 삼다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "distribute A to B", "k": "A를 B에게 배부하다", "def": "to 에 동그라미 표시", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사 B 가 오므로 전치사" },
+  { "w": "project A onto B", "k": "A를 B에 투영하다", "def": "onto 에 동그라미 표시", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "for every A, B", "k": "A마다 B하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "parse A from B", "k": "A와 B를 구분하여 분석하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "enter A into B", "k": "A를 B에 입력하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "sever A from B", "k": "A를 B로부터 단절시키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "confine A to B", "k": "A를 B에 국한시키다", "def": "to 에 동그라미 표시", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사 B 가 오므로 전치사" },
+  { "w": "read A as B", "k": "A를 B로 해석하다, 읽다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "bequeath A to B", "k": "A를 B에게 유언으로 물려주다", "def": "→ 법적·유언의 맥락 (to 에 동그라미 표시)", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사 B 가 오므로 전치사" },
+  { "w": "match A to B", "k": "A를 B에 부합시키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사 B 가 오므로 전치사" },
+  { "w": "date A to B", "k": "1. A의 연대를 B로 추정하다 2. 거슬러 올라가다", "def": "to 에 동그라미 표시", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 시기 명사가 오므로 전치사(date it to 1200)" },
+  { "w": "B is matched by A", "k": "B가 A에 필적한다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "A match B", "k": "A가 B에 필적한다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "vamp up", "k": "개조하다, 수선하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "set aside", "k": "1. ~을 남겨두다 2. ~을 무시하다 3. 기각하다 4. 확보하다", "def": "3. 기각하다 = 법률 용어", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "stand up to", "k": "1. 저항하다 2. 견뎌내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(stand up to bullies)" },
+  { "w": "put an end to", "k": "~을 끝내다, 종식시키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사(end to the war)" },
+  { "w": "complicit with", "k": "~에 공모한", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "a steady diet of", "k": "~을 꾸준히 접하는 것", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "sentence by sentence", "k": "한 문장씩", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "have a memory like a sieve", "k": "건망증이 심하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take A for granted", "k": "A를 당연하게 여기다", "def": "A = 목적어(O) 표시", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be up to", "k": "1. ~의 책임이다 2. ~에 달려있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사·대명사가 오므로 전치사(up to you)" },
+  { "w": "in place", "k": "1. 시행중인 2. 준비된", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "go on to", "k": "이어서·나아가 ~하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "go on to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(go on to win)" },
+  { "w": "be plugged into A", "k": "A에 연결되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "throw about on", "k": "~에 의문을 제기하다", "def": "노트에 'about' 으로 적힘 (throw doubt on 의 오기일 가능성)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take A in mass", "k": "A를 집단으로 받아들이다", "def": "집단으로 = 전체적으로", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "throw around", "k": "이리저리 던지다, 아무렇게나 언급하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "push against", "k": "~에 대항하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in tandem with", "k": "~와 함께, 협력하여", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in the face of", "k": "1. ~에 직면하여 2. ~에도 불구하고", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in place of", "k": "~ 대신에", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "play a part in", "k": "~에서 역할을 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "round peg in a square hole", "k": "부적격자", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "commit A to memory", "k": "A를 암기하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사 memory 가 오므로 전치사" },
+  { "w": "make light of", "k": "~을 가볍게 여기다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "hit the market", "k": "시장에 나오다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "run away from", "k": "도망치다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "do justice to", "k": "~를 공평하게 대하다, 올바르게 평가하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 평가 대상인 명사가 오므로 전치사" },
+  { "w": "with the benefit of hindsight", "k": "돌이켜보면, 나중에 생각해 보면", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "lay out", "k": "상세히 설명하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "far cry from", "k": "~와는 전혀 다른 것", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "start off", "k": "시작·출발하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "talk oneself up", "k": "자신을 북돋우다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "from the very beginning", "k": "아주 처음부터", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make for", "k": "1. ~을 초래하다 2. ~로 향하다 3. ~에 기여하다", "def": "움직임", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be the case", "k": "사실이다, 그러하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "out of favor", "k": "인기를 잃은, 유행이 지난", "def": "out of + 명사: 영역·상태에서 벗어난; ↔ in favor", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "render in", "k": "~로 표현하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "wall off", "k": "~을 차단하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "a flash in the pan", "k": "일시적인 성공", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "employ oneself upon", "k": "~에 몰두하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "fail under", "k": "~를 견디지 못하고 무너지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "God knows", "k": "신만이 아신다 → 아무도 모른다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "oblige A to", "k": "A가 ~하도록 강요하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "oblige A to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(oblige A to do)" },
+  { "w": "be at a loss for words", "k": "말문이 막히다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "off day", "k": "운수 사나운 날, 컨디션이 안 좋은 날", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "drop out", "k": "사라지다; 중도 포기하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make way for", "k": "자리를 내주다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be in the habit of", "k": "~하는 습관이 있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be in the habit of ~ing" },
+  { "w": "feel out of place", "k": "어울리지 않는다고 느끼다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be caught up in", "k": "1. ~에 휩쓸리다 2. ~에 몰두하다 3. ~에 사로잡히다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "find oneself in", "k": "(어쩌다보니) 자신이 ~에 와 있음을 알게 되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "find oneself", "k": "(어쩌다보니) 자신이 ~하고 있음을 알게 되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "find oneself ~ing" },
+  { "w": "go wrong", "k": "잘못되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "set free", "k": "~를 해방시키다, 풀어주다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "cover over", "k": "~을 은폐하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "reach beyond A", "k": "A를 넘어서다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "waste away", "k": "쇠약해지다, 황폐해지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in a welter of", "k": "~의 소용돌이 속에서", "def": "★★★", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be amazed to", "k": "~해서 놀라다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be amazed to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형(감정의 원인)이 오므로 부정사" },
+  { "w": "tear down", "k": "철거하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in short supply", "k": "공급이 부족한", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "keep clear of", "k": "~을 피하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "second to none", "k": "최고인", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 대명사 none이 오므로 전치사" },
+  { "w": "bring about", "k": "야기시키다", "def": "= cause", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "it is just as well", "k": "오히려 잘 된 일이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "commit", "k": "1. 저지르다 2. 전념하다 3. 수용시키다", "def": "강조, = send", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "commit ⓥ" },
+  { "w": "what the future holds for", "k": "~의 미래에 무엇이 기다리고 있는가", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "bring under control", "k": "~을 통제하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pull off", "k": "1. 물리적으로 떼어내다 2. 일을 성공적으로 해내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pull apart", "k": "분리하다, 갈라놓다", "def": "→ 스러져 (연필 메모, 흐림)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "work up", "k": "1. 자극하다 2. 흥분시키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "hand over", "k": "건네주다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "search after", "k": "~을 탐색하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be employed in", "k": "1. ~하느라 바쁘다 2. ~하는데 종사하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be employed in -ing" },
+  { "w": "lay up", "k": "~을 모으다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "near enough", "k": "그쯤이면, 거의 충분한", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "full of meaning", "k": "의미심장한", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "crop up", "k": "뜻밖에 나타나다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "could use", "k": "~가 필요하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "synonymous with", "k": "~의 대명사인, ~와 다름없는", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "removed from", "k": "~와 거리가 먼", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "resulted from", "k": "~에서 비롯된", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take root on", "k": "뿌리내리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be cry for the moon", "k": "불가능한 것을 바라다", "def": "cry for : ~을 간절히 요구하다", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be over the moon", "k": "매우 기뻐하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "own up to", "k": "(잘못을) 순순히 인정·자백하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사·동명사(own up to -ing)가 오므로 전치사" },
+  { "w": "cave in", "k": "1. 무너지다 2. 굴복하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "wear away", "k": "닳아 없어지다, 닳게 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pop up", "k": "불쑥 나타나다, 급증하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "leave ~ in the dust", "k": "~를 까마득히 따돌리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "roll into", "k": "~에 진입하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "have a crack at", "k": "~을 한 번 시도해보다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pick through", "k": "샅샅이 살펴보다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "sit out", "k": "제외되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "crack down on", "k": "~을 단속하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "lay down", "k": "~을 내려놓다", "def": "vt (타동사)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "walk in", "k": "안으로 걸어들어오다", "def": "in = 부사 → 목적어 필요 X", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "walk/come/step in" },
+  { "w": "come in", "k": "안으로 걸어들어오다", "def": "in = 부사 → 목적어 필요 X", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "walk/come/step in" },
+  { "w": "step in", "k": "안으로 걸어들어오다", "def": "in = 부사 → 목적어 필요 X", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "walk/come/step in" },
+  { "w": "go on trial", "k": "재판을 받다", "def": "vi (자동사)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "leave behind", "k": "~을 두고 가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "from the nest", "k": "둥지를 떠나, (비유) 가정·보호자의 품을 떠나 독립하여", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in the ordinary course of things", "k": "일반적인 사물의 흐름에서 보면", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make much of", "k": "중시하다; 1. ~을 중요하게 여기다 2. 칭찬하다", "def": "★★", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "go away from", "k": "떠나버리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "argue into", "k": "~에 반대하여 주장하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "move past", "k": "~을 지나가다, 통과하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "miss the point", "k": "핵심을 놓치다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "bear out", "k": "~을 입증하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "walk on air", "k": "기쁨에 떠 살다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "dream of", "k": "~을 꿈꾸다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "glimpse of", "k": "~를 엿봄", "def": "of 뒤에 대상(명사)", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "glimpse of + 대상" },
+  { "w": "fail to", "k": "~하지 못하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "fail to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사" },
+  { "w": "have access to", "k": "~에 접근할 수 있다", "def": "to = 전치사", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 접근 대상 명사가 오므로 전치사" },
+  { "w": "act upon", "k": "~에 대해 조치를 취하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "from above", "k": "위로부터 (상부에서)", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "ring true", "k": "참으로 들리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "press upon", "k": "~에게 중압감으로 다가오다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be made to", "k": "~하도록 강요받다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be made to V", "toHint": "inf", "to": "inf", "toNote": "사역 수동태, to 뒤에 동사원형이 오므로 부정사" },
+  { "w": "sweep A under the rug", "k": "A를 은폐하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "skate on thin ice", "k": "살얼음판을 걷다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "strengthen a difficult case", "k": "어려운 소송을 유리하게 만들다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "hold water", "k": "이치에 맞다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "burn the candle at both ends", "k": "몹시 무리하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "throw cold water on", "k": "찬물을 끼얹다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "sell A back to B", "k": "A를 B에게 다시 되팔다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 사람 B(명사)가 오므로 전치사" },
+  { "w": "hold firm", "k": "확고하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "see through", "k": "꿰뚫어보다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "turn down", "k": "거절하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "bear within itself", "k": "그 자체내에 ~을 안고있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "speak of", "k": "~에 대해 말하다, 다루다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in the knowledge that", "k": "~라는 사실을 알고서", "def": "확신을 가지고", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "revolve around", "k": "주위를 돌다, ~을 중심으로 돌아가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "laugh off", "k": "웃어넘기다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "block out", "k": "~을 차단하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "encroach on/upon", "k": "~을 침해하다, ~을 잠식하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "on the part of", "k": "~의 측면에서는", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "commit to", "k": "1. ~에 전념하다 2. ~하기로 약속하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사·동명사(commit to -ing)가 오므로 전치사" },
+  { "w": "in concord with", "k": "1. ~와 일치하여 2. ~와 조화를 이루어", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "stand off", "k": "거리를 두다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "It is no business of one's", "k": "~와 상관없는 일이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "hold true", "k": "유효하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "put up with", "k": "참다, 견디다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "fall apart", "k": "(물건이) 부서지다, 무너지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pull down", "k": "허물다, 좌절시키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take A away from B", "k": "B로부터 A를 떼어놓다, A의 주의를 딴데로 돌리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be given to", "k": "~하는 경향이 있다", "def": "+ 사람/대상 : ~에게 주어지다", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be given to + n/-ing", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사(be given to -ing)" },
+  { "w": "on the agreement to", "k": "~하겠다는 동의/합의 하에", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "on the agreement to R", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(agreement to do)" },
+  { "w": "more bark than bite", "k": "큰소리만 치고 실제로는 위협적이지 않은", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "fall short of", "k": "~에 미치지 못하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "at the pumps", "k": "주유소에서", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "at arm's length", "k": "거리를 두고, 냉담하게", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "play fast and loose with", "k": "~을 무책임하게 취급하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "by accident", "k": "우연히", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "by dint of", "k": "~의 힘으로, ~에 의해서", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "catch up with/to", "k": "~을 따라잡다", "def": "to = 물리적; * with : 오랜만에 만나 밀린 이야기를 나누다", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 따라잡는 대상 명사가 오므로 전치사" },
+  { "w": "come by", "k": "1. ~을 얻다 2. ~에 들르다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "go by", "k": "1. ~을 근거로 삼다, 판단하다 2. ~을 따르다 3. (시간이) 지나가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come across", "k": "1. 이해되다 2. ~라는 인상을 주다 3. 우연히 발견하다; 우연히 마주치다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "consist in", "k": "~에 존재하다/있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "follow suit", "k": "따라하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "spit out", "k": "뱉다", "def": "spat-spat", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "halfway through", "k": "~의 중간쯤에", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take the trouble to", "k": "일부러/기꺼이 ~하는 수고를 들이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "take the trouble to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사" },
+  { "w": "stake out a position", "k": "입장을 분명히 밝히다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "get closer to", "k": "~에 가까워지다; 더 가까워지다", "def": "to 위에 전(전치사) 표시, 파란 밑줄", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사" },
+  { "w": "come under", "k": "해당하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be up", "k": "만료되다", "def": "be ⓥ up ⓐ", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "enter the picture", "k": "등장하다, 고려 대상이 되다", "def": "ⓥ", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "talk down to", "k": "~을 깔보며 말하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 사람 명사가 오므로 전치사" },
+  { "w": "have the last word", "k": "최종 결정권을 가지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "close down", "k": "문을 닫다, 폐업하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "lend credibility to", "k": "~에 신뢰성을 더하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사" },
+  { "w": "liken A to B", "k": "A를 B에 비유하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 비유 대상 B(명사)가 오므로 전치사" },
+  { "w": "take A along B", "k": "A를 B를 따라 이끌고 가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "bolt A onto B", "k": "A를 B에 덧붙이다, 단단히 고정하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "trace A to B", "k": "A의 출처를 추적하여 B까지 거슬러 올라가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 출처 B(명사)가 오므로 전치사" },
+  { "w": "choose A for B", "k": "B를 위해 A를 고르다", "def": "파란 원 메모: 교환(판독 불확실)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "choose A over B", "k": "B 대신 A를 고르다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "doom A to B", "k": "A가 B를 겪도록 운명짓다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "both", "toNote": "doomed to failure(명사)와 doomed to fail(동사) 둘 다 흔함" },
+  { "w": "position A as B", "k": "A를 B로 자리매김하다", "def": "positioning themselves as ~", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "move from A to B", "k": "A에서 B로 이동하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 도착점 B(명사)가 오므로 전치사" },
+  { "w": "link A with B", "k": "A와 B를 연결하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "consult A about B", "k": "A에게 B에 대해 조언/상담을 구하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "influence of A on B", "k": "A가 B에 미치는 영향", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "bilk A out of B", "k": "A를 속여 B를 빼앗다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "interweave A with B", "k": "A를 B와 서로 엮다", "def": "= intermingle", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "acquaint A with B", "k": "A를 B에 익숙하게 하다", "def": "A에게 B를 알게 하다", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "guide A through B", "k": "A가 B를 헤쳐나가도록 돕다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "contribute A to B", "k": "A를 B에 기여하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 기여 대상 B(명사)가 오므로 전치사" },
+  { "w": "aid A in B", "k": "A가 B하는 것을 돕다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "strike A as B", "k": "A에게 B라는 인상을 주다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "trade A for B", "k": "A를 B로 교환하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "disabuse A of B", "k": "A에게서 B라는 잘못된 생각을 깨우쳐 없애다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "off the beaten track", "k": "외진 곳에서", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "against the grain", "k": "본성에 거슬리는", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "lay eyes on one another", "k": "서로를 보다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "feel disposed to", "k": "~하고 싶어지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "feel disposed to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사" },
+  { "w": "climb on the bandwagon", "k": "유행·대세에 편승하다", "def": "= jump on the bandwagon", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be above", "k": "~하는 것을 꺼리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be above -ing" },
+  { "w": "giving every man his due", "k": "모든 인간에게 공평한 대우를 준다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "strike while the iron is hot", "k": "기회가 왔을 때 놓치지 말고 잡아라", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "a matter of course", "k": "당연한 일", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "hark back to", "k": "~을 떠올리게 하다, 상기시키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사" },
+  { "w": "with concern for", "k": "~에 대해 관심을 가지고", "def": "관심 = 걱정", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "swallow up", "k": "~을 집어삼키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "lie down to rest", "k": "누워서 쉬다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "inf", "to": "inf", "toNote": "to 뒤의 rest가 동사원형(목적)이므로 부정사" },
+  { "w": "make amends for", "k": "보상하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "find fault with", "k": "흠잡다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "keep down", "k": "억압하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "phase out", "k": "폐지하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "corner the market", "k": "시장을 독점하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "beat the rap for", "k": "처벌을 피하다", "def": "rap = 비난·처벌", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "cut corners on", "k": "편법을 쓰다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pull strings for", "k": "연줄을 쓰다, 영향력을 행사하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "as a last resort", "k": "최후의 수단으로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be alive to", "k": "~을 잘 알고 있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사" },
+  { "w": "rainy day", "k": "어려운 때", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be destined to", "k": "~하게 되어있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be destined to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사(명사는 destined for)" },
+  { "w": "be bound for", "k": "~로 향하는", "def": "be bound to V 위에 작게 적힌 항목", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "draw into", "k": "끌어들이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in exchange for", "k": "~에 대한 교환으로", "def": "for 에 동그라미", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in the midst of", "k": "~의 한가운데에", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "when push comes to shove", "k": "막상 상황이 닥치면", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤의 shove가 명사이므로 전치사" },
+  { "w": "pales in comparison to", "k": "~보다 못해보이다", "def": "to 에 별도 표시 없음", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 비교 대상 명사가 오므로 전치사" },
+  { "w": "have the luxury of", "k": "~하는 사치를 누리다", "def": "~할 여유가 있다", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "have the luxury of -ing" },
+  { "w": "get through", "k": "1. 겪다 2. ~을 버텨내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "with a view to", "k": "~할 목적으로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 동명사·명사가 오므로 전치사(with a view to -ing)" },
+  { "w": "be tempted to", "k": "~하고 싶어지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be tempted to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사" },
+  { "w": "translate to", "k": "1. ~로 번역하다 2. ~로 귀결되다", "def": "to 파란 밑줄(전치사), 2번 뜻에 빨간 별", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 언어·결과 명사가 오므로 전치사" },
+  { "w": "come out on top", "k": "경쟁에서 이기다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "hold on to", "k": "(남을 위해) ~을 맡아주다, 보관하다", "def": "to 에 별도 표시 없음", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 보관 대상 명사가 오므로 전치사" },
+  { "w": "get together", "k": "함께 모이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "at our disposal", "k": "마음대로 사용할 수 있는", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "at one's discretion", "k": "~의 자유재량으로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in a critical hour", "k": "결정적인 순간에", "def": "= at the zero hour, in the hour of need", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "at the zero hour", "k": "결정적인 순간에", "def": "= in a critical hour", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in the hour of need", "k": "결정적인 순간에", "def": "= in a critical hour", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be keen on", "k": "~를 아주 좋아하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "go through the roof", "k": "급등하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "lay by", "k": "1. 저축해 두다 2. 잠시 제쳐두다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "keep an eye on", "k": "~을 주시하다, 지켜보다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "further down the road", "k": "향후에", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "at the drop of a hat", "k": "즉시", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "behind the eight ball", "k": "곤경에 처한", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "fly in the face of", "k": "~에 공공연히 반대하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pass the buck to", "k": "~에게 책임을 전가하다", "def": "빨간 별, to 에 별도 표시 없음", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 사람 명사가 오므로 전치사" },
+  { "w": "cook the books on", "k": "장부 등을 조작하다", "def": "빨간 별", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "part ways with", "k": "~와 결별하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "break out", "k": "1. 발생하다 2. 탈출하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "content with", "k": "~에 만족하는", "def": "content ⓐ (형용사)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "contend with", "k": "~와 싸우다", "def": "vi (자동사)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "a bolt from the blue", "k": "마른하늘에 날벼락", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "predicated on", "k": "~에 근거를 두다", "def": "= based, founded", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be worth", "k": "~할 가치가 있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be worth -ing" },
+  { "w": "cash in", "k": "한 몫 챙기다, 사익을 취하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be barred from", "k": "~하는 것이 금지되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be barred from -ing" },
+  { "w": "tap into", "k": "1. ~을 활용하다 2. 자극하다, 활성화하다", "def": "빨간 별 2개", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "smile upon", "k": "~을 호의적으로 보다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be on the trail of", "k": "~의 자취/흔적을 쫓다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "run the risk of", "k": "~할 위험을 무릅쓰다", "def": "= be at the risk of", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "run the risk of -ing" },
+  { "w": "get even with", "k": "~에게 복수하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be immune to", "k": "~에 면역이다", "def": "to 파란 밑줄(전치사)", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사" },
+  { "w": "step out of", "k": "~에서 벗어나다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in deference to", "k": "~에 대한 존중으로", "def": "to 파란 밑줄(전치사)", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 명사가 오므로 전치사" },
+  { "w": "under the pretext of", "k": "~을 구실로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "at the time of", "k": "~할 당시에", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make up", "k": "1. ~을 구성하다 2. 만회하다 3. 완전하게 만들다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "argue against", "k": "~에 이의를 제기하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "lose track of", "k": "~을 놓치다 (진로·행방)", "def": "노트에는 look track of 로 적혀 있음(lose 의 오기로 추정)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "give an account of", "k": "~을 설명하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take one's breath away", "k": "너무 놀라게 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "such as it is", "k": "변변치 않지만", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "spell out", "k": "자세히 설명하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "chance upon", "k": "우연히 발견하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "bring to bear on", "k": "~에 집중하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "inf", "toNote": "to 뒤의 bear가 동사원형이므로 부정사(bring A to bear)" },
+  { "w": "ramp up", "k": "강화하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "go so far as to", "k": "~하기까지 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "go so far as to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사" },
+  { "w": "hold A to account", "k": "A에게 책임을 묻다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤의 account가 명사이므로 전치사" },
+  { "w": "set out to", "k": "~하려고 나서다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "set out to R", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사" },
+  { "w": "screen out", "k": "~을 걸러내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "go beyond", "k": "~을 넘어서다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "keep out of", "k": "~을 피하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pass off as", "k": "어떤 행세를 하다, ~인 것처럼 속이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "peer into", "k": "자세히 들여다보다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come down", "k": "내려오다", "def": "come across 위에 작은 글씨로 추가됨", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "set loose", "k": "풀어주다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "leave A behind", "k": "A를 뒤에 남겨두고 떠나다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "wear out", "k": "닳게 하다, 지치게 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "see to", "k": "1. ~을 처리하다 2. ~을 돌보다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사·it(see to it that)이 오므로 전치사" },
+  { "w": "come forward", "k": "1. 자원하다 2. 앞으로 나서다", "def": "come to 위에 〃 forward 로 추가됨", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come to", "k": "1. 정신을 차리다 2. ~에 이르다 3. ~라고 여기다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "both", "toNote": "come to a conclusion(명사)·come to realize(동사) 둘 다 쓰임" },
+  { "w": "all the way down to", "k": "아래로 쭉 ~까지, ~에 이르기까지", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 끝점 명사가 오므로 전치사" },
+  { "w": "own up", "k": "인정·자백하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "get away", "k": "1. 도망치다 2. 처벌을 피하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "snap back", "k": "회복하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" }
 ]
 </script>
 <script type="application/json" id="prepData">
 [
   { "w": "on the one hand", "k": "한편으로는", "def": "on the other hand: 다른 한편으로는", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "on the other hand", "k": "다른 한편으로는", "def": "대조 표현", "syn": [], "ex": "", "tr": "", "cat": "prep" },
-  { "w": "down to", "k": "~에 이르기까지", "def": "보통 연령이나 범위", "syn": [], "ex": "", "tr": "", "cat": "prep" },
+  { "w": "down to", "k": "~에 이르기까지", "def": "보통 연령이나 범위", "syn": [], "ex": "", "tr": "", "cat": "prep", "to": "prep", "toNote": "to 뒤에 명사(사람·연령·범위)가 오므로 전치사" },
   { "w": "among + 복수명사", "k": "~들 중 하나이다", "def": "among the students 등", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "beside", "k": "~의 옆에", "def": "전치사 (공간적 위치)", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "besides", "k": "~외에도, 게다가", "def": "전치사: ~외에도 / 부사: 게다가", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "as usual", "k": "여느 때처럼, 평소대로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "not in the least", "k": "조금의 ~도 없는, 전혀 ~아닌", "def": "not at all", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "or so", "k": "~정도, 대략", "def": "수량/시간 뒤에 위치", "syn": [], "ex": "", "tr": "", "cat": "prep" },
-  { "w": "in preference to A", "k": "A보다 ~을 선호하여", "def": "~보다 우선하여", "syn": [], "ex": "", "tr": "", "cat": "prep" },
+  { "w": "in preference to A", "k": "A보다 ~을 선호하여", "def": "~보다 우선하여", "syn": [], "ex": "", "tr": "", "cat": "prep", "to": "prep", "toNote": "to 뒤에 명사 A(또는 동명사)가 오므로 전치사" },
   { "w": "along with", "k": "~와 함께", "def": "전치사구", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "not so", "k": "(사실은) 그렇지 않다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "shortly after", "k": "~한 직후에", "def": "곧이어", "syn": [], "ex": "", "tr": "", "cat": "prep" },
-  { "w": "to a large extent", "k": "대부분, 상당 부분은", "def": "largely", "syn": [], "ex": "", "tr": "", "cat": "prep" },
+  { "w": "to a large extent", "k": "대부분, 상당 부분은", "def": "largely", "syn": [], "ex": "", "tr": "", "cat": "prep", "to": "prep", "toNote": "to 뒤에 명사구 a large extent가 오므로 전치사" },
   { "w": "every bit", "k": "조금도 빠짐없이, 완전히", "def": "every bit as good as", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "apart", "k": "떨어져서, 분리되어", "def": "부사", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "apart from", "k": "~을 제외하고, ~외에도", "def": "전치사", "syn": [], "ex": "", "tr": "", "cat": "prep" },
@@ -7392,13 +8069,13 @@ window.addEventListener('error', function(ev){
   { "w": "at that exact moment", "k": "바로 그 순간에", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "as a whole", "k": "전체적으로, 전반적으로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "a little", "k": "조금, 약간의", "def": "부사/형용사", "syn": [], "ex": "", "tr": "", "cat": "prep" },
-  { "w": "without reference to", "k": "~을 고려하지 않고, ~와 관계없이", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
+  { "w": "without reference to", "k": "~을 고려하지 않고, ~와 관계없이", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep", "to": "prep", "toNote": "to 뒤에 명사(고려 대상)가 오므로 전치사" },
   { "w": "if any", "k": "설령 ~라 해도, 만약 있다 하더라도", "def": "부사적 삽입구", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "if ever", "k": "설령 ~한다고 해도, 만약 한다면", "def": "부사적 삽입구", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "just as", "k": "1. 마치 ~처럼 (접속사)  2. 똑같이 (부사)", "def": "비유/동등", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "and yet", "k": "그럼에도 불구하고", "def": "접속사적 표현", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "for all", "k": "~에도 불구하고", "def": "전치사 (= in spite of)", "syn": [], "ex": "", "tr": "", "cat": "prep" },
-  { "w": "given to", "k": "~하는 경향이 있는, ~에 빠진", "def": "전치사", "syn": [], "ex": "", "tr": "", "cat": "prep" },
+  { "w": "given to", "k": "~하는 경향이 있는, ~에 빠진", "def": "전치사", "syn": [], "ex": "", "tr": "", "cat": "prep", "to": "prep", "toNote": "to 뒤에 명사·동명사(given to drinking)가 오므로 전치사" },
   { "w": "seeing (that)", "k": "~인 것으로 보아, ~이므로", "def": "접속사", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "with all", "k": "~에도 불구하고", "def": "전치사 (= despite)", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "ever since", "k": "그 이후로 줄곧", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
@@ -7411,7 +8088,7 @@ window.addEventListener('error', function(ev){
   { "w": "altogether", "k": "완벽히, 완전히, 대체로", "def": "부사", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "never yet", "k": "지금까지 한 번도 ~않다", "def": "강한 부정", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "as per", "k": "~에 따라, ~대로", "def": "전치사", "syn": [], "ex": "", "tr": "", "cat": "prep" },
-  { "w": "as opposed to", "k": "~와는 달리, ~에 대립하여", "def": "전치사", "syn": [], "ex": "", "tr": "", "cat": "prep" },
+  { "w": "as opposed to", "k": "~와는 달리, ~에 대립하여", "def": "전치사", "syn": [], "ex": "", "tr": "", "cat": "prep", "to": "prep", "toNote": "to 뒤에 명사·동명사(as opposed to doing)가 오므로 전치사" },
   { "w": "i.e.", "k": "즉, 다시 말해서", "def": "id est (that is to say)", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "as with", "k": "~와 마찬가지로", "def": "전치사", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "inch by inch", "k": "조금씩, 점진적으로", "def": "step by step", "syn": [], "ex": "", "tr": "", "cat": "prep" },
@@ -7425,8 +8102,8 @@ window.addEventListener('error', function(ev){
   { "w": "anything else", "k": "그 밖의 어떤 것, 다른 것", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "no/not ~ at all", "k": "전혀 ~않다", "def": "완전 부정", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "whereas", "k": "반면에", "def": "접속사 (대조)", "syn": [], "ex": "", "tr": "", "cat": "prep" },
-  { "w": "to some extent", "k": "어느 정도까지는", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
-  { "w": "to the extent that", "k": "1. ~하는 한  2. ~하는 범위 내에서", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
+  { "w": "to some extent", "k": "어느 정도까지는", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep", "to": "prep", "toNote": "to 뒤에 명사구 some extent가 오므로 전치사" },
+  { "w": "to the extent that", "k": "1. ~하는 한  2. ~하는 범위 내에서", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep", "to": "prep", "toNote": "to 뒤에 명사 the extent(that절이 수식)가 오므로 전치사" },
   { "w": "as a result", "k": "결과적으로", "def": "consequently", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "in the sense of", "k": "~라는 의미에서의", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "in a sense", "k": "어떤 의미에서는, 어떻게 보면", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
@@ -7446,7 +8123,7 @@ window.addEventListener('error', function(ev){
   { "w": "just as ~ (as)", "k": "똑같이 ~한", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "standing apart from", "k": "~와 별개로 존재하는", "def": "독립된", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "just", "k": "1. 단지, 오직  2. 방금, 막  3. 딱, 완전히 (강조)", "def": "해석 유의 부사", "syn": [], "ex": "", "tr": "", "cat": "prep" },
-  { "w": "subordinated to", "k": "~에 종속된, 하위의", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
+  { "w": "subordinated to", "k": "~에 종속된, 하위의", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep", "to": "prep", "toNote": "to 뒤에 명사(상위 대상)가 오므로 전치사" },
   { "w": "ahead of / behind", "k": "~에 앞서 / ~보다 뒤에", "def": "선후 관계 대조", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "it all", "k": "그 모든 것", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "only with", "k": "오직 ~를 가지고, 오직 ~해야만", "def": "조건 한정", "syn": [], "ex": "", "tr": "", "cat": "prep" },
@@ -7455,7 +8132,7 @@ window.addEventListener('error', function(ev){
   { "w": "in the wake of", "k": "~의 뒤를 이어, ~의 결과로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "put forward", "k": "내세우다, 제안하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "all over it", "k": "그것 전체에 가득", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
-  { "w": "to put it mildly", "k": "돌려 말하자면, 완곡하게 말하면", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
+  { "w": "to put it mildly", "k": "돌려 말하자면, 완곡하게 말하면", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep", "to": "inf", "toNote": "to 뒤에 동사원형 put이 오므로 부정사" },
   { "w": "by way of", "k": "~의 방식으로, ~을 경유하여", "def": "", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "in a minute", "k": "금방, 곧, 1분 안에", "def": "soon", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "go on", "k": "계속되다, 일어나다", "def": "continue", "syn": [], "ex": "", "tr": "", "cat": "prep" },
@@ -7873,7 +8550,9 @@ function loadDeckData(id, defCat, defLv){
       w:it.w, p:'', pos:'', k:it.k, def:it.def || '',
       ex:it.ex || '', tr:it.tr || '',
       syn:Array.isArray(it.syn) ? it.syn : [],
-      cat:it.cat || defCat, lv:(it.lv != null ? it.lv : defLv)
+      cat:it.cat || defCat, lv:(it.lv != null ? it.lv : defLv),
+      to:it.to || '', toNote:it.toNote || '',       // to가 부정사(inf)·전치사(prep)·둘 다(both)인지와 한 줄 근거
+      form:it.form || ''                              // 노트에 적힌 꼴 (예: "be bound to V") — 답을 공개할 때만 보여준다
     };
     map[key] = copy; out.push(copy);
   });
@@ -8100,6 +8779,7 @@ var POS_ONLY = /^(n|v|vt|vi|a|ad|adv|adj|p|prep|conj|int|pron)$/i;
 // 출처 꼬리표. 단어는 몇 권 며칠치인지, 속어는 갈래와 난이도를 보여준다.
 function sourceTag(it){
   if (it.cat === 'prep') return '전명구' + (it.lv ? ' · 난이도 ' + it.lv : '');
+  if (it.cat === 'note') return '숙어 노트';
   if (it.cat) return (it.cat === 'phrasal' ? '구동사' : '관용구') + ' · 난이도 ' + (it.lv || 2);
   return it.book + '권 · DAY ' + pad2(it.day);
 }
@@ -8110,6 +8790,7 @@ function meaningBlock(it, variant){
   var top = el('div', 'mean-top');
   top.appendChild(el('span', 'mean-k', it.k));
   if (it.pos) top.appendChild(el('span', 'mean-pos', it.pos));
+  else if (it.form && it.form !== it.w) top.appendChild(el('span', 'mean-pos', it.form));
   box.appendChild(top);
   var syn = synonymsOf(it);
   if (syn.length){
@@ -8818,7 +9499,7 @@ function hydrate(word, rec){
   return {
     w:base.w, p:base.p, pos:base.pos, k:base.k, def:base.def,
     ex:base.ex, tr:base.tr, day:base.day, book:base.book,
-    syn:base.syn, cat:base.cat, lv:base.lv,
+    syn:base.syn, cat:base.cat, lv:base.lv, to:base.to || '', toNote:base.toNote || '', form:base.form || '',
     miss:(rec && rec.miss) || 1, mine:(rec && rec.mine) || '', lastAt:(rec && rec.lastAt) || 0
   };
 }
@@ -8828,11 +9509,15 @@ function wrongList(){
   out.sort(function(a, b){ return (b.miss - a.miss) || (b.lastAt - a.lastAt); });
   return out;
 }
-function markSeen(word){
-  if (seen[word]) return false;
-  seen[word] = 1;
-  return true;
+// 진도 기록: 1 = 나왔지만 틀림(또는 예전 기록), 2 = 맞힘.
+// 맞힌 단어는 새 시험에 다시 나오지 않는다. 틀린 단어는 맞힐 때까지 계속 나온다.
+function setSeen(word, ok){ seen[word] = ok ? 2 : 1; }
+function mastered(word){
+  var s = seen[word];
+  return s === 2 || (s === 1 && !wrongbook[word]);   // 예전 기록(1)은 오답노트에 없으면 맞힌 것으로 본다
 }
+function freshPool(){ return D().items.filter(function(it){ return !mastered(it.w); }); }
+function eul(s){ var c = s.charCodeAt(s.length - 1); return (c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28) ? '을' : '를'; }
 function seenCount(){
   var n = 0;
   for (var k in seen) if (D().index[k]) n++;
@@ -8845,7 +9530,7 @@ function refreshHome(){
   $('totalWords').textContent = total.toLocaleString('ko-KR');
   $('unitWord').textContent = unit;
   $('unitCover').textContent = '시험 본 ' + unit;
-  $('kicker').textContent = deck === 'slang' ? '관용구 · 구동사'
+  $('kicker').textContent = deck === 'slang' ? '관용구 · 구동사 · 노트'
     : deck === 'prep' ? '전치사구 · 부사구 표현'
     : '한권끝 1·2권 · DAY 01–44';
 
@@ -8864,9 +9549,9 @@ function refreshHome(){
 
   // 진도: 시험에 한 번이라도 나온 단어 / 전체. 그중 아직 오답으로 남은 몫을 따로 칠한다.
   var sc = seenCount();
-  var pending = 0;
-  for (var w in wrongbook) if (D().index[w] && seen[w]) pending++;
-  var got = Math.max(0, sc - pending);
+  var got = 0;
+  for (var w in seen) if (D().index[w] && mastered(w)) got++;
+  var pending = sc - got;                       // 나왔지만 아직 못 맞힌 것
   var pct = total ? sc / total * 100 : 0;
   // 초반 진도가 0%로만 보이지 않도록 한 자리까지 보여준다.
   var pctText = pct === 0 ? '0%' : (pct >= 10 ? Math.round(pct) + '%' : pct.toFixed(1) + '%');
@@ -8879,12 +9564,15 @@ function refreshHome(){
   $('coverGot').style.width = seg(got);
   $('coverMissed').style.width = seg(pending);
 
-  var note;
+  var note, remain = total - got;               // 다음 시험에 나올 수 있는 것
   if (sc === 0) note = "아직 한 문제도 풀지 않았어요.";
-  else if (sc >= total) note = "전체 " + unit + "를 한 번씩 다 봤어요.";
+  else if (remain <= 0) note = "전체 " + unit + eul(unit) + " 다 맞혔어요. 시험을 시작하면 처음부터 다시 출제돼요.";
   else {
-    note = "아직 안 나온 " + unit + " " + (total - sc).toLocaleString("ko-KR") + "개";
-    if (pending) note += " · 오답으로 남은 " + unit + " " + pending.toLocaleString("ko-KR") + "개";
+    note = "다음 시험에 나올 " + unit + " " + remain.toLocaleString("ko-KR") + "개";
+    var parts = [];
+    if (total - sc > 0) parts.push("아직 안 나온 " + (total - sc).toLocaleString("ko-KR"));
+    if (pending > 0) parts.push("오답 " + pending.toLocaleString("ko-KR"));
+    if (parts.length) note += " (" + parts.join(" · ") + ")";
   }
   $('coverNote').textContent = note;
   $('storeWarn').hidden = LS.available();
@@ -8948,6 +9636,7 @@ function shRender(){
   $('shMean').hidden = true;
   $('shMean').innerHTML = '';
   $('shMean').appendChild(meaningBlock(it, 'sh'));
+  if (it.to) $('shMean').appendChild(el('div', 'sh-to', 'to는 ' + TO_LABEL[it.to] + (it.toNote ? ' · ' + it.toNote : '')));
   $('shEx').hidden = true;
   $('shEx').innerHTML = '';
   if (prefs.shEx == 1 && it.ex){
@@ -9051,7 +9740,7 @@ function saveDraft(){
   LS.set(KEY_DRAFT, {
     mode:S.mode, deck:deck, source:S.source, idx:S.idx, maxIdx:S.maxIdx || 0, startedAt:S.startedAt, savedAt:Date.now(),
     words:S.items.map(function(i){ return i.w; }),
-    answers:S.answers, marks:S.marks, graded:!!S.graded
+    answers:S.answers, marks:S.marks, toPick:S.toPick || [], graded:!!S.graded
   });
 }
 function saveDraftSoon(){
@@ -9077,6 +9766,7 @@ function loadDraft(){
     mode:d.mode === 'sheet' ? 'sheet' : 'card', source:d.source || 'all', items:items,
     answers:(d.answers || []).slice(0, items.length),
     marks:(d.marks || []).slice(0, items.length),
+    toPick:(d.toPick || []).slice(0, items.length),
     idx:Math.min(d.idx || 0, items.length - 1),
     maxIdx:Math.min(d.maxIdx || d.idx || 0, items.length - 1),
     startedAt:d.startedAt || Date.now()
@@ -9098,6 +9788,22 @@ function showResume(){
     + (d.source === 'wrong' ? ' · 오답' : '') + ' · ' + draftProgress(d);
 }
 
+// 아직 못 맞힌 것만 골라 새 시험을 낸다. 다 맞혔으면 진도를 되돌려 처음부터 볼지 묻는다.
+function startFresh(mode, count){
+  var pool = freshPool(), unit = deck === 'word' ? '단어' : '표현';
+  if (!pool.length){
+    confirmSheet('전부 맞혔어요',
+      '이 범위의 ' + unit + eul(unit) + ' 모두 한 번씩 맞혔어요. 진도를 되돌리고 처음부터 다시 출제할까요? 오답노트와 점수 이력은 그대로 남아요.',
+      '처음부터', function(){
+        seen = {}; saveSeen(); refreshHome();
+        startSession(mode, count, D().items, 'all');
+      });
+    return;
+  }
+  if (pool.length < count) toast('남은 ' + unit + ' ' + pool.length + '개만 출제해요');
+  startSession(mode, count, pool, 'all');
+}
+
 function startSession(mode, count, pool, source){
   var items = sample(pool, count);
   if (!items.length){ toast('출제할 단어가 없어요'); return; }
@@ -9105,6 +9811,7 @@ function startSession(mode, count, pool, source){
     mode: mode, items: items, source: source || 'all',
     answers: new Array(items.length).fill(''),
     marks:   new Array(items.length).fill(null),   // true/false, 확정 후 세팅
+    toPick:  new Array(items.length).fill(''),     // to 구분 선택 ('inf' | 'prep' | '')
     idx: 0, maxIdx: 0, startedAt: Date.now()
   };
   saveDraft();
@@ -9118,10 +9825,11 @@ function resumeSession(){
   if (d.deck !== deck){ setDeck(d.deck); syncDeckUI(); }   // 다른 묶음이었다면 그쪽으로 옮겨간다
   S = {
     mode:d.mode, items:d.items, source:d.source,
-    answers:d.answers, marks:d.marks, idx:d.idx, maxIdx:Math.max(d.maxIdx || 0, d.idx || 0), startedAt:d.startedAt
+    answers:d.answers, marks:d.marks, toPick:d.toPick || [], idx:d.idx, maxIdx:Math.max(d.maxIdx || 0, d.idx || 0), startedAt:d.startedAt
   };
   while (S.answers.length < S.items.length) S.answers.push('');
   while (S.marks.length < S.items.length) S.marks.push(null);
+  while (S.toPick.length < S.items.length) S.toPick.push('');
   if (S.mode === 'card') renderCard(); else renderSheet();
   go(S.mode);
 }
@@ -9149,6 +9857,7 @@ function renderCard(){
   inp.value = done ? (S.answers[S.idx] || '') : '';
   S.submitted = inp.value;
   S.locked = done;
+  renderToAsk();
 
   if (done){
     f.className = 'answer-field done' + (S.marks[S.idx] ? '' : ' miss');
@@ -9212,7 +9921,7 @@ function submitCard(skipped){
   // 다시 채점일 때는 오답 횟수를 또 올리지 않는다
   if (ok) unmarkWrong(it.w); else markWrong(it, mine, !regrade);
   saveWrong();
-  if (markSeen(it.w)) saveSeen();
+  setSeen(it.w, ok); saveSeen();
   saveDraft();
 
   var f = $('cardField');
@@ -9227,9 +9936,44 @@ function submitCard(skipped){
     $('cardVerdict').scrollIntoView({block:'nearest', behavior:'smooth'});
   }, 40);
 
+  renderToAsk();
   renderCardActions();
   $('cardProg').style.width = (answeredCount() / S.items.length * 100) + '%';
   if (regrade) toast(ok ? '정답으로 바꿨어요' : '오답으로 바꿨어요');
+}
+
+/* ── to 구분 (전명구) ──
+   to가 든 표현이면 부정사인지 전치사인지 골라볼 수 있다.
+   뜻 채점·점수와는 별개로, 고른 것이 맞았는지만 따로 알려준다. */
+var TO_LABEL = { inf:'부정사', prep:'전치사', both:'둘 다 가능' };
+function askableTo(it){ return !!it.to && it.to !== 'both'; }   // 둘 다 쓰이는 표현은 고르게 하지 않는다
+function toPickOf(i){ return (S && S.toPick && S.toPick[i]) || ''; }
+function renderToAsk(){
+  var it = S.items[S.idx], box = $('cardTo');
+  if (!askableTo(it)){ box.hidden = true; return; }
+  box.hidden = false;
+  var pick = toPickOf(S.idx);
+  $('segCardTo').querySelectorAll('button').forEach(function(b){
+    b.setAttribute('aria-pressed', String(b.dataset.to === pick));
+    b.disabled = !!S.locked;                     // 채점이 끝나면 고를 수 없다
+  });
+}
+// 답 공개 때 붙는 to 구분 결과 한 줄 (+ 근거)
+function toVerdictNode(it, pick){
+  var box = el('div', 'to-verdict');
+  var top = el('div', 'to-top');
+  top.appendChild(el('span', 'to-l', 'to 구분'));
+  if (it.to === 'both'){
+    top.appendChild(el('span', 'to-res none', '부정사·전치사 둘 다 쓰여요'));
+  } else {
+    if (!pick)               top.appendChild(el('span', 'to-res none', '선택 안 함'));
+    else if (pick === it.to) top.appendChild(el('span', 'to-res ok', '✓ ' + TO_LABEL[pick]));
+    else                     top.appendChild(el('span', 'to-res no', '✗ ' + TO_LABEL[pick] + ' 아님'));
+    top.appendChild(el('span', 'to-ans', '정답 ' + TO_LABEL[it.to]));
+  }
+  box.appendChild(top);
+  if (it.toNote) box.appendChild(el('div', 'to-note', it.toNote));
+  return box;
 }
 
 function advanceCard(){
@@ -9272,6 +10016,7 @@ function buildVerdict(host, it, ok, idx){
     S.marks[idx] = now;
     if (now) unmarkWrong(it.w); else markWrong(it, S.answers[idx]);
     saveWrong();
+    setSeen(it.w, now); saveSeen();
     $('cardField').className = 'answer-field done' + (now ? '' : ' miss');
     buildVerdict(host, it, now, idx);
     toast(now ? '정답으로 처리했어요' : '오답으로 되돌렸어요');
@@ -9281,6 +10026,7 @@ function buildVerdict(host, it, ok, idx){
 
   var card = el('div', 'ans-card');
   card.appendChild(meaningBlock(it));
+  if (it.to) card.appendChild(toVerdictNode(it, toPickOf(idx)));
   if (it.def && it.def !== it.k) card.appendChild(el('div', 'ans-def', it.def));
   if (it.ex){
     var ex = el('div', 'ex');
@@ -9345,6 +10091,25 @@ function renderSheet(){
       if (nx) nx.focus(); else inp.blur();
     });
     row.appendChild(inp);
+    if (askableTo(it)){                            // to 구분 고르기 (점수와 별개)
+      var tr = el('div', 'to-row');
+      tr.appendChild(el('span', 'to-ask-l', '이 to는?'));
+      var seg = el('div', 'seg mini');
+      ['inf', 'prep'].forEach(function(t){
+        var b = el('button', null, TO_LABEL[t]);
+        b.dataset.to = t;
+        b.setAttribute('aria-pressed', String(toPickOf(i) === t));
+        b.onclick = function(){
+          if (S.graded) return;
+          S.toPick[i] = t;
+          seg.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+          saveDraftSoon();
+        };
+        seg.appendChild(b);
+      });
+      tr.appendChild(seg);
+      row.appendChild(tr);
+    }
     frag.appendChild(row);
   });
   host.appendChild(frag);
@@ -9371,7 +10136,7 @@ function gradeSheet(){
       var ok = mine ? isCorrect(mine, it) : false;
       S.marks[i] = ok;
       if (ok) unmarkWrong(it.w); else markWrong(it, mine);
-      markSeen(it.w);
+      setSeen(it.w, ok);
       paintRow(rows[i], i, ok);
     }
     saveWrong();
@@ -9416,8 +10181,19 @@ function paintRow(row, i, ok){
   var fix = el('span', 'fix');
   fix.appendChild(document.createTextNode(it.k));
   if (it.pos) fix.appendChild(el('i', 'fix-pos', it.pos));
+  else if (it.form && it.form !== it.w) fix.appendChild(el('i', 'fix-pos', it.form));
   var syn = synonymsOf(it);
   if (syn.length) fix.appendChild(el('span', 'fix-syn', syn.join(' · ')));
+  if (it.to === 'both'){
+    fix.appendChild(el('span', 'fix-to none', 'to 구분 · 부정사·전치사 둘 다 쓰여요'));
+  } else if (it.to){
+    var pick = toPickOf(i);
+    var cls = !pick ? 'none' : (pick === it.to ? 'ok' : 'no');
+    fix.appendChild(el('span', 'fix-to ' + cls,
+      'to 구분 ' + (!pick ? '선택 안 함' : (pick === it.to ? '✓' : '✗ ' + TO_LABEL[pick] + ' 아님')) + ' · 정답 ' + TO_LABEL[it.to]));
+    var tr = row.querySelector('.to-row');
+    if (tr) tr.querySelectorAll('button').forEach(function(b){ b.disabled = true; });
+  }
   c.appendChild(fix);
   var btn = el('button', null, ok ? '오답 처리' : '정답 인정');
   btn.onclick = function(){
@@ -9425,6 +10201,7 @@ function paintRow(row, i, ok){
     S.marks[i] = now;
     if (now) unmarkWrong(it.w); else markWrong(it, S.answers[i]);
     saveWrong();
+    setSeen(it.w, now); saveSeen();
     paintRow(row, i, now);
     updateSheetScoreLabel();
   };
@@ -9443,9 +10220,18 @@ function finish(){
   var total = S.items.length;
   var score = Math.round(ok / total * 100);
 
+  // to 구분은 점수에 넣지 않고 따로 센다
+  var toTot = 0, toOk = 0, toNone = 0;
+  for (var j = 0; j < S.items.length; j++){
+    if (!askableTo(S.items[j])) continue;
+    toTot++;
+    var p = toPickOf(j);
+    if (!p) toNone++; else if (p === S.items[j].to) toOk++;
+  }
+
   history.unshift({
     at: Date.now(), mode: S.mode, deck: deck, total: total, ok: ok, score: score,
-    ms: Date.now() - S.startedAt, source: S.source
+    ms: Date.now() - S.startedAt, source: S.source, toOk: toOk, toTot: toTot
   });
   if (history.length > 60) history.length = 60;
   saveHist();
@@ -9456,6 +10242,8 @@ function finish(){
   $('barNo').style.width = ((total - ok) / total * 100) + '%';
   $('legOk').textContent = ok;
   $('legNo').textContent = total - ok;
+  $('scoreTo').hidden = !toTot;
+  if (toTot) $('scoreTo').textContent = 'to 구분 ' + toOk + ' / ' + toTot + ' 맞음' + (toNone ? ' · 선택 안 함 ' + toNone : '');
 
   var host = $('resultWrong');
   host.innerHTML = '';
@@ -9572,7 +10360,8 @@ function renderHistory(){
     var meta = el('div', 'h-meta');
     meta.appendChild(el('div', 'd', fmtDate(h.at)));
     var label = (h.mode === 'card' ? '한 단어씩' : '시험지') + ' · ' + h.ok + '/' + h.total
-              + (h.source === 'wrong' ? ' · 오답' : '');
+              + (h.source === 'wrong' ? ' · 오답' : '')
+              + (h.toTot ? ' · to 구분 ' + h.toOk + '/' + h.toTot : '');
     meta.appendChild(el('div', 's', label));
     n.appendChild(meta);
     var bar = el('div', 'h-bar');
@@ -9767,7 +10556,7 @@ $('segTheme').querySelectorAll('button').forEach(function(b){
 
 $('btnStart').addEventListener('click', function(){
   if (prefs.mode === 'shower'){ startShower(prefs.shSource); return; }
-  startSession(prefs.mode, prefs.count, D().items, "all");
+  startFresh(prefs.mode, prefs.count);
 });
 $('btnResume').addEventListener('click', resumeSession);
 $('btnDropDraft').addEventListener('click', function(){
@@ -9795,6 +10584,15 @@ $('cardInput').addEventListener('input', function(){
   $('cardVerdict').hidden = true;
   $('cardField').className = 'answer-field';
   renderCardActions();
+  renderToAsk();                                   // 고치는 동안은 to 구분도 다시 고를 수 있다
+});
+$('segCardTo').querySelectorAll('button').forEach(function(b){
+  b.addEventListener('click', function(){
+    if (!S || S.locked) return;
+    S.toPick[S.idx] = b.dataset.to;
+    renderToAsk();
+    saveDraftSoon();
+  });
 });
 
 $('cardPrev').addEventListener('click', function(){ goCard(-1); });
@@ -9813,7 +10611,7 @@ $('sheetQuit').addEventListener('click', function(){
 
 $('resultHome').addEventListener('click', function(){ refreshHome(); go('home'); });
 $('btnAgain').addEventListener('click', function(){
-  startSession(S.mode, S.items.length, D().items, "all");
+  startFresh(S.mode, S.items.length);
 });
 $('btnRetryWrong').addEventListener('click', function(){
   var items = window.__lastWrongItems || [];
