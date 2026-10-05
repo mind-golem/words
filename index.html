@@ -1123,7 +1123,7 @@ window.addEventListener('error', function(ev){
           <h3 class="sec-h">들을 단어</h3>
           <div class="seg" id="segShSource">
             <button data-src="wrong">오답노트</button>
-            <button data-src="all" aria-pressed="true">전체 랜덤</button>
+            <button data-src="all" aria-pressed="true">맞힌 것 빼고 전체</button>
           </div>
           <h3 class="sec-h">음성</h3>
           <div class="seg" id="segShSound">
@@ -1202,7 +1202,7 @@ window.addEventListener('error', function(ev){
           <button data-theme-opt="dark">어둡게</button>
         </div>
 
-        <p class="build" id="buildStamp">build 2026-10-03 17:56</p>
+        <p class="build" id="buildStamp">build 2026-10-05 22:10</p>
       </div>
     </div>
   </section>
@@ -9609,8 +9609,21 @@ function shWait(ms, fn){
   SH.timer = setTimeout(function(){ SH.timer = null; if (SH && SH.playing) fn(); }, ms);
 }
 
+// 시험과 같은 기준으로, 한 번이라도 맞힌 단어는 흘려보내지 않는다.
+// 다 맞혔으면 진도는 건드리지 않고 전체를 들을지만 묻는다.
 function startShower(source){
-  var pool = source === "wrong" ? wrongList() : D().items;
+  if (source === "wrong"){ launchShower(wrongList(), source); return; }
+  var pool = freshPool(), unit = deck === 'word' ? '단어' : '표현';
+  if (!pool.length){
+    confirmSheet('전부 맞혔어요',
+      '이 범위의 ' + unit + eul(unit) + ' 모두 한 번씩 맞혔어요. 맞힌 ' + unit + '까지 포함해 전체를 들을까요? 진도는 그대로 남아요.',
+      '전체 듣기', function(){ launchShower(D().items, source); });
+    return;
+  }
+  launchShower(pool, source);
+}
+
+function launchShower(pool, source){
   if (!pool.length){ toast('들을 단어가 없어요'); return; }
   SH = { list: sample(pool, Math.min(pool.length, 500)), i: 0, playing: true, timer: null, seen: 0, source: source };
   $('shNote').hidden = true;
