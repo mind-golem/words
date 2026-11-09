@@ -770,6 +770,28 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
 .cal-dday.soon{ color:#fff; background:var(--no); }
 .cal-dday.past{ color:var(--ink-3); background:var(--card-2); }
 
+/* ── 요강 발표 현황 ── */
+.cal-stat{ display:flex; flex-direction:column; gap:6px; }
+.cal-stat .st{
+  display:flex; align-items:flex-start; gap:10px;
+  background:var(--card); border:1px solid var(--rule); border-radius:var(--r-sm); padding:10px 13px;
+}
+.cal-stat .st-body{ flex:1; min-width:0; }
+.cal-stat .st-top{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.cal-stat .st-u{ font-size:14px; font-weight:640; letter-spacing:-.015em; }
+.cal-stat .st-badge{
+  font-size:11px; font-weight:650; padding:2px 7px; border-radius:5px;
+  color:var(--ink-3); background:var(--card-2);
+}
+.cal-stat .st-badge.dated{ color:var(--pen); background:var(--pen-soft); }
+.cal-stat .st-badge.notice{ color:var(--ok); background:rgba(11,122,86,.10); }
+.cal-stat .st-note{ font-size:12.5px; color:var(--ink-2); margin-top:3px; line-height:1.45; }
+.cal-stat .st-link{
+  flex:none; font-size:12px; font-weight:600; color:var(--pen); text-decoration:none;
+  padding:6px 0 6px 6px; align-self:center;
+}
+.cal-stat .st.none .st-u{ color:var(--ink-3); }
+
 /* ── 관심 대학 선택 · 내 일정 ── */
 .chips{ display:flex; flex-wrap:wrap; gap:7px; margin:4px 0 14px; }
 .chip{
@@ -1202,7 +1224,7 @@ window.addEventListener('error', function(ev){
           <button data-theme-opt="dark">어둡게</button>
         </div>
 
-        <p class="build" id="buildStamp">build 2026-11-09 12:30</p>
+        <p class="build" id="buildStamp">build 2026-11-09 13:10</p>
       </div>
     </div>
   </section>
@@ -1405,6 +1427,9 @@ window.addEventListener('error', function(ev){
 
         <h3 class="sec-h" id="calListHead">이 달의 일정</h3>
         <div class="cal-list" id="calList"></div>
+
+        <h3 class="sec-h" id="calStatHead">2027 요강 발표 현황 <span class="hint" id="calStatAsOf"></span></h3>
+        <div class="cal-stat" id="calStat"></div>
       </div>
     </div>
   </section>
@@ -8186,6 +8211,7 @@ window.addEventListener('error', function(ev){
 {
   "baseYear": 2026,
   "targetYear": 2027,
+  "asOf": "2026-11-09",
   "unis": [
     { "name": "성균관대", "full": "성균관대학교", "src": "https://admission.skku.edu/upload/guide/20251211170153ZUTLWV.pdf", "conf": "high", "src27": "https://admission.skku.edu/admission/html/transfer/noticeView.html?idx=59518", "note27": "기본계획 2026-09-02 · 요강 12월 초 게재 예정" },
     { "name": "동국대", "full": "동국대학교(서울)", "src": "https://ipsi.dongguk.edu/upload/file/20251211170812CDYGTA.PDF", "conf": "high", "src27": "http://ipsi.dongguk.edu/admission/html/transfer/noticeView.asp?BOARD_IDX=37117", "note27": "기본계획 2026-05-06 · 요강 11~12월 게재 예정" },
@@ -9415,6 +9441,49 @@ function renderCal(){
   });
 
   renderMine();
+  renderStatus();
+}
+
+// 대학별 올해 요강 발표 현황. 조사 시점(asOf)에 확인한 사실만 보여준다.
+//   dated  = 사전안내로 날짜가 나와 달력에 반영됨
+//   notice = 사전안내(기본계획·변경사항 등)는 있으나 날짜는 미공개
+//   none   = 올해 편입 공지 자체가 아직 없음
+function renderStatus(){
+  var head = $('calStatHead'), host = $('calStat');
+  var show = calMode !== 'real' && CAL.unis.some(function(u){ return u.note27 || u.src27; });
+  head.hidden = !show; host.hidden = !show;
+  if (!show) return;
+  $('calStatAsOf').textContent = CAL.asOf ? CAL.asOf.replace(/^\d{4}-/, '').replace('-', '/') + ' 기준' : '';
+
+  var dated = {};
+  CAL.events.forEach(function(ev){ if (ev.d2) dated[ev.u] = (dated[ev.u] || 0) + 1; });
+  var rows = CAL.unis.map(function(u, i){
+    var kind = dated[i] ? 'dated' : (u.src27 ? 'notice' : 'none');
+    return { u: u, i: i, kind: kind, n: dated[i] || 0 };
+  });
+  var order = { dated: 0, notice: 1, none: 2 };
+  rows.sort(function(a, b){ return (order[a.kind] - order[b.kind]) || (a.i - b.i); });
+
+  host.innerHTML = '';
+  rows.forEach(function(r){
+    var row = el('div', 'st ' + r.kind);
+    var body = el('div', 'st-body');
+    var top = el('div', 'st-top');
+    top.appendChild(el('span', 'st-u', r.u.name));
+    top.appendChild(el('span', 'st-badge ' + r.kind,
+      r.kind === 'dated' ? '사전안내 일정 ' + r.n + '건 반영'
+      : r.kind === 'notice' ? '사전안내만 · 날짜 미공개'
+      : '공지 없음'));
+    body.appendChild(top);
+    if (r.u.note27) body.appendChild(el('div', 'st-note', r.u.note27));
+    row.appendChild(body);
+    if (r.u.src27){
+      var a = el('a', 'st-link', '공지 보기 ›');
+      a.href = r.u.src27; a.target = '_blank'; a.rel = 'noopener';
+      row.appendChild(a);
+    }
+    host.appendChild(row);
+  });
 }
 
 // 내 일정 = 관심 대학의 모든 일정 + 따로 핀한 일정. 다가오는 순서로 모은다.
