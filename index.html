@@ -757,6 +757,10 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
 .cal-item .cu{ font-size:14.5px; font-weight:640; letter-spacing:-.015em; }
 .cal-item .cl{ font-size:13px; color:var(--ink-2); margin-top:1px; }
 .cal-item .cwhen{ font-size:11.5px; color:var(--ink-3); margin-top:3px; font-variant-numeric:tabular-nums; }
+.cal-item .clink{
+  display:inline-block; font-size:11.5px; font-weight:600; color:var(--pen); text-decoration:none;
+  margin-top:2px; padding:4px 0;
+}
 .cal-item .cstar{
   position:relative; flex:none; width:30px; height:30px;
   display:grid; place-items:center; color:var(--rule-2); font-size:16px;
@@ -785,6 +789,7 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
 }
 .cal-stat .st-badge.dated{ color:var(--pen); background:var(--pen-soft); }
 .cal-stat .st-badge.notice{ color:var(--ok); background:rgba(11,122,86,.10); }
+.cal-stat .st-badge.final{ color:#fff; background:var(--pen); }
 .cal-stat .st-note{ font-size:12.5px; color:var(--ink-2); margin-top:3px; line-height:1.45; }
 .cal-stat .st-link{
   flex:none; font-size:12px; font-weight:600; color:var(--pen); text-decoration:none;
@@ -1224,7 +1229,7 @@ window.addEventListener('error', function(ev){
           <button data-theme-opt="dark">어둡게</button>
         </div>
 
-        <p class="build" id="buildStamp">build 2026-11-09 13:10</p>
+        <p class="build" id="buildStamp">build 2026-11-25 15:02</p>
       </div>
     </div>
   </section>
@@ -8211,33 +8216,33 @@ window.addEventListener('error', function(ev){
 {
   "baseYear": 2026,
   "targetYear": 2027,
-  "asOf": "2026-11-09",
+  "asOf": "2026-11-25",
   "unis": [
-    { "name": "성균관대", "full": "성균관대학교", "src": "https://admission.skku.edu/upload/guide/20251211170153ZUTLWV.pdf", "conf": "high", "src27": "https://admission.skku.edu/admission/html/transfer/noticeView.html?idx=59518", "note27": "기본계획 2026-09-02 · 요강 12월 초 게재 예정" },
-    { "name": "동국대", "full": "동국대학교(서울)", "src": "https://ipsi.dongguk.edu/upload/file/20251211170812CDYGTA.PDF", "conf": "high", "src27": "http://ipsi.dongguk.edu/admission/html/transfer/noticeView.asp?BOARD_IDX=37117", "note27": "기본계획 2026-05-06 · 요강 11~12월 게재 예정" },
-    { "name": "이화여대", "full": "이화여자대학교", "src": "https://admission.ewha.ac.kr/upload/GUIDES/20251127172336ME8QZU.pdf", "conf": "high", "note27": "2026-11-09 기준 2027 편입 공지 없음 (작년 요강 2025-11-27)" },
-    { "name": "연세대", "full": "연세대학교 (서울캠퍼스)", "src": "https://admission.yonsei.ac.kr/seoul/upload/guide/20251128171519N9YQLH.PDF", "conf": "high", "src27": "https://admission.yonsei.ac.kr/seoul/admission/html/transfer/noticeView.asp?BBS_NO=3528", "note27": "예고사항 2026-09-02 · 요강 11월 말 예정" },
-    { "name": "건국대", "full": "건국대학교 (서울캠퍼스)", "src": "https://admission.konkuk.ac.kr/enterTbc/admission/4/64/pdf/fileDownload.do", "conf": "high", "src27": "https://admission.konkuk.ac.kr/bbs/admission/6282/1208808/artclView.do", "note27": "필기고사 일정 사전안내 2026-09-29" },
-    { "name": "고려대", "full": "고려대학교 (서울캠퍼스)", "src": "https://oku.korea.ac.kr/ajaxfile/FR_SVC/FileDown.do?GBN=X01&BOARD_SEQ=5&SITE_NO=2&BBS_SEQ=1742&FILE_SEQ=2", "conf": "high", "src27": "https://oku.korea.ac.kr/oku/cms/CMN_CON/MainLink.do?GBN=BA&TEMP_CODE=IPSI_C&BASE_SITE_NO=2&CONFIG_CD=C1435&CONFIG_SEQ=1&SUB_SEQ=5&SITE_NO=2&BOARD_SEQ=5&BBS_SEQ=1798", "note27": "필기고사 과목·출제범위(안) 2026-06-26 · 일정 미공개" },
-    { "name": "경희대", "full": "경희대학교", "src": "https://kr.object.gov-ncloudstorage.com/khuiphakstorage/upload/20251203103243375_2026%ED%95%99%EB%85%84%EB%8F%84%20%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90%20%ED%8E%B8%EC%9E%85%ED%95%99%20%EB%AA%A8%EC%A7%91%EC%9A%94%EA%B0%95.pdf", "conf": "high", "src27": "https://iphak.khu.ac.kr/detail.do?menuurl=cRn%2FaEwx6apTQh9HEMyZTw%3D%3D&categoryid=4&boardid=1&board_seq=17959", "note27": "주요 변경사항 2026-07-03 · 요강 11월 이후 공지 예정" },
-    { "name": "서울대", "full": "서울대학교", "src": "https://admission.snu.ac.kr/transfer/notice?md=v&bbsidx=161730", "conf": "high", "src27": "https://admission.snu.ac.kr/transfer/notice?md=v&bbsidx=167708", "note27": "예정인원·변경사항 2026-04-09 · 모집안내 11월 중순 게재 예정" },
-    { "name": "중앙대", "full": "중앙대학교", "src": "https://admission.cau.ac.kr/file/pdfDown.pdf?sfn=20251201101037115_8e0c55ee67a5443bbc4580128cb24ef7.pdf&ofn=2026%ED%95%99%EB%85%84%EB%8F%84+%EC%A4%91%EC%95%99%EB%8C%80%ED%95%99%EA%B5%90+%ED%8E%B8%EC%9E%85%ED%95%99+%EB%AA%A8%EC%A7%91%EC%9A%94%EA%B0%95.pdf", "conf": "medium", "src27": "https://admission.cau.ac.kr/detail.do?menuurl=bmyV1ovIAzYtqDXLjUSVtw%3D%3D&board_seq=3313&pageNo=1", "note27": "시행계획(안) 2026-08-28 · 요강 12월경 공지" },
-    { "name": "한양대", "full": "한양대학교 (서울캠퍼스)", "src": "https://go.hanyang.ac.kr/resources/upload_data/mojib/20251204021633531_.pdf", "conf": "high", "note27": "2026-11-09 기준 2027 편입 공지 없음 (작년 요강 2025-12-04)" },
-    { "name": "서강대", "full": "서강대학교", "src": "https://admission.sogang.ac.kr/upload/GUIDES/20251209144846ZQ25EU.pdf", "conf": "high", "note27": "2026-11-09 기준 2027 편입 공지 없음 (작년 요강 2025-12-09)" },
-    { "name": "서울시립대", "full": "서울시립대학교", "src": "https://www.artchangjo.com/data/info_news_view.asp?idx=231219", "conf": "medium", "src27": "https://admission.uos.ac.kr/admissionNew/noticeBoard/view.do?seq=1306&list_id=OB1&sort=1&menuid=2002004001000000000", "note27": "주요사항(안) 2026-06-30 · 일정 미공개" },
-    { "name": "광운대", "full": "광운대학교", "src": "https://iphak.kw.ac.kr/upload_data/mojib/20251215165135_30.pdf", "conf": "high", "src27": "https://iphak.kw.ac.kr/help/notice_view.php?bn=44932&m_type=PYEONIP", "note27": "필답고사 일정 사전안내 2026-10-28" },
-    { "name": "명지대", "full": "명지대학교 (서울캠퍼스/인문캠퍼스)", "src": "https://iphak.mju.ac.kr/images/mojib/20251204174012_32.pdf", "conf": "high", "src27": "https://iphak.mju.ac.kr/pages/?p=25&b=B_1_1&bn=30907&m=read&nPage=1&cate=%ED%8E%B8%EC%9E%85%ED%95%99&f=ALL&s=", "note27": "주요사항 및 변경사항 2026-11-07" },
-    { "name": "홍익대", "full": "홍익대학교 (서울캠퍼스)", "src": "https://www.hongik.ac.kr/kr/admission/recruitment-transfer.do?mode=view&articleNo=145569&title=2026%ED%95%99%EB%85%84%EB%8F%84++%ED%8E%B8%EC%9E%85%ED%95%99+%EB%AA%A8%EC%A7%91%EC%9A%94%EA%B0%95", "conf": "high", "note27": "2026-11-09 기준 2027 편입 공지 없음 (작년 요강 2025-11-28)" },
-    { "name": "숭실대", "full": "숭실대학교", "src": "https://iphak.ssu.ac.kr/upload/SSU(1)_251205165150.pdf", "conf": "high", "src27": "https://admission.ssu.ac.kr/board/notice_view.asp?number=2334&srchoption=&keyword=&flag=3&page_no=1_4_1&page=1", "note27": "주요사항 사전안내 2026-10-12 · 요강 11월 말 공개 예정" },
-    { "name": "한국외국어대", "full": "한국외국어대학교 (서울캠퍼스)", "src": "https://adms.hufs.ac.kr/ajaxfile/FileCpnt/FileDownload.do?FILE_ORG_NM=2026%ED%95%99%EB%85%84%EB%8F%84%20%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90%20%ED%8E%B8%EC%9E%85%ED%95%99%EB%AA%A8%EC%A7%91%EC%9A%94%EA%B0%95(%EC%9D%B8%EC%87%84%EB%B3%B8).pdf&FILE_NM=202512/1764830393544_0.pdf", "conf": "high", "note27": "2026-11-09 기준 2027 편입 공지 없음" },
-    { "name": "성신여대", "full": "성신여자대학교", "src": "https://ipsi.sungshin.ac.kr/guide/dataroom.htm?bbsid=notice&ctg_cd=all&mode=view&bltn_seq=35131", "conf": "high", "note27": "2026-11-09 기준 2027 편입 공지 없음 (작년 요강 2025-12-15)" },
-    { "name": "동덕여대", "full": "동덕여자대학교", "src": "https://ipsi.dongduk.ac.kr/afile/fileDownloadById/251202018869Uixb", "conf": "high", "src27": "https://ipsi.dongduk.ac.kr/ipsi/contents/admhelper-notice.do?schM=view&page=1&viewCount=10&id=91907&schBdcode=&schGroupCode=&etc1=1086", "note27": "시행계획 2026-06-10 · 요강 12월 초 예정" },
-    { "name": "국민대", "full": "국민대학교", "src": "https://admission.kookmin.ac.kr/datafiles/contents/2026%ED%95%99%EB%85%84%EB%8F%84_%ED%8E%B8%EC%9E%85%ED%95%99_%EB%AA%A8%EC%A7%91%EC%9A%94%EA%B0%95.pdf", "conf": "high", "src27": "https://admission.kookmin.ac.kr/transfer/notice.php?ctype=view&no=1086", "note27": "전형방법 변경 안내 2026-09-09 · 요강 11월 말 게시 예정" },
-    { "name": "서울여대", "full": "서울여자대학교", "src": "https://admission.swu.ac.kr/bbs/board.php?bo_table=dataroom&wr_id=29029&sca=%ED%8E%B8%EC%9E%85%ED%95%99&wr_9=mojip", "conf": "high", "note27": "2026-11-09 기준 2027 일정 공지 없음 (작년 기본계획 2025-11-25)" },
-    { "name": "숙명여대", "full": "숙명여자대학교", "src": "https://admission.sookmyung.ac.kr/upload/BBS0021/20251128084620QU24MV.PDF", "conf": "high", "src27": "https://admission.sookmyung.ac.kr/admission/html/transfer/noticeView.asp?p_board_idx=54627", "note27": "기본계획 안내 2026-09-22 · 요강 미발표" },
-    { "name": "세종대", "full": "세종대학교", "src": "https://ipsi.sejong.ac.kr/ipsi/transfer/recruitment-guidelines.do", "conf": "high", "src27": "https://ipsi.sejong.ac.kr/ipsi/transfer/notice.do?mode=view&articleNo=2786", "note27": "전형방법 변경 안내 2026-09-04 · 일정 미공개" },
-    { "name": "상명대", "full": "상명대학교 (서울캠퍼스)", "src": "https://admission.smu.ac.kr/_seoul/board/bbs.html?bbsid=seoul_notice&mode=view&ctg_cd=pyunip&bltn_seq=60939", "conf": "high", "src27": "https://admission.smu.ac.kr/_seoul/board/bbs.html?bbsid=seoul_notice&ctg_cd=pyunip&mode=view&bltn_seq=61841", "note27": "주요사항(안) 2026-07-22 · 요강 12월 중 예정" },
-    { "name": "덕성여대", "full": "덕성여자대학교", "src": "https://enter.duksung.ac.kr/upload_data/mojib/20251217164038_8.pdf", "conf": "high", "src27": "https://enter.duksung.ac.kr/notice/view.php?bn=6913&m_type=PYEONIP", "note27": "전형방법 변경 안내 · 요강 12월 중순 발표 예정" }
+    { "name": "성균관대", "full": "성균관대학교", "src": "https://admission.skku.edu/upload/guide/20251211170153ZUTLWV.pdf", "conf": "high", "src27": "https://admission.skku.edu/admission/html/transfer/noticeView.html?idx=59518", "note27": "기본계획 2026-09-02 · 요강 12월 초 게재 예정 (접수 12월 중 · 필답 1월 중 · 합격발표 2월 중)" },
+    { "name": "동국대", "full": "동국대학교(서울)", "src": "https://ipsi.dongguk.edu/upload/file/20251211170812CDYGTA.PDF", "conf": "high", "src27": "http://ipsi.dongguk.edu/admission/html/transfer/noticeView.asp?BOARD_IDX=37117", "note27": "기본계획 2026-05-06 · 요강 미게재(11/25 확인) · 접수 12월 · 필답 1월 예정" },
+    { "name": "이화여대", "full": "이화여자대학교", "src": "https://admission.ewha.ac.kr/upload/GUIDES/20251127172336ME8QZU.pdf", "conf": "high", "note27": "전형일정 사전안내 2026-11-17 · 요강 11/30(월) 공지 예정 · 접수 12/1 13:00~12/3 17:00 · 필답 12/13(일)", "src27": "https://admission.ewha.ac.kr/admission/html/transfer/noticeView.asp?idx=15470" },
+    { "name": "연세대", "full": "연세대학교 (서울캠퍼스)", "src": "https://admission.yonsei.ac.kr/seoul/upload/guide/20251128171519N9YQLH.PDF", "conf": "high", "src27": "https://admission.yonsei.ac.kr/seoul/admission/html/transfer/noticeView.asp?BBS_NO=3528", "note27": "예고사항 2026-09-02 · 요강 미게재(11/25 확인, 11월 말 예정)" },
+    { "name": "건국대", "full": "건국대학교 (서울캠퍼스)", "src": "https://admission.konkuk.ac.kr/enterTbc/admission/4/64/pdf/fileDownload.do", "conf": "high", "src27": "https://admission.konkuk.ac.kr/bbs/admission/6282/1212887/artclView.do", "note27": "요강 발표 2026-11-24 · 접수 12/1 10:00~12/3 17:00(진학어플라이) · 필기 12/24 인문 10:00 · 자연 14:00", "final27": "2026-11-24", "guide27": "https://admission.konkuk.ac.kr/bbs/admission/6282/1231335/download.do" },
+    { "name": "고려대", "full": "고려대학교 (서울캠퍼스)", "src": "https://oku.korea.ac.kr/ajaxfile/FR_SVC/FileDown.do?GBN=X01&BOARD_SEQ=5&SITE_NO=2&BBS_SEQ=1742&FILE_SEQ=2", "conf": "high", "src27": "https://oku.korea.ac.kr/oku/cms/CMN_CON/MainLink.do?GBN=BA&TEMP_CODE=IPSI_C&BASE_SITE_NO=2&CONFIG_CD=C1435&CONFIG_SEQ=1&SUB_SEQ=5&SITE_NO=2&BOARD_SEQ=5&BBS_SEQ=1798", "note27": "필기고사 과목·출제범위(안) 2026-06-26 · 요강·일정 미공개(11/25 확인)" },
+    { "name": "경희대", "full": "경희대학교", "src": "https://kr.object.gov-ncloudstorage.com/khuiphakstorage/upload/20251203103243375_2026%ED%95%99%EB%85%84%EB%8F%84%20%EA%B2%BD%ED%9D%AC%EB%8C%80%ED%95%99%EA%B5%90%20%ED%8E%B8%EC%9E%85%ED%95%99%20%EB%AA%A8%EC%A7%91%EC%9A%94%EA%B0%95.pdf", "conf": "high", "src27": "https://iphak.khu.ac.kr/detail.do?menuurl=cRn%2FaEwx6apTQh9HEMyZTw%3D%3D&categoryid=4&boardid=1&board_seq=17959", "note27": "주요 변경사항 2026-07-03 · 요강 11월 이후 공지 예정(11/25 미발표)" },
+    { "name": "서울대", "full": "서울대학교", "src": "https://admission.snu.ac.kr/transfer/notice?md=v&bbsidx=161730", "conf": "high", "src27": "https://admission.snu.ac.kr/transfer/notice?md=v&bbsidx=179879", "note27": "모집안내 발표 2026-11-24 · 접수 12/7 10:00~12/11 17:00(유웨이어플라이) · 필답 12/28(월) 10:00 · 최종발표 2027-02-05", "final27": "2026-11-24" },
+    { "name": "중앙대", "full": "중앙대학교", "src": "https://admission.cau.ac.kr/file/pdfDown.pdf?sfn=20251201101037115_8e0c55ee67a5443bbc4580128cb24ef7.pdf&ofn=2026%ED%95%99%EB%85%84%EB%8F%84+%EC%A4%91%EC%95%99%EB%8C%80%ED%95%99%EA%B5%90+%ED%8E%B8%EC%9E%85%ED%95%99+%EB%AA%A8%EC%A7%91%EC%9A%94%EA%B0%95.pdf", "conf": "medium", "src27": "https://admission.cau.ac.kr/detail.do?menuurl=bmyV1ovIAzYtqDXLjUSVtw%3D%3D&board_seq=3313&pageNo=1", "note27": "시행계획(안) 2026-08-28 · 요강 12월 공지 예정(11/25 미발표)" },
+    { "name": "한양대", "full": "한양대학교 (서울캠퍼스)", "src": "https://go.hanyang.ac.kr/resources/upload_data/mojib/20251204021633531_.pdf", "conf": "high", "note27": "2026-11-25 기준 2027 편입 공지 없음 (작년 요강 2025-12-04)" },
+    { "name": "서강대", "full": "서강대학교", "src": "https://admission.sogang.ac.kr/upload/GUIDES/20251209144846ZQ25EU.pdf", "conf": "high", "note27": "2026-11-25 기준 2027 편입 공지 없음 (작년 요강 2025-12-09)" },
+    { "name": "서울시립대", "full": "서울시립대학교", "src": "https://www.artchangjo.com/data/info_news_view.asp?idx=231219", "conf": "medium", "src27": "https://admission.uos.ac.kr/admissionNew/noticeBoard/view.do?seq=1306&list_id=OB1&sort=1&menuid=2002004001000000000", "note27": "주요사항(안) 2026-06-30 · 일정 미공개(11/25 요강 미발표)" },
+    { "name": "광운대", "full": "광운대학교", "src": "https://iphak.kw.ac.kr/upload_data/mojib/20251215165135_30.pdf", "conf": "high", "src27": "https://iphak.kw.ac.kr/help/notice_view.php?bn=44932&m_type=PYEONIP", "note27": "필답고사 일정 사전안내 2026-10-28 (1/13 수) · 요강 미발표(11/25 확인)" },
+    { "name": "명지대", "full": "명지대학교 (서울캠퍼스/인문캠퍼스)", "src": "https://iphak.mju.ac.kr/images/mojib/20251204174012_32.pdf", "conf": "high", "src27": "https://iphak.mju.ac.kr/pages/?p=25&b=B_1_1&bn=30907&m=read&nPage=1&cate=%ED%8E%B8%EC%9E%85%ED%95%99&f=ALL&s=", "note27": "주요사항 및 변경사항 2026-11-07 (필기 1/14 목) · 요강 미발표(11/25 확인)" },
+    { "name": "홍익대", "full": "홍익대학교 (서울캠퍼스)", "src": "https://www.hongik.ac.kr/kr/admission/recruitment-transfer.do?mode=view&articleNo=145569&title=2026%ED%95%99%EB%85%84%EB%8F%84++%ED%8E%B8%EC%9E%85%ED%95%99+%EB%AA%A8%EC%A7%91%EC%9A%94%EA%B0%95", "conf": "high", "note27": "2026-11-25 기준 2027 편입 공지 없음 (작년 요강 2025-11-28)" },
+    { "name": "숭실대", "full": "숭실대학교", "src": "https://iphak.ssu.ac.kr/upload/SSU(1)_251205165150.pdf", "conf": "high", "src27": "https://admission.ssu.ac.kr/board/notice_view.asp?number=2334&srchoption=&keyword=&flag=3&page_no=1_4_1&page=1", "note27": "주요사항 사전안내 2026-10-12 · 요강 11월 말 공개 예정(11/25 미발표)" },
+    { "name": "한국외국어대", "full": "한국외국어대학교 (서울캠퍼스)", "src": "https://adms.hufs.ac.kr/ajaxfile/FileCpnt/FileDownload.do?FILE_ORG_NM=2026%ED%95%99%EB%85%84%EB%8F%84%20%ED%95%9C%EA%B5%AD%EC%99%B8%EA%B5%AD%EC%96%B4%EB%8C%80%ED%95%99%EA%B5%90%20%ED%8E%B8%EC%9E%85%ED%95%99%EB%AA%A8%EC%A7%91%EC%9A%94%EA%B0%95(%EC%9D%B8%EC%87%84%EB%B3%B8).pdf&FILE_NM=202512/1764830393544_0.pdf", "conf": "high", "note27": "2026-11-25 기준 2027 편입 공지 없음 (작년 요강 2025-12-04)" },
+    { "name": "성신여대", "full": "성신여자대학교", "src": "https://ipsi.sungshin.ac.kr/guide/dataroom.htm?bbsid=notice&ctg_cd=all&mode=view&bltn_seq=35131", "conf": "high", "note27": "일정(안) 사전안내 2026-11-12 · 요강 공고 12/21(월) 예정 · 접수 2027-01-04(월)~01-07(목) 18:00 예정", "src27": "https://ipsi.sungshin.ac.kr/guide/dataroom.htm?bbsid=notice&ctg_cd=all&mode=view&bltn_seq=36820" },
+    { "name": "동덕여대", "full": "동덕여자대학교", "src": "https://ipsi.dongduk.ac.kr/afile/fileDownloadById/251202018869Uixb", "conf": "high", "src27": "https://ipsi.dongduk.ac.kr/ipsi/contents/admhelper-notice.do?schM=view&page=1&viewCount=10&id=91907&schBdcode=&schGroupCode=&etc1=1086", "note27": "시행계획 2026-06-10 · 요강 12월 초 예정(11/25 미발표)" },
+    { "name": "국민대", "full": "국민대학교", "src": "https://admission.kookmin.ac.kr/datafiles/contents/2026%ED%95%99%EB%85%84%EB%8F%84_%ED%8E%B8%EC%9E%85%ED%95%99_%EB%AA%A8%EC%A7%91%EC%9A%94%EA%B0%95.pdf", "conf": "high", "src27": "https://admission.kookmin.ac.kr/transfer/notice.php?ctype=view&no=1089", "note27": "영화전공 전형변경 안내 2026-11-12 · 요강 11월 말 업로드 예정" },
+    { "name": "서울여대", "full": "서울여자대학교", "src": "https://admission.swu.ac.kr/bbs/board.php?bo_table=dataroom&wr_id=29029&sca=%ED%8E%B8%EC%9E%85%ED%95%99&wr_9=mojip", "conf": "high", "note27": "공예전공 실기과목 변경 안내 2026-05-29 · 기본계획·요강 미발표(작년 기본계획 11/25)", "src27": "https://admission.swu.ac.kr/bbs/board.php?bo_table=notice&wr_id=29267&sca=%ED%8E%B8%EC%9E%85%ED%95%99" },
+    { "name": "숙명여대", "full": "숙명여자대학교", "src": "https://admission.sookmyung.ac.kr/upload/BBS0021/20251128084620QU24MV.PDF", "conf": "high", "src27": "https://admission.sookmyung.ac.kr/admission/html/transfer/noticeView.asp?p_board_idx=54732", "note27": "요강 발표 2026-11-24 · 접수 12/1 10:00~12/3 17:00(진학어플라이) · 필답 12/19(토)", "final27": "2026-11-24", "guide27": "https://admission.sookmyung.ac.kr/upload/BBS0021/202611251025176WE8KZ.PDF" },
+    { "name": "세종대", "full": "세종대학교", "src": "https://ipsi.sejong.ac.kr/ipsi/transfer/recruitment-guidelines.do", "conf": "high", "src27": "https://ipsi.sejong.ac.kr/ipsi/transfer/notice.do?mode=view&articleNo=2786", "note27": "전형방법 변경 안내 2026-09-04 · 요강 미발표(11/25 확인)" },
+    { "name": "상명대", "full": "상명대학교 (서울캠퍼스)", "src": "https://admission.smu.ac.kr/_seoul/board/bbs.html?bbsid=seoul_notice&mode=view&ctg_cd=pyunip&bltn_seq=60939", "conf": "high", "src27": "https://admission.smu.ac.kr/_seoul/board/bbs.html?bbsid=seoul_notice&ctg_cd=pyunip&mode=view&bltn_seq=61841", "note27": "주요사항(안) 2026-07-22 · 요강 12월 중 예정(11/25 미발표)" },
+    { "name": "덕성여대", "full": "덕성여자대학교", "src": "https://enter.duksung.ac.kr/upload_data/mojib/20251217164038_8.pdf", "conf": "high", "src27": "https://enter.duksung.ac.kr/notice/view.php?bn=6950&m_type=PYEONIP", "note27": "전형방법 변경 안내(약학 3/31 · 동서양화 5/28) · 요강 12월 중순 발표 예정" }
   ],
   "events": [
     { "u": 0, "k": "apply", "l": "원서접수 시작", "d": "2025-12-17", "h": "10:00", "e": "", "n": "전 전형 공통. 100% 인터넷 접수(admission.skku.edu), 별도 창구접수 없음" },
@@ -8264,10 +8269,10 @@ window.addEventListener('error', function(ev){
     { "u": 1, "k": "result", "l": "충원합격자 발표", "d": "2026-02-13", "h": "", "e": "2026-02-19", "n": "02.19.(목) 18:00까지. 입학처 홈페이지 또는 개별통보" },
     { "u": 1, "k": "result", "l": "충원합격자 등록", "d": "2026-02-20", "h": "", "e": "", "n": "02.20.(금) 16:00까지" },
     { "u": 1, "k": "apply", "l": "최종등록자 원본서류 제출", "d": "2026-02-23", "h": "", "e": "", "n": "02.23.(월)까지. 우편제출, 02.23.(월) 우체국 소인까지 유효" },
-    { "u": 2, "k": "apply", "l": "원서접수 시작", "d": "2025-12-02", "h": "13:00", "e": "", "n": "인터넷 원서접수. 일반편입학·학사편입학·약학전공 공통" },
-    { "u": 2, "k": "apply", "l": "원서접수 마감", "d": "2025-12-04", "h": "17:00", "e": "", "n": "인터넷 원서접수. 일반편입학·학사편입학·약학전공 공통" },
+    { "u": 2, "k": "apply", "l": "원서접수 시작", "d": "2025-12-02", "h": "13:00", "e": "", "n": "인터넷 원서접수. 일반편입학·학사편입학·약학전공 공통", "d2": "2026-12-01", "h2": "13:00", "p2": 1, "n2": "11/17 전형일정 사전안내 기준. 일반·학사·약학전공 공통" },
+    { "u": 2, "k": "apply", "l": "원서접수 마감", "d": "2025-12-04", "h": "17:00", "e": "", "n": "인터넷 원서접수. 일반편입학·학사편입학·약학전공 공통", "d2": "2026-12-03", "h2": "17:00", "p2": 1, "n2": "11/17 전형일정 사전안내 기준" },
     { "u": 2, "k": "exam", "l": "고사장 및 수험생 유의사항 발표", "d": "2025-12-12", "h": "17:00", "e": "", "n": "입학처 홈페이지 공지, 요강에 '예정'으로 표기" },
-    { "u": 2, "k": "exam", "l": "필기시험(필답고사)", "d": "2025-12-14", "h": "", "e": "", "n": "일반편입학·학사편입학 모두 실시, 약학전공은 미실시(X). 모집단위별 고사시간 상이 - 인문과학대학·사회과학대학 08:30~12:30, 경영대학·신산업융합대학 14:00~18:00" },
+    { "u": 2, "k": "exam", "l": "필기시험(필답고사)", "d": "2025-12-14", "h": "", "e": "", "n": "일반편입학·학사편입학 모두 실시, 약학전공은 미실시(X). 모집단위별 고사시간 상이 - 인문과학대학·사회과학대학 08:30~12:30, 경영대학·신산업융합대학 14:00~18:00", "d2": "2026-12-13", "h2": "", "p2": 1, "n2": "일반편입(약학 제외)·학사편입 응시, 약학전공은 필답 없음. 시각·고사장은 요강(11/30 예정)에서 안내" },
     { "u": 2, "k": "exam", "l": "1단계 필답고사 합격자 발표", "d": "2025-12-19", "h": "17:00", "e": "", "n": "요강에 '예정'으로 표기. 일반편입학·학사편입학 해당, 약학전공 미해당. 개별 통지하지 않음" },
     { "u": 2, "k": "apply", "l": "서류제출 시작", "d": "2025-12-22", "h": "13:00", "e": "", "n": "인터넷 서류 제출. 1단계 필답고사 합격자 제출, 약학전공은 지원자 전체 제출" },
     { "u": 2, "k": "apply", "l": "서류제출 마감", "d": "2025-12-24", "h": "13:00", "e": "", "n": "인터넷 서류 제출. 1단계 필답고사 합격자 제출, 약학전공은 지원자 전체 제출" },
@@ -8288,15 +8293,15 @@ window.addEventListener('error', function(ev){
     { "u": 3, "k": "apply", "l": "최종합격자 원본서류 제출 마감", "d": "2026-02-10", "h": "", "e": "", "n": "합격자 발표일 ~ 2026.2.10.(화)까지. 입학전형실 편입학전형 담당자 앞" },
     { "u": 3, "k": "enroll", "l": "등록금 납부", "d": "2026-02-03", "h": "", "e": "2026-02-05", "n": "2.5.(목) 16:00까지" },
     { "u": 3, "k": "result", "l": "추가합격자 발표", "d": "2026-02-05", "h": "20:00", "e": "", "n": "학사/일반편입학에 한함. 개별 통보(전화 충원). 추가합격자 등록금 납부 2.19.(목) 18:00 ~ 2.20.(금) 16:00까지" },
-    { "u": 4, "k": "apply", "l": "원서접수 시작", "d": "2025-12-02", "h": "10:00", "e": "", "n": "진학어플라이(jinhakapply.com) 인터넷 접수. 일반편입·학사편입·특성화고졸재직자 공통 일정" },
-    { "u": 4, "k": "apply", "l": "원서접수 마감", "d": "2025-12-04", "h": "17:00", "e": "", "n": "일반편입·학사편입 공통. 전형일정표에 별도 구분 없음" },
-    { "u": 4, "k": "exam", "l": "필기시험", "d": "2025-12-24", "h": "", "e": "", "n": "우선선발 지원자는 제외. 인문·예체능계 10:00~11:00, 자연계 14:00~15:00. 고사장·입실완료시간은 고사 3~4일 전 입학처 홈페이지 공고", "d2": "2026-12-24", "h2": "10:00", "p2": 1, "n2": "목요일 10:00 예정. 시험장·모집단위별 세부 시간은 2027 모집요강에서 안내" },
-    { "u": 4, "k": "result", "l": "1단계 합격자 발표", "d": "2026-01-06", "h": "14:00", "e": "", "n": "요강 원문에 '14:00 예정'으로 표기. 일반선발 1단계 합격자는 모집인원의 7배수(체육교육과는 10배수)" },
-    { "u": 4, "k": "apply", "l": "서류제출", "d": "2026-01-06", "h": "", "e": "2026-01-08", "n": "정확히는 1/6 1단계 합격자 발표 이후 ~ 1/8(목) 17:00. 서류제출 및 2단계 전형료 납부, 학업계획서 온라인 입력. 우선선발 지원자 및 일반선발 1단계 합격자에 한함. 온라인 원서접수 사이트에 PDF 업로드(우편·방문 불가)" },
-    { "u": 4, "k": "exam", "l": "실기고사(체육교육과)", "d": "2026-01-17", "h": "", "e": "", "n": "사범대학 체육교육과 지원자만 해당. 일반편입 전형" },
-    { "u": 4, "k": "result", "l": "최초 합격자 발표", "d": "2026-02-02", "h": "14:00", "e": "", "n": "요강 원문에 '14:00 예정'으로 표기. 입학처 홈페이지 공고" },
-    { "u": 4, "k": "result", "l": "합격자 등록", "d": "2026-02-03", "h": "10:00", "e": "2026-02-05", "n": "2026. 2. 3.(화) 10:00 ~ 2. 5.(목) 16:00" },
-    { "u": 4, "k": "result", "l": "추가 합격자 발표", "d": "2026-02-06", "h": "16:00", "e": "2026-02-19", "n": "1차 2/6(금) 16:00, 2차 이후 2/9(월)~2/19(목) 18:00. 교육부 기본계획상 2/19 18:00 이후 추가합격 통보 불가" },
+    { "u": 4, "k": "apply", "l": "원서접수 시작", "d": "2025-12-02", "h": "10:00", "e": "", "n": "진학어플라이(jinhakapply.com) 인터넷 접수. 일반편입·학사편입·특성화고졸재직자 공통 일정", "d2": "2026-12-01", "h2": "10:00", "n2": "진학어플라이(www.jinhakapply.com) 인터넷 접수" },
+    { "u": 4, "k": "apply", "l": "원서접수 마감", "d": "2025-12-04", "h": "17:00", "e": "", "n": "일반편입·학사편입 공통. 전형일정표에 별도 구분 없음", "d2": "2026-12-03", "h2": "17:00", "n2": "일반편입·학사편입 공통" },
+    { "u": 4, "k": "exam", "l": "필기시험", "d": "2025-12-24", "h": "", "e": "", "n": "우선선발 지원자는 제외. 인문·예체능계 10:00~11:00, 자연계 14:00~15:00. 고사장·입실완료시간은 고사 3~4일 전 입학처 홈페이지 공고", "d2": "2026-12-24", "h2": "10:00", "n2": "인문계 10:00~11:00 / 자연계 14:00~15:00. 우선선발 지원자 제외. 고사장·입실시간은 고사 3~4일 전 홈페이지 공고" },
+    { "u": 4, "k": "result", "l": "1단계 합격자 발표", "d": "2026-01-06", "h": "14:00", "e": "", "n": "요강 원문에 '14:00 예정'으로 표기. 일반선발 1단계 합격자는 모집인원의 7배수(체육교육과는 10배수)", "d2": "2027-01-05", "h2": "14:00", "n2": "요강에 '14:00 예정'으로 표기. 입학처 홈페이지" },
+    { "u": 4, "k": "apply", "l": "서류제출", "d": "2026-01-06", "h": "", "e": "2026-01-08", "n": "정확히는 1/6 1단계 합격자 발표 이후 ~ 1/8(목) 17:00. 서류제출 및 2단계 전형료 납부, 학업계획서 온라인 입력. 우선선발 지원자 및 일반선발 1단계 합격자에 한함. 온라인 원서접수 사이트에 PDF 업로드(우편·방문 불가)", "d2": "2027-01-05", "e2": "2027-01-07", "h2": "17:00", "n2": "1단계 합격자 발표 이후 ~ 1/7(목) 17:00. 서류 PDF 업로드 + 2단계 전형료 납부 + 학업계획서 입력" },
+    { "u": 4, "k": "exam", "l": "실기고사(체육교육과)", "d": "2026-01-17", "h": "", "e": "", "n": "사범대학 체육교육과 지원자만 해당. 일반편입 전형", "x2": 1 },
+    { "u": 4, "k": "result", "l": "최초 합격자 발표", "d": "2026-02-02", "h": "14:00", "e": "", "n": "요강 원문에 '14:00 예정'으로 표기. 입학처 홈페이지 공고", "d2": "2027-02-05", "h2": "14:00", "n2": "요강에 '14:00 예정'으로 표기. 입학처 홈페이지 공고" },
+    { "u": 4, "k": "result", "l": "합격자 등록", "d": "2026-02-03", "h": "10:00", "e": "2026-02-05", "n": "2026. 2. 3.(화) 10:00 ~ 2. 5.(목) 16:00", "d2": "2027-02-10", "e2": "2027-02-12", "h2": "10:00", "n2": "2027. 2. 10.(수) 10:00 ~ 2. 12.(금) 16:00" },
+    { "u": 4, "k": "result", "l": "추가 합격자 발표", "d": "2026-02-06", "h": "16:00", "e": "2026-02-19", "n": "1차 2/6(금) 16:00, 2차 이후 2/9(월)~2/19(목) 18:00. 교육부 기본계획상 2/19 18:00 이후 추가합격 통보 불가", "d2": "2027-02-16", "e2": "2027-02-18", "h2": "10:00", "n2": "2/16(화) 10:00 ~ 2/18(목) 18:00. 18:00 이후 추가합격 통보 불가" },
     { "u": 5, "k": "apply", "l": "원서접수 시작", "d": "2025-12-02", "h": "10:00", "e": "", "n": "일반편입학/학사편입학/군위탁편입학 공통. 유웨이어플라이(www.uwayapply.com) 인터넷 접수만 가능" },
     { "u": 5, "k": "apply", "l": "원서접수 마감", "d": "2025-12-04", "h": "17:00", "e": "", "n": "일반편입학/학사편입학 공통. 전형료 결제까지 마감 당일 17:00까지 완료" },
     { "u": 5, "k": "apply", "l": "학업계획서 입력 및 온라인 서류제출", "d": "2025-12-02", "h": "10:00", "e": "2025-12-05", "n": "일반편입학/학사편입학 공통. 마감 2025.12.5.(금) 17:00. 원서접수 마감(12.4)보다 하루 늦음" },
@@ -8329,14 +8334,14 @@ window.addEventListener('error', function(ev){
     { "u": 6, "k": "result", "l": "최종 충원합격자 발표 마감", "d": "2026-02-19", "h": "18:00", "e": "", "n": "추가합격(충원) 발표 마감 시각" },
     { "u": 6, "k": "result", "l": "최종 충원합격자 등록 마감", "d": "2026-02-20", "h": "13:00", "e": "", "n": "충원합격자 등록 마감 시각" },
     { "u": 6, "k": "apply", "l": "최종등록자 원본서류 제출", "d": "2026-02-20", "h": "", "e": "2026-02-24", "n": "우편 발송 제출" },
-    { "u": 7, "k": "apply", "l": "원서접수 시작", "d": "2025-12-08", "h": "10:00", "e": "", "n": "학사편입학(군위탁편입학 포함). 인터넷 접수 — 입학본부 홈페이지 및 uwayapply.com. 서울대는 일반편입을 실시하지 않음" },
-    { "u": 7, "k": "apply", "l": "원서접수 마감", "d": "2025-12-12", "h": "17:00", "e": "", "n": "학사편입학(군위탁편입학 포함). 인터넷 접수 마감" },
-    { "u": 7, "k": "apply", "l": "서류제출", "d": "2025-12-09", "h": "", "e": "2025-12-15", "n": "지원서류 제출(우편·택배·방문), 매일 10:00~17:00. 각 단과대학으로 제출. 마감일자 우편·택배 소인까지 유효" },
-    { "u": 7, "k": "exam", "l": "수험표 교부", "d": "2025-12-16", "h": "10:00", "e": "", "n": "인터넷접수 사이트에서 본인이 직접 출력하여 필답고사·면접 및 구술고사·실기고사 시 지참" },
-    { "u": 7, "k": "exam", "l": "필기시험(필답고사)", "d": "2025-12-29", "h": "10:00", "e": "", "n": "1교시 10:00~12:00 전공, 09:50까지 입실완료. 단 인문대 전공시험 및 제2외국어, 사회과학대 전공시험, 자연과학대 전공시험 등은 예외 규정 있음" },
-    { "u": 7, "k": "exam", "l": "면접 및 구술고사·실기고사", "d": "2025-12-29", "h": "", "e": "", "n": "" },
-    { "u": 7, "k": "result", "l": "1단계 전형 합격자 발표 및 2단계 전형 안내", "d": "2026-01-06", "h": "", "e": "", "n": "" },
-    { "u": 7, "k": "result", "l": "최종 합격자 발표", "d": "2026-01-30", "h": "17:00", "e": "", "n": "" },
+    { "u": 7, "k": "apply", "l": "원서접수 시작", "d": "2025-12-08", "h": "10:00", "e": "", "n": "학사편입학(군위탁편입학 포함). 인터넷 접수 — 입학본부 홈페이지 및 uwayapply.com. 서울대는 일반편입을 실시하지 않음", "d2": "2026-12-07", "h2": "10:00", "n2": "인터넷 접수(www.uwayapply.com). 학사편입·군위탁편입 공통" },
+    { "u": 7, "k": "apply", "l": "원서접수 마감", "d": "2025-12-12", "h": "17:00", "e": "", "n": "학사편입학(군위탁편입학 포함). 인터넷 접수 마감", "d2": "2026-12-11", "h2": "17:00", "n2": "전형료 88,000원(1단계 63,000 + 2단계 20,000 + 수수료 5,000)" },
+    { "u": 7, "k": "apply", "l": "서류제출", "d": "2025-12-09", "h": "", "e": "2025-12-15", "n": "지원서류 제출(우편·택배·방문), 매일 10:00~17:00. 각 단과대학으로 제출. 마감일자 우편·택배 소인까지 유효", "d2": "2026-12-08", "e2": "2026-12-14", "h2": "10:00", "n2": "우편·택배·방문, 각 단과대학 행정실 10:00~17:00. 마감일 소인 유효" },
+    { "u": 7, "k": "exam", "l": "수험표 교부", "d": "2025-12-16", "h": "10:00", "e": "", "n": "인터넷접수 사이트에서 본인이 직접 출력하여 필답고사·면접 및 구술고사·실기고사 시 지참", "d2": "2026-12-15", "h2": "10:00", "n2": "접수 사이트에서 직접 출력" },
+    { "u": 7, "k": "exam", "l": "필기시험(필답고사)", "d": "2025-12-29", "h": "10:00", "e": "", "n": "1교시 10:00~12:00 전공, 09:50까지 입실완료. 단 인문대 전공시험 및 제2외국어, 사회과학대 전공시험, 자연과학대 전공시험 등은 예외 규정 있음", "d2": "2026-12-28", "h2": "10:00", "n2": "10:00~12:00(09:50 입실), 단과대학별 시행. 전공시험이 있는 단과대는 별도 일정 공지 확인" },
+    { "u": 7, "k": "exam", "l": "면접 및 구술고사·실기고사", "d": "2025-12-29", "h": "", "e": "", "n": "", "d2": "2026-12-28", "h2": "", "n2": "12/28(월) 이후, 세부 일정은 단과대학 안내" },
+    { "u": 7, "k": "result", "l": "1단계 전형 합격자 발표 및 2단계 전형 안내", "d": "2026-01-06", "h": "", "e": "", "n": "", "d2": "2027-01-05", "h2": "", "n2": "1/5(화) 이전, 단과대학 홈페이지 발표" },
+    { "u": 7, "k": "result", "l": "최종 합격자 발표", "d": "2026-01-30", "h": "17:00", "e": "", "n": "", "d2": "2027-02-05", "h2": "17:00", "n2": "입학본부 홈페이지, 17:00 이후. 등록은 2월 중(합격자 발표 시 안내)" },
     { "u": 8, "k": "apply", "l": "원서접수 시작", "d": "2025-12-09", "h": "10:00", "e": "", "n": "일반편입·학사편입 공통. 3개 이상 출처 일치(공식 모집요강 PDF 검색요약, artchangjo, kimyoung)" },
     { "u": 8, "k": "apply", "l": "원서접수 마감", "d": "2025-12-11", "h": "18:00", "e": "", "n": "일반편입·학사편입 공통. 마감 시각 이후 원서 제출 및 전형료 결제 불가" },
     { "u": 8, "k": "exam", "l": "고사장 조회 및 수험번호 안내", "d": "2026-01-06", "h": "14:00", "e": "", "n": "WebSearch가 공식 모집요강 PDF를 요약해 제시한 항목. 단일 출처" },
@@ -8441,8 +8446,8 @@ window.addEventListener('error', function(ev){
     { "u": 16, "k": "result", "l": "추가 합격자 발표", "d": "2026-02-10", "h": "", "e": "2026-02-19", "n": "2026.2.10.(화)~2.19.(목) 18:00. 세부 발표일정 및 등록안내는 추후 입학처 홈페이지 공지" },
     { "u": 16, "k": "result", "l": "추가 합격자 등록", "d": "2026-02-10", "h": "", "e": "2026-02-20", "n": "2026.2.10.(화)~2.20.(금)" },
     { "u": 16, "k": "apply", "l": "최종등록자 원본서류 제출", "d": "2026-02-23", "h": "", "e": "2026-02-25", "n": "등기우편 발송(마감일 등기우편 소인 유효), 방문제출 불가. 주소: (02450) 서울 동대문구 이문로 107 한국외국어대학교 입학팀 편입학모집 담당자 앞" },
-    { "u": 17, "k": "apply", "l": "원서접수 시작", "d": "2025-12-29", "h": "11:00", "e": "", "n": "인터넷 접수만 (ipsi.sungshin.ac.kr / www.jinhakapply.com). 일반편입·학사편입 공통" },
-    { "u": 17, "k": "apply", "l": "원서접수 마감", "d": "2025-12-31", "h": "18:00", "e": "", "n": "일반편입·학사편입 공통" },
+    { "u": 17, "k": "apply", "l": "원서접수 시작", "d": "2025-12-29", "h": "11:00", "e": "", "n": "인터넷 접수만 (ipsi.sungshin.ac.kr / www.jinhakapply.com). 일반편입·학사편입 공통", "d2": "2027-01-04", "h2": "", "p2": 1, "n2": "11/12 일정(안) 기준. 시작 시각은 요강(12/21 공고 예정)에서 확인" },
+    { "u": 17, "k": "apply", "l": "원서접수 마감", "d": "2025-12-31", "h": "18:00", "e": "", "n": "일반편입·학사편입 공통", "d2": "2027-01-07", "h2": "18:00", "p2": 1, "n2": "11/12 일정(안) 기준" },
     { "u": 17, "k": "apply", "l": "서류제출", "d": "2025-12-29", "h": "11:00", "e": "2026-01-02", "n": "마감 2026.01.02.(금) 18:00, 우편 제출·마감일 우체국 소인 유효. 제출처: 서울 성북구 보문로34다길 2 성신여대 입학관리실. 전적대학 성적·공인어학능력시험 성적 입력 마감 및 학업계획서 입력 마감도 동일하게 2026.01.02.(금) 18:00 (학업계획서는 첨단학부·간호학과만 필수)" },
     { "u": 17, "k": "exam", "l": "실기 고사장 발표", "d": "2026-01-05", "h": "10:00", "e": "", "n": "공예과·디자인과·기악과 대상, 입학 홈페이지 발표 (예정)" },
     { "u": 17, "k": "result", "l": "1단계 합격자 발표", "d": "2026-01-15", "h": "10:00", "e": "", "n": "첨단학부·간호학과 단계별 선발 대상. 2단계 고사장 발표 동시 (예정). 첨단학부 일반·학사편입 1단계 공인어학성적 100%(3배수), 간호학과 학사편입 1단계 공인어학성적 100%(7배수)" },
@@ -8500,17 +8505,17 @@ window.addEventListener('error', function(ev){
     { "u": 20, "k": "result", "l": "최종 합격자 발표", "d": "2026-02-19", "h": "18:00", "e": "", "n": "충원합격자 발표 종료 시점(= 사실상 최종 발표). 입학처 공지 '2026학년도 편입학모집 최종 발표 및 등록 안내'가 2026.02.19 게시된 것과 일치" },
     { "u": 20, "k": "result", "l": "충원 합격자 최종등록", "d": "2026-02-20", "h": "13:00", "e": "", "n": "충원합격자 등록 마감" },
     { "u": 20, "k": "apply", "l": "최종 합격자 서류제출", "d": "2026-02-24", "h": "", "e": "", "n": "온라인 업로드했던 모든 서류의 원본을 등기우편으로 발송(도착 기준). 원본 미제출 또는 업로드 파일과 상이할 경우 합격·입학 취소" },
-    { "u": 21, "k": "apply", "l": "원서접수 시작", "d": "2025-12-02", "h": "10:00", "e": "", "n": "인터넷 원서접수, 입학처 홈페이지(admission.sookmyung.ac.kr). 학사편입/일반편입 공통(약학부 포함)", "d2": "2026-12-01", "h2": "", "p2": 1, "n2": "기본계획(안) 기준. 인터넷 접수, 학사·일반편입 전 모집단위" },
-    { "u": 21, "k": "apply", "l": "원서접수 마감", "d": "2025-12-04", "h": "17:00", "e": "", "n": "인터넷 원서접수 마감. 학사편입/일반편입 공통", "d2": "2026-12-03", "h2": "", "p2": 1 },
-    { "u": 21, "k": "apply", "l": "서류제출", "d": "2025-12-02", "h": "", "e": "2025-12-05", "n": "일반편입학 약학부 지원자 전원 대상. 원서접수 시 PDF 파일 업로드, 12.5.(금) 17시 마감. 방문제출 불가" },
-    { "u": 21, "k": "apply", "l": "서류제출", "d": "2025-12-31", "h": "", "e": "2026-01-09", "n": "학사·일반편입학 1단계 합격자 대상(전 모집단위, 약학부 제외). PDF 업로드. 지원동기 및 학업계획서 온라인 입력기간도 2025.12.31.(수) 17:00 ~ 2026.1.9.(금) 17:00" },
-    { "u": 21, "k": "exam", "l": "필기시험", "d": "2025-12-13", "h": "", "e": "", "n": "필답시험(학사·일반편입학 공통). 인문 전 모집단위 및 생명시스템학부·인공지능공학부·컴퓨터과학전공·데이터사이언스전공·의류학과·식품영양학과는 영어, 화학과·수학과·통계학과·화공생명공학부·지능형전자시스템전공·신소재물리전공·기계시스템학부는 수학. ★약학부 지원자는 해당없음. 시험일정·고사장 등 수험생 유의사항 안내는 2025.12.10.(수) 17시", "d2": "2026-12-19", "h2": "", "p2": 1, "n2": "토요일. 영어 또는 수학(인문 영어 33문항 / 자연 일부 수학 20문항 / 약학부 영어 33+수학 22, 100분)" },
-    { "u": 21, "k": "result", "l": "1단계 합격자 발표", "d": "2025-12-31", "h": "17:00", "e": "", "n": "입학처 홈페이지. 학사·일반편입 전 모집단위는 모집인원의 10배수 선발, 약학부는 20배수 선발", "d2": "2027-01-05", "h2": "", "p2": 1, "n2": "입학처 홈페이지. 일반/학사 10배수, 약학부 20배수" },
-    { "u": 21, "k": "enroll", "l": "2단계 전형료 납부", "d": "2025-12-31", "h": "17:00", "e": "2026-01-02", "n": "1단계 합격자 대상, 2026.1.2.(금) 16시 마감" },
-    { "u": 21, "k": "result", "l": "최종 합격자 발표", "d": "2026-02-02", "h": "17:00", "e": "", "n": "입학처 홈페이지", "d2": "2027-02-04", "h2": "", "p2": 1 },
-    { "u": 21, "k": "result", "l": "합격자 등록", "d": "2026-02-03", "h": "", "e": "2026-02-05", "n": "최초합격자 등록 및 원본서류 제출. 2.5.(목) 16시 마감. 신한은행 및 전국은행, 원본서류는 등기우편(방문제출 불가)" },
-    { "u": 21, "k": "result", "l": "추가 합격자 발표 및 통보", "d": "2026-02-09", "h": "", "e": "2026-02-19", "n": "입학처 홈페이지 또는 개별 통보, 2.19.(목) 18시까지" },
-    { "u": 21, "k": "enroll", "l": "추가 등록", "d": "2026-02-09", "h": "", "e": "2026-02-20", "n": "추가등록 및 등록금환불, 2.20.(금) 16시 마감" },
+    { "u": 21, "k": "apply", "l": "원서접수 시작", "d": "2025-12-02", "h": "10:00", "e": "", "n": "인터넷 원서접수, 입학처 홈페이지(admission.sookmyung.ac.kr). 학사편입/일반편입 공통(약학부 포함)", "d2": "2026-12-01", "h2": "10:00", "n2": "입학처 홈페이지·진학어플라이(www.jinhakapply.com)" },
+    { "u": 21, "k": "apply", "l": "원서접수 마감", "d": "2025-12-04", "h": "17:00", "e": "", "n": "인터넷 원서접수 마감. 학사편입/일반편입 공통", "d2": "2026-12-03", "h2": "17:00", "n2": "1단계 전형료 73,000원(약학부 120,000원)" },
+    { "u": 21, "k": "apply", "l": "서류제출", "d": "2025-12-02", "h": "", "e": "2025-12-05", "n": "일반편입학 약학부 지원자 전원 대상. 원서접수 시 PDF 파일 업로드, 12.5.(금) 17시 마감. 방문제출 불가", "x2": 1 },
+    { "u": 21, "k": "apply", "l": "서류제출", "d": "2025-12-31", "h": "", "e": "2026-01-09", "n": "학사·일반편입학 1단계 합격자 대상(전 모집단위, 약학부 제외). PDF 업로드. 지원동기 및 학업계획서 온라인 입력기간도 2025.12.31.(수) 17:00 ~ 2026.1.9.(금) 17:00", "d2": "2027-01-05", "e2": "2027-01-11", "h2": "17:00", "n2": "1단계 합격자 전체. 지원동기·학업계획서 온라인 입력 + 서류 PDF 업로드(우편·방문 불가)" },
+    { "u": 21, "k": "exam", "l": "필기시험", "d": "2025-12-13", "h": "", "e": "", "n": "필답시험(학사·일반편입학 공통). 인문 전 모집단위 및 생명시스템학부·인공지능공학부·컴퓨터과학전공·데이터사이언스전공·의류학과·식품영양학과는 영어, 화학과·수학과·통계학과·화공생명공학부·지능형전자시스템전공·신소재물리전공·기계시스템학부는 수학. ★약학부 지원자는 해당없음. 시험일정·고사장 등 수험생 유의사항 안내는 2025.12.10.(수) 17시", "d2": "2026-12-19", "h2": "", "n2": "학사·일반편입 공통. 인문 영어 33문항 60분 / 자연 수학 20문항 또는 영어 33문항 60분 / 약학부 영어 33 + 수학 22문항 100분. 시각·고사장은 12/17 유의사항에서 안내" },
+    { "u": 21, "k": "result", "l": "1단계 합격자 발표", "d": "2025-12-31", "h": "17:00", "e": "", "n": "입학처 홈페이지. 학사·일반편입 전 모집단위는 모집인원의 10배수 선발, 약학부는 20배수 선발", "d2": "2027-01-05", "h2": "17:00", "n2": "입학처 홈페이지. 일반/학사 10배수, 약학부 20배수" },
+    { "u": 21, "k": "enroll", "l": "2단계 전형료 납부", "d": "2025-12-31", "h": "17:00", "e": "2026-01-02", "n": "1단계 합격자 대상, 2026.1.2.(금) 16시 마감", "d2": "2027-01-05", "e2": "2027-01-07", "h2": "16:00", "n2": "1단계 합격자 한정, 30,000원" },
+    { "u": 21, "k": "result", "l": "최종 합격자 발표", "d": "2026-02-02", "h": "17:00", "e": "", "n": "입학처 홈페이지", "d2": "2027-02-04", "h2": "17:00" },
+    { "u": 21, "k": "result", "l": "합격자 등록", "d": "2026-02-03", "h": "", "e": "2026-02-05", "n": "최초합격자 등록 및 원본서류 제출. 2.5.(목) 16시 마감. 신한은행 및 전국은행, 원본서류는 등기우편(방문제출 불가)", "d2": "2027-02-10", "e2": "2027-02-12", "h2": "16:00", "n2": "신한은행 및 전국은행" },
+    { "u": 21, "k": "result", "l": "추가 합격자 발표 및 통보", "d": "2026-02-09", "h": "", "e": "2026-02-19", "n": "입학처 홈페이지 또는 개별 통보, 2.19.(목) 18시까지", "d2": "2027-02-15", "e2": "2027-02-18", "h2": "18:00", "n2": "홈페이지 또는 개별 통보" },
+    { "u": 21, "k": "enroll", "l": "추가 등록", "d": "2026-02-09", "h": "", "e": "2026-02-20", "n": "추가등록 및 등록금환불, 2.20.(금) 16시 마감", "d2": "2027-02-15", "e2": "2027-02-19", "h2": "16:00" },
     { "u": 22, "k": "apply", "l": "원서접수 시작", "d": "2025-12-15", "h": "10:00", "e": "", "n": "인터넷 접수만 가능(우편·방문 불가). http://ipsi.sejong.ac.kr, http://www.jinhakapply.com. 일반편입학·학사편입학·정원외(농어촌학생, 특성화고교졸업자, 특성화고교졸 재직자) 전형 일정이 모두 동일함" },
     { "u": 22, "k": "apply", "l": "원서접수 마감", "d": "2025-12-18", "h": "17:00", "e": "", "n": "모든 전형 공통 마감" },
     { "u": 22, "k": "apply", "l": "포트폴리오 업로드 마감", "d": "2025-12-18", "h": "18:00", "e": "", "n": "창의소프트학부-디자인이노베이션전공(일반편입학·학사편입학)에 한함. 원서접수 마감일 18:00까지 업로드 및 수정 가능, 온라인 업로드" },
@@ -8558,7 +8563,12 @@ window.addEventListener('error', function(ev){
     { "u": 24, "k": "result", "l": "충원 3차 합격자 등록", "d": "2026-02-13", "h": "", "e": "", "n": "9:00 ~ 16:00" },
     { "u": 24, "k": "result", "l": "최종 합격자 발표", "d": "2026-02-19", "h": "18:00", "e": "", "n": "충원 최종(4차) 합격자 발표, 2026.2.19.(목) 18:00까지. 개별 통보(전화연락). 충원합격자 발표 마감시각" },
     { "u": 24, "k": "result", "l": "최종 합격자 등록", "d": "2026-02-20", "h": "", "e": "", "n": "충원 최종 합격자 등록 9:00 ~ 16:00" },
-    { "u": 24, "k": "apply", "l": "최종등록자 원본서류 우편제출 마감", "d": "2026-02-20", "h": "", "e": "", "n": "최종등록자는 PDF로 업로드한 제출서류 원본과 학력조회동의서를 2026.2.20.(금)까지 우편제출" }
+    { "u": 24, "k": "apply", "l": "최종등록자 원본서류 우편제출 마감", "d": "2026-02-20", "h": "", "e": "", "n": "최종등록자는 PDF로 업로드한 제출서류 원본과 학력조회동의서를 2026.2.20.(금)까지 우편제출" },
+    { "u": 4, "k": "result", "l": "추가합격자 등록", "d2": "2027-02-16", "e2": "2027-02-19", "h2": "10:00", "n2": "2/16(화) 10:00 ~ 2/19(금) 14:00" },
+    { "u": 21, "k": "exam", "l": "수험생 유의사항·고사장 안내", "d2": "2026-12-17", "h2": "17:00", "n2": "입학처 홈페이지(시험일정 및 고사장 안내)" },
+    { "u": 21, "k": "apply", "l": "최종 등록자 원본서류 제출(등기우편)", "d2": "2027-02-19", "h2": "", "n2": "국내 2/19 소인 유효, 해외 발송 2/22 도착분 유효" },
+    { "u": 2, "k": "result", "l": "모집요강 공지(예정)", "d2": "2026-11-30", "h2": "", "p2": 1, "n2": "11/17 전형일정 사전안내에 '2026. 11. 30.(월) 예정'으로 표기" },
+    { "u": 17, "k": "result", "l": "모집요강 공고(예정)", "d2": "2026-12-21", "h2": "", "p2": 1, "n2": "11/12 일정(안) 사전안내에 '12/21(월) 예정'으로 표기" }
   ]
 }
 </script>
@@ -9266,6 +9276,7 @@ function calEvents(){
   CAL.events.forEach(function(ev, i){
     if (real && !ev.d) return;                 // 올해 새로 생긴 일정은 작년 보기에 없다
     if (!real && !ev.d && !ev.d2) return;
+    if (!real && ev.x2) return;                // 올해 요강에서 사라진 일정(x2)은 예상 보기에 안 보인다
     var confirmed = !!ev.d2 || !!ev.c;
     var date, end;
     if (real){ date = ev.d; end = ev.e || ''; }
@@ -9402,13 +9413,19 @@ function renderCal(){
     } else if (e.firm){
       when = e.prov
         ? '대학 사전안내 기준' + (e.time ? ' · ' + e.time : '') + ' · 요강에서 바뀔 수 있어요'
-        : (e.time ? e.time + ' 기준' : '확정 일정');
+        : ((e.time ? e.time + ' · ' : '') + (e.uni.final27 ? '요강 확정' : '확정 일정'));
     } else {
       when = '작년 ' + e.lastYear.slice(5).replace('-', '/')
         + (e.lastYearEnd ? '~' + e.lastYearEnd.slice(5).replace('-', '/') : '')
         + ' 기준 · 실제와 1주 정도 차이날 수 있어요';
     }
     body.appendChild(el('div', 'cwhen', when));
+    var href = e.uni.guide27 || e.uni.src27;
+    if (!e.past && e.firm && href){     // 확정·사전안내 일정은 근거 문서로 바로 간다
+      var lnk = el('a', 'clink', (e.uni.final27 && !e.prov ? '요강 보기' : '공지 보기') + ' ›');
+      lnk.href = href; lnk.target = '_blank'; lnk.rel = 'noopener';
+      body.appendChild(lnk);
+    }
     row.appendChild(body);
 
     if (!e.past){                       // 지난 일정에 D+숫자를 붙이면 소음만 된다
@@ -9445,12 +9462,13 @@ function renderCal(){
 }
 
 // 대학별 올해 요강 발표 현황. 조사 시점(asOf)에 확인한 사실만 보여준다.
+//   final  = 모집요강이 발표되어 일정이 확정됨 (unis[].final27 = 발표일, guide27 = 요강 URL)
 //   dated  = 사전안내로 날짜가 나와 달력에 반영됨
 //   notice = 사전안내(기본계획·변경사항 등)는 있으나 날짜는 미공개
 //   none   = 올해 편입 공지 자체가 아직 없음
 function renderStatus(){
   var head = $('calStatHead'), host = $('calStat');
-  var show = calMode !== 'real' && CAL.unis.some(function(u){ return u.note27 || u.src27; });
+  var show = calMode !== 'real' && CAL.unis.some(function(u){ return u.note27 || u.src27 || u.final27; });
   head.hidden = !show; host.hidden = !show;
   if (!show) return;
   $('calStatAsOf').textContent = CAL.asOf ? CAL.asOf.replace(/^\d{4}-/, '').replace('-', '/') + ' 기준' : '';
@@ -9458,10 +9476,10 @@ function renderStatus(){
   var dated = {};
   CAL.events.forEach(function(ev){ if (ev.d2) dated[ev.u] = (dated[ev.u] || 0) + 1; });
   var rows = CAL.unis.map(function(u, i){
-    var kind = dated[i] ? 'dated' : (u.src27 ? 'notice' : 'none');
+    var kind = u.final27 ? 'final' : dated[i] ? 'dated' : (u.src27 ? 'notice' : 'none');
     return { u: u, i: i, kind: kind, n: dated[i] || 0 };
   });
-  var order = { dated: 0, notice: 1, none: 2 };
+  var order = { final: 0, dated: 1, notice: 2, none: 3 };
   rows.sort(function(a, b){ return (order[a.kind] - order[b.kind]) || (a.i - b.i); });
 
   host.innerHTML = '';
@@ -9471,15 +9489,17 @@ function renderStatus(){
     var top = el('div', 'st-top');
     top.appendChild(el('span', 'st-u', r.u.name));
     top.appendChild(el('span', 'st-badge ' + r.kind,
-      r.kind === 'dated' ? '사전안내 일정 ' + r.n + '건 반영'
+      r.kind === 'final' ? '요강 확정 · 일정 ' + r.n + '건 반영'
+      : r.kind === 'dated' ? '사전안내 일정 ' + r.n + '건 반영'
       : r.kind === 'notice' ? '사전안내만 · 날짜 미공개'
       : '공지 없음'));
     body.appendChild(top);
     if (r.u.note27) body.appendChild(el('div', 'st-note', r.u.note27));
     row.appendChild(body);
-    if (r.u.src27){
-      var a = el('a', 'st-link', '공지 보기 ›');
-      a.href = r.u.src27; a.target = '_blank'; a.rel = 'noopener';
+    var href = r.u.guide27 || r.u.src27;
+    if (href){
+      var a = el('a', 'st-link', (r.kind === 'final' ? '요강 보기' : '공지 보기') + ' ›');
+      a.href = href; a.target = '_blank'; a.rel = 'noopener';
       row.appendChild(a);
     }
     host.appendChild(row);
