@@ -805,6 +805,9 @@ html.js .boot-warn.err{ display:block; }     /* 단, 스크립트가 죽었다�
   min-height:38px; letter-spacing:-.01em;
 }
 .chip.on{ background:var(--pen-soft); color:var(--pen); border-color:var(--pen-line); }
+.chips.days{ margin:4px 0 24px; }
+.chip.done{ color:var(--ok); background:rgba(11,122,86,.10); }
+.chip.done.on{ border-color:var(--ok); }
 .switch-row{
   display:flex; align-items:center; justify-content:space-between; gap:10px;
   padding:10px 0 14px; font-size:14px; color:var(--ink);
@@ -1106,8 +1109,13 @@ window.addEventListener('error', function(ev){
           <h3 class="sec-h">시험 범위</h3>
           <div class="seg" id="segDeck">
             <button data-deck="word" aria-pressed="true">단어</button>
-            <button data-deck="slang">숙어</button>
-            <button data-deck="prep">전명구</button>
+            <button data-deck="expr">표현</button>
+          </div>
+          <div id="exprBox" hidden>
+            <h3 class="sec-h">세트</h3>
+            <div class="seg" id="segSet"></div>
+            <h3 class="sec-h">일차 <span class="hint" id="dayHint"></span></h3>
+            <div class="chips days" id="dayChips"></div>
           </div>
         </div>
 
@@ -1229,7 +1237,7 @@ window.addEventListener('error', function(ev){
           <button data-theme-opt="dark">어둡게</button>
         </div>
 
-        <p class="build" id="buildStamp">build 2026-11-25 15:02</p>
+        <p class="build" id="buildStamp">build 2026-11-27 11:45</p>
       </div>
     </div>
   </section>
@@ -7969,7 +7977,7 @@ window.addEventListener('error', function(ev){
   { "w": "when push comes to shove", "k": "막상 상황이 닥치면", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤의 shove가 명사이므로 전치사" },
   { "w": "pales in comparison to", "k": "~보다 못해보이다", "def": "to 에 별도 표시 없음", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 비교 대상 명사가 오므로 전치사" },
   { "w": "have the luxury of", "k": "~하는 사치를 누리다", "def": "~할 여유가 있다", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "have the luxury of -ing" },
-  { "w": "get through", "k": "1. 겪다 2. ~을 버텨내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "get through", "k": "1. 겪다 2. ~을 버텨내다 3. 전달하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
   { "w": "with a view to", "k": "~할 목적으로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 동명사·명사가 오므로 전치사(with a view to -ing)" },
   { "w": "be tempted to", "k": "~하고 싶어지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be tempted to V", "toHint": "inf", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사" },
   { "w": "translate to", "k": "1. ~로 번역하다 2. ~로 귀결되다", "def": "to 파란 밑줄(전치사), 2번 뜻에 빨간 별", "syn": [], "ex": "", "tr": "", "cat": "note", "toHint": "prep", "to": "prep", "toNote": "to 뒤에 언어·결과 명사가 오므로 전치사" },
@@ -8210,6 +8218,224 @@ window.addEventListener('error', function(ev){
   { "w": "one ~ after another", "k": "연달아, 차례로", "def": "one after another", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "in a better place", "k": "더 좋은 상황인", "def": "형편·처지가 나아진", "syn": [], "ex": "", "tr": "", "cat": "prep" },
   { "w": "as ~ go", "k": "일반적인 ~의 기준치고는", "def": "as + 복수명사 + go · as things go 등", "syn": [], "ex": "", "tr": "", "cat": "prep" }
+]
+</script>
+<script type="application/json" id="slang2Data">
+[
+  { "w": "bear a resemblance to", "k": "A와 닮다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사" },
+  { "w": "be torn between A and B", "k": "A와 B 사이에서 고민하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "sleep on", "k": "~에 대해 하룻밤 자고 생각하다, 신중히 생각하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "a long way from", "k": "~와는 거리가 먼", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "even out", "k": "균형을 맞추다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "invoke sanctions against", "k": "~에 대한 제재를 가하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "lean/count/build/turn/rest/incumbent/recline/contingent + on", "k": "1. 의지하다 2. ~에 달려있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "all else being equal", "k": "다른 모든 조건이 동일하다면", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "ward off", "k": "1. 피하다 2. 막아내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "throw a wrench into the work", "k": "일을 망치다, 방해하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "wipe out", "k": "제거하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "run through", "k": "1. ~을 훑어보다 2. 예행연습하다 3. 다 써버리다", "def": "(돈·자원을) 다 써버리다", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "polish off", "k": "해치우다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "brush aside", "k": "무시하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pose as", "k": "~인 척하다, 위장하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come after", "k": "~에 뒤이어 발생하다", "def": "뒤에 사건·시점이 온다", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "put off", "k": "미루다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "hedge against", "k": "~에 대비하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "weigh against", "k": "~에게 불리하게 작용하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "cast aside", "k": "버리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be rendered + 형", "k": "~한 상태가 되다", "def": "뒤에 형용사가 온다", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in working order", "k": "작동하는 상태인, 고장나지 않은", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take a stand", "k": "입장을 취하다·밝히다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "close in", "k": "1. 에워싸다 2. 다가오다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pull through", "k": "회복하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "have an effect on A", "k": "A에 영향을 미치다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "cast off", "k": "버리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be likened to", "k": "~에 비유되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사" },
+  { "w": "entertain an idea", "k": "생각을 품다, 고려해보다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make account of", "k": "~을 중요하게 여기다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "on one's own terms", "k": "1. 자기 자신의 조건으로 2. 자기 방식대로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be accustomed to", "k": "~에 익숙한", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사" },
+  { "w": "build up", "k": "~을 쌓다, 기르다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "piece together", "k": "꿰어 맞추다", "def": "(단서·정보를)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "roll over", "k": "항복하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "have only to", "k": "~하기만 하면 된다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사" },
+  { "w": "end to end", "k": "처음부터 끝까지", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "verge on", "k": "~에 가까워지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be primed for", "k": "~할 준비가 되어있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come close to", "k": "거의 ~할뻔하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사" },
+  { "w": "lock out", "k": "못 들어가게 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "place at", "k": "~에게 맡기다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "a force to be reckoned with", "k": "무시할 수 없는 존재", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be dependent upon", "k": "1. 의지하는 2. ~에 좌우되는", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in business", "k": "사업에 종사하는", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "on business", "k": "출장중인", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be claimed by", "k": "목숨을 잃다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be said to do", "k": "~라는 말이 있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come on", "k": "1. 다가오다 2. 시작되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "subordinate A to B", "k": "A를 B보다 아래에 두다, 종속시키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "prefer A to B", "k": "B보다 A를 더 선호하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "imbue A with B", "k": "A에 B를 주입하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "marry A with B", "k": "A를 B와 결합시키다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "throw A open to B", "k": "A를 B에게 개방하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "favor A to B", "k": "B보다 A를 더 선호하다", "def": "(= prefer)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "restrict A to B", "k": "A를 B로 제한하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "go beyond A to B", "k": "A를 넘어 B까지 나아가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "promote A as B", "k": "A를 B로 승진·격상시키다, A를 B로 장려하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "promote A as/to B" },
+  { "w": "head on", "k": "정면으로, 직접적으로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pass on", "k": "~에게 떠넘기다, 전가하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pass for", "k": "~로 여겨지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "turn the tide", "k": "흐름을 바꾸다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "tower over", "k": "~보다 훨씬 크다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "out of place", "k": "어울리지 않는, 부적절한", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "speak highly/well of", "k": "칭찬하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be directed at/toward/against", "k": "~을 향하다, ~에 겨냥되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "brace oneself for +", "k": "~에 대비하다, 마음의 준비를 하다", "def": "n = 명사(동그라미 표시)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "stand out for", "k": "~를 나타내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "the company of", "k": "~와 함께 있음", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "it takes one to know one", "k": "사돈 남말 한다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be all for", "k": "전적으로 찬성한다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "from this angle and that", "k": "이 각도 저 각도로부터", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be supposed to", "k": "1. ~하는 것으로 여겨지다 2. ~하기로 되어있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be supposed to V", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사" },
+  { "w": "leach out", "k": "1. 빼내다 2. 고갈시키다 3. 유출시키다", "def": "(핵심을) 빼내다", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "all that long", "k": "그렇게 오랫동안", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be around", "k": "존재하다, 근처에 있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "spool up", "k": "가동하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "do a good job of ~ing", "k": "~을 훌륭하게 해내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "feed on", "k": "~을 먹고 살다, ~에 의존하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "that was when", "k": "바로 그 때 ~했다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "fig leaf", "k": "무화과잎", "def": "(치부나 부끄러운 곳을 가리는 은폐물, 외견상의 조치)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "get away from", "k": "벌을 면하다", "def": "(표준형은 get away with)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "beg to differ", "k": "생각이 다르다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "measure up", "k": "기대에 미치다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "view into", "k": "~의 내부를 들여다보는", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "on the horizon", "k": "곧 닥쳐올", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "few and far between", "k": "드문", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "cut down on", "k": "~을 줄이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "get down to", "k": "~에 착수하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사" },
+  { "w": "come down with", "k": "병에 걸리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come down to", "k": "~에 달려있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사" },
+  { "w": "brood on/over", "k": "숙고하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take stock of", "k": "평가하다, 점검하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be blind to", "k": "~을 보지 못하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사" },
+  { "w": "keep tabs on", "k": "~을 확인하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "get to the bottom of", "k": "~의 진짜 이유를 알아내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "think nothing of", "k": "~을 아무렇지도 않게 생각하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in defense of", "k": "~을 방어하여", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "run away with", "k": "~을 가지고 도망가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "break away from", "k": "~로부터 도망가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "stay away from", "k": "~을 멀리하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "hit a snag", "k": "난관에 부딪치다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "settle with", "k": "1. ~와 합의하다 2. (빚을) 청산하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "host life", "k": "생명체를 품다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be aligned with", "k": "~와 일치하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "at the outset", "k": "처음에", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in succession", "k": "잇따라, 연속적으로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "out of the blue", "k": "갑자기", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in due course", "k": "적절한 시기에", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "for all practical purposes", "k": "사실상", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "at long last", "k": "마침내", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in any event", "k": "어쨌든", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in awe of", "k": "경외심을 느끼면서", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "at variance with", "k": "~와 불일치하는", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "on behalf of", "k": "1. ~를 대신해서 2. ~을 위해", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in pursuit of", "k": "~를 추구하며", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "stave off", "k": "막다, 저지하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "allude to", "k": "~를 암시하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사" },
+  { "w": "hold A accountable for B", "k": "A에게 B에 대한 책임을 묻다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "stumble upon", "k": "우연히 발견하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be certain to", "k": "~을 확실히하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사" },
+  { "w": "let the chips fall where they may", "k": "결과가 어떻게 되든 받아들이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "raise funds", "k": "자금을 마련하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "comings and goings", "k": "드나듦", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "side by side", "k": "나란히", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be lost on + 사람", "k": "~에게 이해되지 않다, 효과가 없다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "find vent in", "k": "~로 분출하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "break loose from", "k": "~로부터 탈출하다, 벗어나다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be tailored to", "k": "~에 맞추어지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사" },
+  { "w": "back on one's heels", "k": "궁지에 몰린", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "just the thing", "k": "~에 딱 맞는 것", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be home to", "k": "~의 거주지이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "to": "prep", "toNote": "to 뒤에 명사·동명사가 오므로 전치사" },
+  { "w": "have no idea", "k": "전혀 알지 못하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "break apart", "k": "분해하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be at stake", "k": "성패가 달려있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "bank on", "k": "의존하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "give off", "k": "방출하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "broaden one's horizons", "k": "시야를 넓히다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "let it rip", "k": "마음껏 하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in the same vein", "k": "같은 맥락으로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "by and large", "k": "전반적으로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "for all intents and purposes", "k": "사실상", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "beside the point", "k": "요점을 벗어난", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "weed out", "k": "1. 제거하다 2. 걸러내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "play up", "k": "강조하다, 과장하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be credited with", "k": "~한 공로를 인정받다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "would kill for", "k": "~을 간절히 원하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "wrack one's brain", "k": "머리를 쥐어짜다, 깊이 생각하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "partake in", "k": "~에 참가·참여하다", "def": "= take part in", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "get in the way", "k": "방해하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "hit back", "k": "응수하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "tally with", "k": "일치하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "hail mary pass", "k": "최후의 승부수, 필사적인 시도·모험", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be stuck in", "k": "~에 갇혀있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be set to", "k": "~할 예정이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "be set/due to V", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사" },
+  { "w": "go to hell in a handbasket", "k": "1. 자포자기에 빠지다 2. 파국으로 치닫다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take a top spot", "k": "1등을 차지하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pump oneself up", "k": "자존감을 높이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "depend on", "k": "1. ~에 의존하다 2. ~에 달려있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "beyond the pale", "k": "용납할 수 없는, 도를 넘은", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "ruled out of court", "k": "논의·고려 대상에서 배제된", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "shed jobs", "k": "일자리를 감축하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be true of", "k": "~에 적용되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "pivot upon", "k": "~에 달려있다", "def": "(= hinge on)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "line up for", "k": "~을 위해 줄지어 세우다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "as-the-crow-flies", "k": "일직선으로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "play favorites", "k": "편애하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "double down", "k": "기존 입장을 더 강하게 고수하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "break through", "k": "1. 뚫고 나아가다 2. 돌파구를 마련하다", "def": "2. 획기적인 발전을 이루다", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "step up", "k": "강화하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "diverge over/about/on", "k": "~을 두고/~에 대해 의견이 갈리다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "diverge from", "k": "1. ~로부터 벗어나다 2. ~와 다르다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "feel pressure to", "k": "~해야 한다는 압박감을 느끼다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note", "form": "feel pressure to V", "to": "inf", "toNote": "to 뒤에 동사원형이 오므로 부정사" },
+  { "w": "in rude health", "k": "건강 상태가 아주 좋은", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "dispense with", "k": "없애다, 생략하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "lord of all things/creation", "k": "만물의 영장", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be backed by", "k": "~에 의해 뒷받침되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "go about", "k": "~을 다루다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be on board with", "k": "~에 동참하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "cut the mustard", "k": "기대에 부응하다", "def": "(= live up to expectations, = come up to expectations)", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "set in stone", "k": "변경할 수 없는, 확정된", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be noted for", "k": "1. ~로 유명하다 2. ~으로 특징지어지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "here and there", "k": "여기저기에", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be set in", "k": "~에 배경을 두다", "def": "분사구문으로 쓰이면 being 날아가고 set in만 남음", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be rooted in", "k": "~에 뿌리를 두다, ~에서 비롯되다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make the case that", "k": "~라는 주장을 펼치다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "catch fire", "k": "불이 붙다, 활기를 띠다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come and go", "k": "들어왔다 나가다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in keeping with", "k": "~와 일치하는", "def": "조화하는", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "shove out of", "k": "~에서 밀어내다, 쫓아내다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "learn by heart", "k": "암기하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "take pains for", "k": "~를 위해 공을 들이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "at the mercy of", "k": "~의 처분에 맡겨진, ~에 좌우되어", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in line with", "k": "~와 긴밀히 연결된, ~에 발맞추어", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in charge of", "k": "~을 담당하는, ~을 통제/지배하는", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "there is more to the story", "k": "기존의 설명이 전부가 아니다", "def": "완벽한 설명이 아니라는 뜻", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "strive after", "k": "~을 추구하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be bound up with", "k": "~와 밀접하게 관련되어있다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in all probability", "k": "아마도, 십중팔구, 거의 확실히", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in full swing", "k": "한창 진행중인, 절정에 달한", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "free of charge", "k": "무료로", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "in the service of", "k": "~을 위한", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "gasp for breath", "k": "숨을 헐떡이다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "draw upon/on", "k": "~을 활용하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "be consumed by/with", "k": "~에 완전히 사로잡히다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "come of age", "k": "1. 성인이 되다 2. 성숙해지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "measure A against B", "k": "A를 B에 견주어 평가·측정하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "market A as B", "k": "A를 B로 홍보하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "walk A through B", "k": "A에게 B를 상세히 설명해주다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "misperceive A as B", "k": "A를 B라고 잘못 인식하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "walk/come/step in", "k": "안으로 걸어들어오다", "def": "in은 부사라 목적어가 없다", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make the case for", "k": "1. ~를 옹호하다 2. ~에 대한 타당한 이유를 제시하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "owe A for B", "k": "B에 대해 A를 빚지다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" },
+  { "w": "make sense of", "k": "~을 이해하다", "def": "", "syn": [], "ex": "", "tr": "", "cat": "note" }
 ]
 </script>
 <script type="application/json" id="scheduleData">
@@ -8621,6 +8847,35 @@ function loadDeckData(id, defCat, defLv){
 }
 var SLANG = loadDeckData('slangData', 'idiom', 2);
 var PREP  = loadDeckData('prepData',  'prep',  0);
+var SLANG2 = loadDeckData('slang2Data', 'note', 2);   // 나중에 추가한 숙어 노트. 별도 세트로 외운다.
+
+// 표현(숙어·전명구)은 세트로 나누고, 세트 안에서 20개씩 잘라 "일차"로 외운다.
+// 일차는 자료에 번호를 박지 않고 여기서 자르므로, 표현을 덧붙이면 뒤쪽 일차만 늘어난다.
+var DAY_SIZE = 20;
+var EXPR_SETS = [
+  { key:'s1', label:'세트 1', sub:'숙어 + 전명구', items:SLANG.concat(PREP) },
+  { key:'s2', label:'세트 2', sub:'새 숙어',       items:SLANG2 }
+].filter(function(st){ return st.items.length; });
+var EXPR = [];
+EXPR_SETS.forEach(function(st){ EXPR = EXPR.concat(st.items); });
+function setDays(st){
+  if (st.days) return st.days;
+  var len = st.items.length, n = Math.floor(len / DAY_SIZE), rem = len % DAY_SIZE;
+  if (rem && (n === 0 || rem >= 10)) n++;     // 자투리가 10개 미만이면 마지막 일차에 붙인다
+  var days = [];
+  for (var i = 0; i < n; i++){
+    var a = i * DAY_SIZE, b = (i === n - 1) ? len : a + DAY_SIZE;
+    days.push(st.items.slice(a, b));
+  }
+  st.days = days;
+  return days;
+}
+var DAY_OF = Object.create(null);           // 표현 → {set, day}. 출처 꼬리표에 쓴다.
+EXPR_SETS.forEach(function(st){
+  setDays(st).forEach(function(list, i){
+    list.forEach(function(it){ if (!DAY_OF[it.w]) DAY_OF[it.w] = { set:st, day:i + 1 }; });
+  });
+});
 
 function indexOfList(list){
   var m = Object.create(null);
@@ -8629,13 +8884,14 @@ function indexOfList(list){
 }
 
 var DECKS = {
-  word:  { key:'word',  label:'단어',   items:WORDS, index:indexOfList(WORDS) },
-  slang: { key:'slang', label:'숙어',   items:SLANG, index:indexOfList(SLANG) },
-  prep:  { key:'prep',  label:'전명구', items:PREP,  index:indexOfList(PREP)  }
+  word: { key:'word', label:'단어', items:WORDS, index:indexOfList(WORDS) },
+  expr: { key:'expr', label:'표현', items:EXPR,  index:indexOfList(EXPR), sets:EXPR_SETS }
 };
-var DECK_ORDER = ['word', 'slang', 'prep'];
+var DECK_ORDER = ['word', 'expr'];
 var deck = 'word';                       // 지금 고른 시험 묶음
 function D(){ return DECKS[deck]; }
+// 예전에 따로 있던 숙어·전명구 묶음은 표현 묶음으로 흡수됐다. 저장된 이름을 만나면 바꿔 읽는다.
+function deckAlias(d){ return (d === 'slang' || d === 'prep') ? 'expr' : d; }
 function deckOf(word){                   // 메모처럼 여러 묶음을 함께 보는 곳에서 쓴다
   for (var i = 0; i < DECK_ORDER.length; i++)
     if (DECKS[DECK_ORDER[i]].index[word]) return DECKS[DECK_ORDER[i]];
@@ -8682,10 +8938,29 @@ var KEY_MEMO  = 'vq.memo.v1';
 // 오답노트와 진도는 묶음(단어/속어)마다 따로 쌓는다. 기존 사용자의 단어 기록은 그대로 이어진다.
 function deckKey(base, d){ return d === 'word' ? base : base.replace(/\.v1$/, '.' + d + '.v1'); }
 
+// 숙어·전명구에 따로 쌓여 있던 진도·오답노트를 표현 묶음 하나로 합친다. 한 번만 한다.
+(function migrateExpr(){
+  if (LS.get('vq.expr.migrated.v1', 0)) return;
+  var sn = {}, wb = {}, any = false;
+  ['slang', 'prep'].forEach(function(d){
+    var s0 = LS.get(deckKey(KEY_SEEN, d), null), w0 = LS.get(deckKey(KEY_WRONG, d), null);
+    if (s0){ any = true; for (var k in s0) if (!sn[k] || s0[k] > sn[k]) sn[k] = s0[k]; }
+    if (w0){ any = true; for (var k2 in w0) if (!wb[k2]) wb[k2] = w0[k2]; }
+  });
+  if (any && LS.get(deckKey(KEY_SEEN, 'expr'), null) == null){
+    LS.set(deckKey(KEY_SEEN, 'expr'), sn);
+    LS.set(deckKey(KEY_WRONG, 'expr'), wb);
+  }
+  LS.set('vq.expr.migrated.v1', 1);
+})();
+
 var wrongbook = LS.get(KEY_WRONG, {});       // { 표현: {miss, mine, lastAt} } — 뜻·예문은 묶음 색인에서 채운다
 var history   = LS.get(KEY_HIST, []);        // 최근 것이 앞 (묶음 구분은 각 항목의 deck 필드)
 var prefs     = LS.get(KEY_PREF, {mode:'card', count:100});
 if (prefs.deck  == null) prefs.deck  = 'word';
+prefs.deck = deckAlias(prefs.deck);
+if (prefs.exSet == null) prefs.exSet = 's1';     // 표현 세트
+if (prefs.exDay == null) prefs.exDay = 0;        // 0 = 세트 전체, n = n일차
 if (prefs.rate  == null) prefs.rate  = 0.9;
 if (prefs.auto  == null) prefs.auto  = 0;
 if (prefs.voice == null) prefs.voice = '';
@@ -8704,6 +8979,7 @@ function saveSeen(){ LS.set(deckKey(KEY_SEEN, deck), seen); }
 
 // 묶음을 바꾸면 그 묶음의 오답노트·진도를 불러온다
 function setDeck(d){
+  d = deckAlias(d);
   if (!DECKS[d] || !DECKS[d].items.length) d = 'word';
   deck = d;
   prefs.deck = d; savePrefs();
@@ -8839,9 +9115,10 @@ function fillVoiceSelect(sel, list, saved, prefer){
 var POS_ONLY = /^(n|v|vt|vi|a|ad|adv|adj|p|prep|conj|int|pron)$/i;
 // 출처 꼬리표. 단어는 몇 권 며칠치인지, 속어는 갈래와 난이도를 보여준다.
 function sourceTag(it){
-  if (it.cat === 'prep') return '전명구' + (it.lv ? ' · 난이도 ' + it.lv : '');
-  if (it.cat === 'note') return '숙어 노트';
-  if (it.cat) return (it.cat === 'phrasal' ? '구동사' : '관용구') + ' · 난이도 ' + (it.lv || 2);
+  var dd = DAY_OF[it.w], pre = dd ? dd.set.label + ' · ' + dd.day + '일차 · ' : '';
+  if (it.cat === 'prep') return pre + '전명구' + (it.lv ? ' · 난이도 ' + it.lv : '');
+  if (it.cat === 'note') return pre + '숙어 노트';
+  if (it.cat) return pre + (it.cat === 'phrasal' ? '구동사' : '관용구') + ' · 난이도 ' + (it.lv || 2);
   return it.book + '권 · DAY ' + pad2(it.day);
 }
 
@@ -9647,7 +9924,22 @@ function mastered(word){
   var s = seen[word];
   return s === 2 || (s === 1 && !wrongbook[word]);   // 예전 기록(1)은 오답노트에 없으면 맞힌 것으로 본다
 }
-function freshPool(){ return D().items.filter(function(it){ return !mastered(it.w); }); }
+// 지금 고른 범위: 단어는 전체, 표현은 고른 세트(와 일차)
+function exprSet(){
+  for (var i = 0; i < EXPR_SETS.length; i++) if (EXPR_SETS[i].key === prefs.exSet) return EXPR_SETS[i];
+  return EXPR_SETS[0];
+}
+function exprDay(){
+  var st = exprSet(); if (!st) return 0;
+  var n = prefs.exDay | 0;
+  return (n >= 1 && n <= setDays(st).length) ? n : 0;
+}
+function scopeItems(){
+  if (deck !== 'expr' || !EXPR_SETS.length) return D().items;
+  var st = exprSet(), n = exprDay();
+  return n ? setDays(st)[n - 1] : st.items;
+}
+function freshPool(){ return scopeItems().filter(function(it){ return !mastered(it.w); }); }
 function eul(s){ var c = s.charCodeAt(s.length - 1); return (c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28) ? '을' : '를'; }
 function seenCount(){
   var n = 0;
@@ -9656,16 +9948,20 @@ function seenCount(){
 }
 
 function refreshHome(){
-  var total = D().items.length;
+  var scope = scopeItems(), total = scope.length;
   var unit = deck === 'word' ? '단어' : '표현';
   $('totalWords').textContent = total.toLocaleString('ko-KR');
   $('unitWord').textContent = unit;
   $('unitCover').textContent = '시험 본 ' + unit;
-  $('kicker').textContent = deck === 'slang' ? '관용구 · 구동사 · 노트'
-    : deck === 'prep' ? '전치사구 · 부사구 표현'
-    : '한권끝 1·2권 · DAY 01–44';
+  var kick = '한권끝 1·2권 · DAY 01–44';
+  if (deck === 'expr' && EXPR_SETS.length){
+    var st = exprSet(), n = exprDay();
+    kick = st.label + ' · ' + st.sub + ' · ' + (n ? n + '일차' : '전체 ' + setDays(st).length + '일차');
+  }
+  $('kicker').textContent = kick;
+  renderExprPick();                            // 시험을 치고 돌아오면 일차 완료 표시가 바뀐다
 
-  var mine = history.filter(function(h){ return (h.deck || 'word') === deck; });
+  var mine = history.filter(function(h){ return deckAlias(h.deck || 'word') === deck; });
   $('stTests').querySelector('.n').textContent = mine.length;
   var avg = '–';
   if (mine.length){
@@ -9679,9 +9975,8 @@ function refreshHome(){
   $('stWrong').classList.toggle('alert', wc > 0);
 
   // 진도: 시험에 한 번이라도 나온 단어 / 전체. 그중 아직 오답으로 남은 몫을 따로 칠한다.
-  var sc = seenCount();
-  var got = 0;
-  for (var w in seen) if (D().index[w] && mastered(w)) got++;
+  var sc = 0, got = 0;
+  scope.forEach(function(it){ if (seen[it.w] != null){ sc++; if (mastered(it.w)) got++; } });
   var pending = sc - got;                       // 나왔지만 아직 못 맞힌 것
   var pct = total ? sc / total * 100 : 0;
   // 초반 진도가 0%로만 보이지 않도록 한 자리까지 보여준다.
@@ -9697,7 +9992,7 @@ function refreshHome(){
 
   var note, remain = total - got;               // 다음 시험에 나올 수 있는 것
   if (sc === 0) note = "아직 한 문제도 풀지 않았어요.";
-  else if (remain <= 0) note = "전체 " + unit + eul(unit) + " 다 맞혔어요. 시험을 시작하면 처음부터 다시 출제돼요.";
+  else if (remain <= 0) note = (deck === 'expr' && exprDay() ? "이 일차의 " : "전체 ") + unit + eul(unit) + " 다 맞혔어요. 시험을 시작하면 처음부터 다시 출제돼요.";
   else {
     note = "다음 시험에 나올 " + unit + " " + remain.toLocaleString("ko-KR") + "개";
     var parts = [];
@@ -9748,7 +10043,7 @@ function startShower(source){
   if (!pool.length){
     confirmSheet('전부 맞혔어요',
       '이 범위의 ' + unit + eul(unit) + ' 모두 한 번씩 맞혔어요. 맞힌 ' + unit + '까지 포함해 전체를 들을까요? 진도는 그대로 남아요.',
-      '전체 듣기', function(){ launchShower(D().items, source); });
+      '전체 듣기', function(){ launchShower(scopeItems(), source); });
     return;
   }
   launchShower(pool, source);
@@ -9898,7 +10193,7 @@ function clearDraft(){
 function loadDraft(){
   var d = LS.get(KEY_DRAFT, null);
   if (!d || !d.words || !d.words.length || d.graded) return null;
-  var dk = DECKS[d.deck] ? d.deck : 'word';     // 다른 묶음에서 풀던 것도 복원한다
+  var dk = DECKS[deckAlias(d.deck)] ? deckAlias(d.deck) : 'word';     // 다른 묶음에서 풀던 것도 복원한다
   var items = [];
   for (var i = 0; i < d.words.length; i++){
     var it = DECKS[dk].index[d.words[i]];
@@ -9935,12 +10230,15 @@ function showResume(){
 // 아직 못 맞힌 것만 골라 새 시험을 낸다. 다 맞혔으면 진도를 되돌려 처음부터 볼지 묻는다.
 function startFresh(mode, count){
   var pool = freshPool(), unit = deck === 'word' ? '단어' : '표현';
+  var scope = scopeItems();
+  if (deck === 'expr' && exprDay()) count = scope.length;      // 일차 시험은 그 일차 전부
   if (!pool.length){
     confirmSheet('전부 맞혔어요',
-      '이 범위의 ' + unit + eul(unit) + ' 모두 한 번씩 맞혔어요. 진도를 되돌리고 처음부터 다시 출제할까요? 오답노트와 점수 이력은 그대로 남아요.',
+      '이 범위의 ' + unit + eul(unit) + ' 모두 한 번씩 맞혔어요. 이 범위의 진도만 되돌리고 처음부터 다시 출제할까요? 오답노트와 점수 이력은 그대로 남아요.',
       '처음부터', function(){
-        seen = {}; saveSeen(); refreshHome();
-        startSession(mode, count, D().items, 'all');
+        scope.forEach(function(it){ delete seen[it.w]; });
+        saveSeen(); refreshHome();
+        startSession(mode, count, scope, 'all');
       });
     return;
   }
@@ -10539,11 +10837,49 @@ function syncDeckUI(){
     b.setAttribute('aria-pressed', String(b.dataset.deck === deck));
   });
   $('deckBox').hidden = extra === 0;
+  renderExprPick();
+}
+
+// 표현 묶음의 세트·일차 선택. 다 맞힌 일차는 ✓로 표시한다.
+function renderExprPick(){
+  var box = $('exprBox');
+  var on = deck === 'expr' && EXPR_SETS.length > 0;
+  box.hidden = !on;
+  if (!on) return;
+  var st = exprSet(), days = setDays(st), day = exprDay();
+  if (day !== (prefs.exDay | 0)){ prefs.exDay = day; savePrefs(); }
+  function pick(){ syncModeOptions(); refreshHome(); }      // refreshHome이 칩을 다시 그린다
+
+  var seg = $('segSet');
+  seg.innerHTML = '';
+  seg.hidden = EXPR_SETS.length < 2;
+  EXPR_SETS.forEach(function(x){
+    var b = el('button', null, x.label + ' · ' + x.sub);
+    b.setAttribute('aria-pressed', String(x === st));
+    b.onclick = function(){ if (x === st) return; prefs.exSet = x.key; prefs.exDay = 0; savePrefs(); pick(); };
+    seg.appendChild(b);
+  });
+
+  var host = $('dayChips');
+  host.innerHTML = '';
+  function chip(label, val, done){
+    var c = el('button', 'chip' + (val === day ? ' on' : '') + (done ? ' done' : ''), label);
+    c.onclick = function(){ if (val === day) return; prefs.exDay = val; savePrefs(); pick(); };
+    host.appendChild(c);
+  }
+  chip('전체', 0, false);
+  var doneN = 0;
+  days.forEach(function(list, i){
+    var done = list.every(function(it){ return mastered(it.w); });
+    if (done) doneN++;
+    chip((i + 1) + '일차' + (done ? ' ✓' : ''), i + 1, done);
+  });
+  $('dayHint').textContent = days.length + '일차 · ' + DAY_SIZE + '개씩' + (doneN ? ' · 완료 ' + doneN : '');
 }
 
 function syncModeOptions(){
   var shower = prefs.mode === 'shower';
-  $('quizOpts').hidden = shower;
+  $('quizOpts').hidden = shower || (deck === 'expr' && exprDay() > 0);   // 일차 시험은 문항 수가 정해져 있다
   $('showerOpts').hidden = !shower;
   $('btnStart').textContent = shower ? '샤워 모드 시작' : '시험 시작';
 }
